@@ -1,0 +1,118 @@
+/* ── Project page layout ── */
+.project-hero {
+  padding-top: 9rem;
+  padding-bottom: 4rem;
+  padding-left: 5vw;
+  padding-right: 5vw;
+  border-bottom: 1px solid var(--rule);
+  position: relative;
+}
+.back-link {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 3rem; transition: color 0.2s;
+}
+.back-link:hover { color: var(--accent); }
+.project-hero-label {
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 1.2rem;
+  display: flex; align-items: center; gap: 0.8rem;
+}
+.project-hero-label::after {
+  content: ''; flex: 1; max-width: 48px; height: 1px; background: var(--accent); opacity: 0.5;
+}
+.project-hero-title {
+  font-family: var(--serif); font-size: clamp(2.4rem, 5.5vw, 5rem);
+  font-weight: 300; line-height: 1.05; margin-bottom: 1.8rem;
+  max-width: 800px;
+}
+.project-hero-title em { font-style: italic; color: var(--accent); }
+.project-meta {
+  display: flex; flex-wrap: wrap; gap: 2.5rem;
+  margin-bottom: 2rem;
+}
+.meta-group { display: flex; flex-direction: column; gap: 0.3rem; }
+.meta-label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+.meta-value { font-size: 0.92rem; color: var(--ink); }
+.hero-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
+.h-tag { font-family: var(--mono); font-size: 0.63rem; letter-spacing: 0.04em; padding: 0.25rem 0.7rem; background: var(--surface); color: var(--muted); }
+.github-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem;
+  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 0.65rem 1.4rem; border: 1px solid var(--ink); color: var(--ink);
+  transition: background 0.2s, color 0.2s;
+}
+.github-btn:hover { background: var(--ink); color: var(--bg); }
+
+/* ── Article body ── */
+.project-body {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 5rem 5vw;
+}
+.project-body h2 {
+  font-family: var(--serif); font-size: 2rem; font-weight: 300;
+  margin: 3.5rem 0 1rem; line-height: 1.2;
+  padding-bottom: 0.6rem; border-bottom: 1px solid var(--rule);
+}
+.project-body h2:first-child { margin-top: 0; }
+.project-body h3 {
+  font-family: var(--serif); font-size: 1.3rem; font-weight: 400;
+  margin: 2rem 0 0.6rem;
+}
+.project-body p {
+  color: var(--muted); font-size: 1rem; line-height: 1.85;
+  margin-bottom: 1.2rem;
+}
+.project-body p:last-child { margin-bottom: 0; }
+.project-body strong { color: var(--ink); font-weight: 500; }
+.project-body em { font-style: italic; }
+.project-body a { color: var(--accent); border-bottom: 1px solid transparent; transition: border-color 0.2s; }
+.project-body a:hover { border-color: var(--accent); }
+
+/* ── Result callout ── */
+.result-block {
+  border-left: 3px solid var(--accent);
+  padding: 1.2rem 1.4rem;
+  background: var(--surface);
+  margin: 2rem 0;
+}
+.result-block p {
+  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.03em;
+  color: var(--ink); line-height: 1.7; margin: 0;
+}
+.result-block p + p { margin-top: 0.5rem; }
+
+/* ── Data table ── */
+.data-table {
+  width: 100%; border-collapse: collapse; margin: 2rem 0;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.02em;
+}
+.data-table th {
+  text-align: left; padding: 0.7rem 1rem;
+  border-bottom: 2px solid var(--rule); color: var(--muted);
+  font-weight: 400; letter-spacing: 0.08em; text-transform: uppercase; font-size: 0.65rem;
+}
+.data-table td {
+  padding: 0.75rem 1rem; border-bottom: 1px solid var(--rule); color: var(--ink);
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--surface); }
+.data-table .highlight td { color: var(--accent); }
+
+/* ── Code block ── */
+.code-block {
+  background: var(--ink); color: #c9c4bd;
+  font-family: var(--mono); font-size: 0.78rem; line-height: 1.65;
+  padding: 1.4rem 1.6rem; margin: 1.5rem 0; overflow-x: auto;
+}
+
+/* ── Section divider ── */
+.divider { height: 1px; background: var(--rule); margin: 3rem 0; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .project-meta { gap: 1.5rem; }
+  .project-hero-title { font-size: 2.2rem; }
+}

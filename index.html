@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rahul Ray — AI/ML · Data Science</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ── Hero ── */
+    #hero {
+      min-height: 100vh; display: flex; flex-direction: column;
+      justify-content: center; padding-top: 7rem;
+      position: relative; overflow: hidden;
+    }
+    #hero::before {
+      content: ''; position: absolute; top: -20%; right: -10%;
+      width: 55vw; height: 55vw; border-radius: 50%;
+      background: radial-gradient(circle, rgba(20,67,255,0.05) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-eyebrow {
+      font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
+      color: var(--muted); text-transform: uppercase; margin-bottom: 1.4rem;
+      opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards;
+    }
+    .hero-name {
+      font-family: var(--serif); font-size: clamp(3.6rem, 9vw, 8rem);
+      font-weight: 300; line-height: 1.0; margin-bottom: 1.6rem;
+      opacity: 0; animation: fadeUp 0.9s ease 0.35s forwards;
+    }
+    .hero-name em { font-style: italic; color: var(--accent); }
+    .hero-desc {
+      max-width: 520px; font-size: 1.05rem; color: var(--muted);
+      line-height: 1.8; margin-bottom: 3rem;
+      opacity: 0; animation: fadeUp 0.9s ease 0.5s forwards;
+    }
+    .hero-cta {
+      display: flex; gap: 1.2rem; flex-wrap: wrap;
+      opacity: 0; animation: fadeUp 0.9s ease 0.65s forwards;
+    }
+    .scroll-hint {
+      position: absolute; bottom: 2.5rem; left: 5vw;
+      display: flex; align-items: center; gap: 0.7rem;
+      font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em; color: var(--muted);
+      opacity: 0; animation: fadeIn 1s ease 1.2s forwards;
+    }
+    .scroll-hint-line { width: 28px; height: 1px; background: var(--muted); }
+
+    /* ── About ── */
+    #about { border-top: 1px solid var(--rule); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 5vw; align-items: start; }
+    .about-heading { font-family: var(--serif); font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 300; line-height: 1.2; }
+    .about-heading em { font-style: italic; color: var(--accent); }
+    .about-body p { color: var(--muted); margin-bottom: 1.2rem; font-size: 1rem; }
+    .skills-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; }
+
+    /* ── projects ── */
+    #projects { border-top: 1px solid var(--rule); }
+    .projects-heading { font-family: var(--serif); font-size: clamp(2.2rem, 4vw, 3.2rem); font-weight: 300; margin-bottom: 3.5rem; }
+    .project-list { display: flex; flex-direction: column; }
+    .project-row {
+      display: grid;
+      grid-template-columns: 56px 1fr auto;
+      gap: 2rem;
+      align-items: center;
+      padding: 2.2rem 0;
+      border-top: 1px solid var(--rule);
+      transition: background 0.2s;
+      cursor: default;
+    }
+    .project-row:last-child { border-bottom: 1px solid var(--rule); }
+    .project-row:hover .project-row-title { color: var(--accent); }
+    .project-num {
+      font-family: var(--mono); font-size: 0.65rem;
+      letter-spacing: 0.12em; color: var(--muted);
+      align-self: flex-start; padding-top: 0.3rem;
+    }
+    .project-row-body {}
+    .project-row-title {
+      font-family: var(--serif); font-size: 1.45rem;
+      font-weight: 400; line-height: 1.2; margin-bottom: 0.5rem;
+      transition: color 0.2s;
+    }
+    .project-row-desc {
+      font-size: 0.9rem; color: var(--muted); line-height: 1.65;
+      max-width: 640px;
+    }
+    .project-row-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.75rem; }
+    .p-tag {
+      font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.04em;
+      padding: 0.18rem 0.55rem; background: var(--surface); color: var(--muted);
+    }
+    .project-row-cta {
+      display: flex; flex-direction: column; gap: 0.6rem;
+      align-items: flex-end; flex-shrink: 0;
+    }
+    .cta-link {
+      font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--accent);
+      display: inline-flex; align-items: center; gap: 0.4rem; transition: gap 0.2s;
+    }
+    .cta-link:hover { gap: 0.7rem; }
+    .cta-gh {
+      font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.05em;
+      color: var(--muted); display: inline-flex; align-items: center; gap: 0.35rem;
+      transition: color 0.2s;
+    }
+    .cta-gh:hover { color: var(--ink); }
+
+    /* ── Experience ── */
+    #experience { border-top: 1px solid var(--rule); }
+    .exp-layout { display: grid; grid-template-columns: 1fr 2fr; gap: 5vw; align-items: start; }
+    .exp-heading { font-family: var(--serif); font-size: clamp(2.2rem, 4vw, 3.2rem); font-weight: 300; position: sticky; top: 6rem; }
+    .timeline-item { display: grid; grid-template-columns: 110px 1fr; gap: 2rem; padding: 2rem 0; border-top: 1px solid var(--rule); }
+    .timeline-item:last-child { border-bottom: 1px solid var(--rule); }
+    .timeline-date { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em; color: var(--muted); padding-top: 0.15rem; }
+    .timeline-role { font-family: var(--serif); font-size: 1.25rem; font-weight: 400; margin-bottom: 0.2rem; }
+    .timeline-org { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 0.8rem; }
+    .timeline-desc { font-size: 0.9rem; color: var(--muted); line-height: 1.75; }
+    .timeline-skills { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.8rem; }
+    .t-tag { font-family: var(--mono); font-size: 0.62rem; padding: 0.18rem 0.55rem; border: 1px solid var(--rule); color: var(--muted); }
+
+    /* ── Contact ── */
+    #contact { border-top: 1px solid var(--rule); }
+    .contact-inner { max-width: 640px; }
+    .contact-heading { font-family: var(--serif); font-size: clamp(2.6rem, 5.5vw, 4.2rem); font-weight: 300; line-height: 1.1; margin-bottom: 1.5rem; }
+    .contact-heading em { font-style: italic; color: var(--accent); }
+    .contact-sub { font-size: 1rem; color: var(--muted); margin-bottom: 3rem; line-height: 1.75; }
+    .contact-link {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.2rem 0; border-top: 1px solid var(--rule);
+      font-family: var(--serif); font-size: 1.15rem; transition: color 0.2s;
+    }
+    .contact-link:last-child { border-bottom: 1px solid var(--rule); }
+    .contact-link:hover { color: var(--accent); }
+    .contact-link span { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); transition: color 0.2s; }
+    .contact-link:hover span { color: var(--accent); }
+
+    @media (max-width: 768px) {
+      .about-grid, .exp-layout { grid-template-columns: 1fr; }
+      .exp-heading { position: static; }
+      .project-row { grid-template-columns: 40px 1fr; }
+      .project-row-cta { display: none; }
+      .timeline-item { grid-template-columns: 1fr; gap: 0.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav id="nav">
+    <div class="nav-logo"><a href="index.html">Rahul Ray</a></div>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Hero -->
+  <section id="hero">
+    <p class="hero-eyebrow">AI · ML · Data Science</p>
+    <h1 class="hero-name">Rahul<br /><em>Ray</em></h1>
+    <p class="hero-desc">
+      MSc Data Science student at Leiden University. I build things to answer questions 
+      I couldn't find clean answers to — and I'm interested in what actually happens 
+      when you push a method past its assumptions.
+    </p>
+    <div class="hero-cta">
+      <a href="#projects" class="btn primary">View my work</a>
+      <a href="#contact" class="btn">Get in touch</a>
+    </div>
+    <div class="scroll-hint">
+      <div class="scroll-hint-line"></div>
+      scroll
+    </div>
+  </section>
+
+  <!-- About -->
+  <section id="about">
+    <p class="section-label reveal">About</p>
+    <div class="about-grid">
+      <div>
+        <h2 class="about-heading reveal">Pushing <em>methods</em> past their assumptions.</h2>
+      </div>
+      <div class="about-body reveal">
+        <p>
+          I'm a computer science graduate and current MSc student at Leiden University, based in Den Haag.
+          My work spans classical ML, deep learning research, and edge AI deployment — with a particular 
+          interest in the questions that sit at the boundary of what a method can actually do.
+        </p>
+        <p>
+          I care about methodology: controlled baselines, proper statistical testing, and honest reporting 
+          when the results don't go the way you expected. Previously ML intern at Fox Solutions working on 
+          Vision Transformers for edge deployment.
+        </p>
+        <div class="skills-grid">
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">PyTorch</span>
+          <span class="skill-tag">XGBoost</span>
+          <span class="skill-tag">scikit-learn</span>
+          <span class="skill-tag">LightGBM · CatBoost</span>
+          <span class="skill-tag">SHAP</span>
+          <span class="skill-tag">Optuna</span>
+          <span class="skill-tag">Groq / LLaMA</span>
+          <span class="skill-tag">sentence-transformers</span>
+          <span class="skill-tag">Vision Transformers</span>
+          <span class="skill-tag">ResNet / CNNs</span>
+          <span class="skill-tag">ONNX · Edge ML</span>
+          <span class="skill-tag">NetworkX</span>
+          <span class="skill-tag">Streamlit</span>
+          <span class="skill-tag">SQL · pandas · NumPy</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- projects -->
+  <section id="projects">
+    <p class="section-label reveal">Projects</p>
+    <h2 class="projects-heading reveal">Selected work</h2>
+    <div class="project-list reveal">
+
+      <div class="project-row">
+        <span class="project-num">01</span>
+        <div class="project-row-body">
+          <div class="project-row-title">Can LLMs Make Tabular ML Better?</div>
+          <div class="project-row-desc">
+            A controlled experiment testing whether LLM-generated semantic features improve XGBoost on structured data — using nested CV, Wilcoxon tests, and Cohen's d to evaluate the hybrid approach properly.
+            The results went against the hypothesis, and that turned out to be the more interesting finding.
+          </div>
+          <div class="project-row-tags">
+            <span class="p-tag">XGBoost</span>
+            <span class="p-tag">LLaMA 3.1</span>
+            <span class="p-tag">sentence-transformers</span>
+            <span class="p-tag">Optuna</span>
+            <span class="p-tag">SHAP</span>
+          </div>
+        </div>
+        <div class="project-row-cta">
+          <a href="projects/llm-tabular.html" class="cta-link">Read writeup →</a>
+          <a href="https://github.com/Rahulrayy/Can-LLMs-Make-Tabular-ML-Better" target="_blank" class="cta-gh">↗ GitHub</a>
+        </div>
+      </div>
+
+      <div class="project-row">
+        <span class="project-num">02</span>
+        <div class="project-row-body">
+          <div class="project-row-title">AutoInsight — End-to-End AutoML App</div>
+          <div class="project-row-desc">
+            A browser-based AutoML tool that trains 7 models in parallel, generates SHAP explainability,
+            and produces LLM-written plain-language insights — with a privacy-preserving design where raw data never leaves the browser.
+          </div>
+          <div class="project-row-tags">
+            <span class="p-tag">Streamlit</span>
+            <span class="p-tag">XGBoost · LightGBM · CatBoost</span>
+            <span class="p-tag">SHAP</span>
+            <span class="p-tag">Optuna</span>
+            <span class="p-tag">Groq API</span>
+          </div>
+        </div>
+        <div class="project-row-cta">
+          <a href="projects/autoinsight.html" class="cta-link">Read writeup →</a>
+          <a href="https://github.com/Rahulrayy/AutoInsight" target="_blank" class="cta-gh">↗ GitHub</a>
+        </div>
+      </div>
+
+      <div class="project-row">
+        <span class="project-num">03</span>
+        <div class="project-row-body">
+          <div class="project-row-title">Quake — Learned Heuristic A* on BSP Geometry</div>
+          <div class="project-row-desc">
+            Parsed Quake 1's raw binary map format to build navigation graphs, generated 625k ground-truth
+            pathfinding pairs, then trained learned heuristics that cut A*'s node expansions by 42% while keeping paths near-optimal.
+          </div>
+          <div class="project-row-tags">
+            <span class="p-tag">PyTorch</span>
+            <span class="p-tag">XGBoost</span>
+            <span class="p-tag">BSP v29 parsing</span>
+            <span class="p-tag">A* search</span>
+            <span class="p-tag">NetworkX</span>
+          </div>
+        </div>
+        <div class="project-row-cta">
+          <a href="projects/quake.html" class="cta-link">Read writeup →</a>
+          <a href="https://github.com/Rahulrayy/quake" target="_blank" class="cta-gh">↗ GitHub</a>
+        </div>
+      </div>
+
+      <div class="project-row">
+        <span class="project-num">04</span>
+        <div class="project-row-body">
+          <div class="project-row-title">Epoch-wise Double Descent Under Label Noise</div>
+          <div class="project-row-desc">
+            A reproduction of Nakkiran et al. (2019)'s epoch-wise double descent on CIFAR-10 with ResNet-18 under varying label noise — with a mechanistic investigation into what's actually happening at the peak.
+          </div>
+          <div class="project-row-tags">
+            <span class="p-tag">PyTorch</span>
+            <span class="p-tag">ResNet-18</span>
+            <span class="p-tag">CIFAR-10</span>
+            <span class="p-tag">Label Noise</span>
+            <span class="p-tag">Generalisation Theory</span>
+          </div>
+        </div>
+        <div class="project-row-cta">
+          <a href="projects/double-descent.html" class="cta-link">Read writeup →</a>
+          <a href="https://github.com/Rahulrayy/cifar-Double-Descent" target="_blank" class="cta-gh">↗ GitHub</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Experience -->
+  <section id="experience">
+    <p class="section-label reveal">Experience</p>
+    <div class="exp-layout">
+      <h2 class="exp-heading reveal">Where I've<br />been.</h2>
+      <div class="reveal">
+
+        <div class="timeline-item">
+          <div class="timeline-date">Sep 2025 –<br />Aug 2027</div>
+          <div>
+            <div class="timeline-role">MSc Computer Science – Data Science</div>
+            <div class="timeline-org">Leiden University · Leiden, Netherlands</div>
+            <p class="timeline-desc">Research-focused master's programme. Coursework spanning probabilistic graphical models, deep learning, reinforcement learning, and NLP. Research interests include tabular learning, generalisation theory, double descent, heuristic search, explainable ML, and edge AI.</p>
+            <div class="timeline-skills">
+              <span class="t-tag">Generalisation Theory</span>
+              <span class="t-tag">Deep Learning</span>
+              <span class="t-tag">NLP</span>
+              <span class="t-tag">PGMs</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">Mar 2025 –<br />Aug 2025</div>
+          <div>
+            <div class="timeline-role">Machine Learning Intern</div>
+            <div class="timeline-org">Fox Solutions Pvt. Ltd. · India</div>
+            <p class="timeline-desc">Built a computer vision pipeline using Vision Transformers, working from model development through to edge deployment. Adapted ViT architectures to hardware constraints — optimising inference latency and memory footprint without significant accuracy loss.</p>
+            <div class="timeline-skills">
+              <span class="t-tag">Vision Transformers</span>
+              <span class="t-tag">Edge Deployment</span>
+              <span class="t-tag">ONNX</span>
+              <span class="t-tag">PyTorch</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">2021 –<br />2025</div>
+          <div>
+            <div class="timeline-role">BTech – Computer Science</div>
+            <div class="timeline-org">SRM Institute of Science and Technology · Chennai, India</div>
+            <p class="timeline-desc">Four-year undergraduate programme. Used the degree as a foundation to independently explore ML research — building projects in tabular learning, heuristic search, double descent, and computer vision throughout.</p>
+            <div class="timeline-skills">
+              <span class="t-tag">CS Fundamentals</span>
+              <span class="t-tag">Independent Research</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact">
+    <p class="section-label reveal">Contact</p>
+    <div class="contact-inner">
+      <h2 class="contact-heading reveal">Let's work on something <em>worth working on.</em></h2>
+      <p class="contact-sub reveal">Open to research collaborations, interesting ML problems, and conversations about generalisation, tabular learning, or edge AI. Always happy to talk methodology.</p>
+      <div class="reveal">
+        <a href="mailto:rahulraypm2002@gmail.com" class="contact-link">
+          rahulraypm2002@gmail.com <span>Email →</span>
+        </a>
+        <a href="https://github.com/Rahulrayy" target="_blank" class="contact-link">
+          GitHub <span>@Rahulrayy →</span>
+        </a>
+        <a href="https://linkedin.com/in/rahul-ray-b67741222" target="_blank" class="contact-link">
+          LinkedIn <span>rahul-ray-b67741222 →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span class="footer-name">Rahul Ray</span>
+    <span class="footer-note">Hosted on GitHub Pages · Den Haag, Netherlands</span>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('nav')
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 30))
+    const observer = new IntersectionObserver(
+      entries => entries.forEach(e => {
+        if (e.isIntersecting) {
+          const siblings = [...e.target.parentElement.querySelectorAll('.reveal')]
+          const idx = siblings.indexOf(e.target)
+          setTimeout(() => { e.target.classList.add('visible'); observer.unobserve(e.target) }, idx * 90)
+        }
+      }),
+      { threshold: 0.08, rootMargin: '0px 0px -60px 0px' }
+    )
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
+  </script>
+</body>
+</html>

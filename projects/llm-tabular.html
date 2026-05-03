@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Can LLMs Make Tabular ML Better? — Rahul Ray</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="project.css" />
+</head>
+<body>
+
+  <nav id="nav">
+    <div class="nav-logo"><a href="../index.html">Rahul Ray</a></div>
+    <ul class="nav-links">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../index.html#projects">Projects</a></li>
+      <li><a href="../index.html#experience">Experience</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="project-hero">
+    <a href="../index.html#projects" class="back-link">← Back to projects</a>
+    <p class="project-hero-label">Project 01</p>
+    <h1 class="project-hero-title">Can LLMs Make Tabular ML <em>Better?</em></h1>
+    <div class="project-meta">
+      <div class="meta-group">
+        <span class="meta-label">Type</span>
+        <span class="meta-value">ML Research / Experiment Design</span>
+      </div>
+      <div class="meta-group">
+        <span class="meta-label">Stack</span>
+        <span class="meta-value">XGBoost · LLaMA 3.1 · Optuna · SHAP</span>
+      </div>
+      <div class="meta-group">
+        <span class="meta-label">Result</span>
+        <span class="meta-value">Negative — documented honestly</span>
+      </div>
+    </div>
+    <div class="hero-tags">
+      <span class="h-tag">XGBoost</span>
+      <span class="h-tag">LLaMA 3.1 8B</span>
+      <span class="h-tag">Groq API</span>
+      <span class="h-tag">sentence-transformers</span>
+      <span class="h-tag">Optuna</span>
+      <span class="h-tag">SHAP</span>
+      <span class="h-tag">Wilcoxon / Cohen's d</span>
+      <span class="h-tag">Nested CV</span>
+    </div>
+    <a href="https://github.com/Rahulrayy/Can-LLMs-Make-Tabular-ML-Better" target="_blank" class="github-btn">↗ View on GitHub</a>
+  </div>
+
+  <div class="project-body">
+
+    <h2>The Question</h2>
+    <p>
+      There's a gap in the ML world that doesn't get discussed enough. LLMs, through pretraining on
+      enormous amounts of text, have absorbed a kind of domain knowledge that's completely invisible to 
+      a gradient boosted tree. A model like LLaMA knows that a 45-year-old married professional working
+      50 hours a week in a managerial role probably has different financial patterns than a 22-year-old 
+      in a part-time service job. XGBoost just sees integers.
+    </p>
+    <p>
+      But the flip side is equally true: LLMs can't actually learn from a table of 1,000 rows the way 
+      a gradient boosted tree can. They don't update weights. They don't find non-linear interactions 
+      between credit inquiries and debt-to-income ratios. Classical ML is built for exactly that.
+    </p>
+    <p>
+      So the question became: what if you let an LLM describe and contextualise each row, extract those 
+      descriptions as features, and then pass everything into XGBoost? The LLM handles semantic enrichment.
+      XGBoost handles the actual learning. Best of both worlds — at least in theory.
+    </p>
+
+    <h2>Experimental Design</h2>
+    <p>
+      The core pipeline looks like this: for each data row, three different LLM prompt framings generate 
+      a structured description of the person — as a labour economist, credit analyst, or sociologist. 
+      Critically, the LLM is never told the target variable. It's asked to reason about the person, not 
+      to predict the outcome. This avoids leaking the label through the back door.
+    </p>
+    <p>
+      The LLM outputs are parsed into structured fields (career stage, stability score) and a behaviour 
+      note, which is then encoded into a 384-dimensional embedding using all-MiniLM-L6-v2. This embedding 
+      captures richer semantic content than the parsed fields alone. The full hybrid feature matrix — raw 
+      features plus LLM-derived features — is then fed to XGBoost.
+    </p>
+    <p>
+      Three variants are evaluated per dataset: <strong>Baseline</strong> (XGBoost on raw features only), 
+      <strong>LLM-only</strong> (XGBoost on LLM features only), and <strong>Hybrid</strong> (XGBoost on both).
+    </p>
+
+    <h3>The methodology problem this had to solve</h3>
+    <p>
+      Two things will silently break this kind of experiment. First: PCA leakage. If you fit PCA on all 
+      1,000 rows before splitting into folds, the PCA has seen the test fold — even subtle leakage matters 
+      when AUC differences live in the 0.01 range. The fix is fitting PCA exclusively on the training fold 
+      inside each outer loop iteration, and transforming the test fold with that fitted PCA. Second: 
+      hyperparameter tuning on evaluation data. The fix is nested CV — 3 repeats of 5-fold, 15 outer 
+      scores per variant, with 30 Optuna trials using the TPE sampler in the inner loop.
+    </p>
+    <p>
+      Statistical evaluation used Wilcoxon signed-rank tests on the 15 paired outer fold scores (paired 
+      because the same folds apply to all variants), and Cohen's d for effect size with magnitude labels.
+    </p>
+
+    <h2>Datasets</h2>
+    <p>
+      Two datasets were used, and the choice of the second one was deliberate. The UCI Adult Income 
+      dataset is the obvious first pick — but it's extremely well-known and the LLM almost certainly 
+      encountered it during pretraining. Any positive result there has a contamination problem.
+    </p>
+    <p>
+      The HMEQ Loan Default dataset was chosen as the contamination control. It originates from SAS 
+      Institute educational materials, has minimal Kaggle presence, and is genuinely obscure. The 
+      job category and loan reason features carry real semantic meaning that LLM pretraining can 
+      enrich — but the chance of the model having seen this dataset in a labelled ML context is 
+      substantially lower than for Adult.
+    </p>
+
+    <h2>Results</h2>
+
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Dataset</th><th>Variant</th><th>AUC Mean</th><th>AUC Std</th><th>Cohen's d</th><th>Significant</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Adult</td><td>Baseline</td><td>0.9010</td><td>0.0291</td><td>—</td><td>—</td></tr>
+        <tr><td>Adult</td><td>LLM-only</td><td>0.8411</td><td>0.0314</td><td>−1.975</td><td>Yes (worse)</td></tr>
+        <tr><td>Adult</td><td>Hybrid</td><td>0.8969</td><td>0.0287</td><td>−0.139</td><td>No</td></tr>
+        <tr><td>HMEQ</td><td>Baseline</td><td>0.9044</td><td>0.0268</td><td>—</td><td>—</td></tr>
+        <tr><td>HMEQ</td><td>LLM-only</td><td>0.5587</td><td>0.0630</td><td>−7.144</td><td>Yes (worse)</td></tr>
+        <tr class="highlight"><td>HMEQ</td><td>Hybrid</td><td>0.8654</td><td>0.0601</td><td>−0.837</td><td>Yes (worse)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="result-block">
+      <p>Adult Income: hybrid not significantly different from baseline (p = 0.12, Cohen's d = −0.14)</p>
+      <p>HMEQ Loan Default: hybrid significantly worse than baseline (p = 0.004, Cohen's d = −0.84)</p>
+      <p>Across all valid prompt framings and both datasets — no hybrid outperformed its baseline.</p>
+    </div>
+
+    <h2>Why did it fail?</h2>
+    <p>
+      There are a few plausible mechanisms, and they're not mutually exclusive. The first is dimensionality: 
+      even with PCA compression, adding 10–30 embedding dimensions introduces noise that XGBoost has to 
+      learn to ignore. With only 1,000 training rows, the noise-to-signal ratio is unfavourable.
+    </p>
+    <p>
+      The second is that the LLM features probably aren't orthogonal to the raw features. The job category 
+      information is already in the feature matrix as an encoded integer. The LLM reasoning about that same 
+      job category may just be adding a noisy correlated version of what XGBoost already knew.
+    </p>
+    <p>
+      The HMEQ LLM-only result is particularly striking: an AUC of 0.56 is barely above random. Whatever 
+      the LLM reasons about financial stability and job trajectory is not capturing the actual default risk 
+      structure in the data. The HMEQ hybrid also shows higher variance (std 0.0601 vs 0.0268 for baseline), 
+      suggesting the LLM features aren't just adding noise — they're introducing instability.
+    </p>
+
+    <h2>SHAP Analysis</h2>
+    <p>
+      SHAP analysis on a separately fitted hybrid model (for interpretability only, not reported as the main result) 
+      showed that on Adult, LLM PCA components ranked between 10th and 14th out of 49 total features — not 
+      completely ignored, but not dominant either. The top features remained raw structured columns like 
+      capital gain and education level.
+    </p>
+    <p>
+      On HMEQ, LLM features ranked similarly in the middle of the pack. The model was using them, 
+      but they weren't adding predictive value at the macro level — which is consistent with the 
+      significance tests.
+    </p>
+
+    <h2>What this means</h2>
+    <p>
+      The hypothesis had genuine theoretical appeal. The methodology was sound. The negative result 
+      isn't an artefact of bad experimental design — it's a genuine signal that at this scale, with 
+      these datasets, LLM-derived features don't bridge the gap between semantic reasoning and 
+      discriminative tabular learning.
+    </p>
+    <p>
+      A few things might change this: a larger dataset would reduce the noise-to-signal problem; a 
+      private proprietary dataset would eliminate contamination concerns entirely; a distillation 
+      approach where a small model is trained to predict LLM features from raw inputs might reduce 
+      the dimensionality problem; active learning where the LLM is only called on samples where the 
+      baseline is uncertain might concentrate the contribution where it actually matters.
+    </p>
+    <p>
+      For now, the conclusion is that the gap between LLM reasoning and tabular ML is harder to bridge 
+      than the theoretical motivation suggests — and that's worth knowing.
+    </p>
+
+  </div>
+
+  <footer>
+    <span class="footer-name"><a href="../index.html">Rahul Ray</a></span>
+    <span class="footer-note">
+      <a href="autoinsight.html" style="color:var(--accent)">Next: AutoInsight →</a>
+    </span>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('nav')
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 30))
+  </script>
+</body>
+</html>

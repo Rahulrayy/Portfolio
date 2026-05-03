@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Epoch-wise Double Descent — Rahul Ray</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="project.css" />
+</head>
+<body>
+
+  <nav id="nav">
+    <div class="nav-logo"><a href="../index.html">Rahul Ray</a></div>
+    <ul class="nav-links">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../index.html#projects">Projects</a></li>
+      <li><a href="../index.html#experience">Experience</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="project-hero">
+    <a href="../index.html#projects" class="back-link">← Back to projects</a>
+    <p class="project-hero-label">Project 04</p>
+    <h1 class="project-hero-title">Epoch-wise Double Descent Under <em>Label Noise</em></h1>
+    <div class="project-meta">
+      <div class="meta-group">
+        <span class="meta-label">Type</span>
+        <span class="meta-value">ML Research Reproduction</span>
+      </div>
+      <div class="meta-group">
+        <span class="meta-label">Stack</span>
+        <span class="meta-value">PyTorch · ResNet-18 · CIFAR-10</span>
+      </div>
+      <div class="meta-group">
+        <span class="meta-label">Reference</span>
+        <span class="meta-value">Nakkiran et al. (2019), arXiv:1912.02292</span>
+      </div>
+    </div>
+    <div class="hero-tags">
+      <span class="h-tag">PyTorch</span>
+      <span class="h-tag">ResNet-18</span>
+      <span class="h-tag">CIFAR-10</span>
+      <span class="h-tag">Label Noise</span>
+      <span class="h-tag">Mixup</span>
+      <span class="h-tag">Label Smoothing</span>
+      <span class="h-tag">Generalisation Theory</span>
+      <span class="h-tag">torchvision</span>
+    </div>
+    <a href="https://github.com/Rahulrayy/cifar-Double-Descent" target="_blank" class="github-btn">↗ View on GitHub</a>
+  </div>
+
+  <div class="project-body">
+
+    <h2>Background</h2>
+    <p>
+      In 2019, Nakkiran et al. at OpenAI published a paper that challenged a fairly fundamental assumption 
+      in machine learning. The classical view says that as a model trains longer, at some point it starts 
+      overfitting and test performance degrades — you stop training there, or you add regularisation. 
+      Nakkiran et al. showed that if you keep going past that degradation point, performance can actually 
+      recover. The test loss peaks, then falls. This is double descent, and it shows up across model size, 
+      dataset size, and training time.
+    </p>
+    <p>
+      The epoch-wise version — across training time — is the least discussed of the three but arguably 
+      the most surprising. A model trained on corrupted labels will, at some point during training, 
+      appear to be getting worse on the test set. If you stopped there you'd call it overfitting and 
+      move on. But if you keep training, the model recovers. This project reproduces that finding, 
+      investigates the mechanism, and tests whether two common regularisation techniques can suppress it.
+    </p>
+
+    <h2>Setup</h2>
+    <p>
+      The model is a CIFAR-adapted ResNet-18: the standard 7×7 convolution with stride 2 is replaced 
+      with a 3×3 convolution with stride 1, and the maxpool is replaced with an identity operation to 
+      preserve spatial resolution for 32×32 inputs. At approximately 11 million parameters trained on 
+      50,000 examples, the model is intentionally overparameterised — overparameterisation is what 
+      places it in the regime where double descent can occur.
+    </p>
+    <p>
+      Symmetric label noise is injected during training only: for each training sample, with probability 
+      η the true label is replaced with a uniformly random label drawn from the other nine classes. 
+      Crucially, the indices of all corrupted samples are tracked throughout training, so clean and 
+      corrupted accuracy can be measured separately at every epoch. The test set always uses clean labels.
+    </p>
+    <p>
+      Training uses SGD with momentum 0.9, weight decay 5e-4, Nesterov momentum, initial LR 0.1, 
+      cosine annealing schedule. Four noise rates were tested: η = 0%, 10%, 20%, 30%. Each condition 
+      runs for 3 seeds with averaging and confidence bands. Higher noise rates use more epochs to 
+      give the double descent phenomenon time to develop.
+    </p>
+
+    <h2>Results</h2>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Noise Rate</th><th>Peak Epoch</th><th>Peak Loss</th><th>Peak Height</th><th>Final Loss</th><th>Final Acc</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>η = 0%</td><td>N/A</td><td>—</td><td>—</td><td>0.172</td><td>95.5%</td></tr>
+        <tr><td>η = 10%</td><td>N/A</td><td>—</td><td>—</td><td>0.351</td><td>91.2%</td></tr>
+        <tr class="highlight"><td>η = 20%</td><td>385</td><td>0.856</td><td>0.219</td><td>0.572</td><td>85.5%</td></tr>
+        <tr class="highlight"><td>η = 30%</td><td>473</td><td>1.276</td><td>0.500</td><td>0.883</td><td>78.5%</td></tr>
+      </tbody>
+    </table>
+
+    <div class="result-block">
+      <p>Double descent clearly visible at η = 20% (peak epoch 385) and η = 30% (peak epoch 473)</p>
+      <p>Peak height nearly doubles from 20% to 30% noise (0.22 → 0.50) — consistent with worse memorisation phase at higher noise</p>
+      <p>η = 0% and η = 10%: no convincing peak — monotonic decrease, as classical theory predicts</p>
+    </div>
+
+    <h2>The mechanistic finding</h2>
+    <p>
+      The strongest result in the project isn't the double descent curves themselves — it's what 
+      happens when you track clean and corrupted training accuracy separately throughout training.
+    </p>
+    <p>
+      Corrupted training accuracy follows an almost perfect sigmoid in every noise condition. For hundreds 
+      of epochs it sits near zero — the model is learning the underlying signal and largely ignoring the 
+      corrupted labels. Then at some point it crosses what you might call the interpolation threshold, 
+      and corrupted accuracy climbs rapidly toward 100%. The model is now memorising the noise.
+    </p>
+    <p>
+      The timing of this sigmoid is what makes it interesting: <strong>the epoch at which corrupted 
+      accuracy inflects corresponds closely to the epoch at which test loss peaks</strong>. The model 
+      memorises the noise, generalisation degrades, and then cosine annealing decays the learning rate 
+      enough that the sharp noise-fitting solution becomes unreachable — the model drifts toward a 
+      flatter region of the loss landscape that generalises better.
+    </p>
+    <p>
+      Higher noise also delays the entire sequence. At η = 10% the corrupted sigmoid fires around 
+      epoch 250. At η = 20% around epoch 400. At η = 30% around epoch 500. The interpolation 
+      threshold is harder to cross when more labels are wrong.
+    </p>
+
+    <h2>Entropy analysis</h2>
+    <p>
+      Per-epoch softmax entropy on the test set was tracked throughout training. The original hypothesis 
+      was that entropy would dip specifically at the peak epoch, reflecting overconfidence at the 
+      interpolation threshold. This didn't happen.
+    </p>
+    <p>
+      What actually happens: entropy stays elevated through the entire memorisation phase and only 
+      collapses during recovery. The model is confident about training labels (corrupted accuracy 
+      reaches 100%) while remaining uncertain about test predictions (entropy stays high). This is 
+      a picture of a model that has memorised specific training examples rather than learned 
+      generalisable features. The entropy collapse marks the point at which the model reforms 
+      representations that actually transfer to unseen data.
+    </p>
+    <p>
+      The hypothesis was wrong on timing, but the signal is real and means something — it marks a 
+      different transition than the one originally predicted. Worth reporting accurately rather than 
+      trying to frame it as a confirmation of something it isn't.
+    </p>
+
+    <h2>Regularisation interventions</h2>
+    <p>
+      Two interventions were tested at η = 20%, run for 500 epochs across 3 seeds:
+    </p>
+    <p>
+      <strong>Label smoothing (ε = 0.1):</strong> A clear failure. Final test loss of 0.87 vs 
+      baseline 0.57. Smoothing at this strength appears to prevent the late-training recovery that 
+      produces good final performance — possibly by fighting against cosine annealing in a way that 
+      keeps the model perpetually uncertain. There's no visible double descent peak in the smoothed 
+      curve, but this is not because smoothing prevented the interpolation dynamics. The model simply 
+      never recovers well regardless. <strong>H2 rejected.</strong>
+    </p>
+    <p>
+      <strong>Mixup (α = 0.2):</strong> More nuanced. Mixup tracks the baseline through most of 
+      training and ends with a better final loss (0.48 vs 0.57 baseline) — a genuine improvement. 
+      The peak region looks slightly smoother, but the difference isn't dramatic. Mixup's benefit 
+      here is in final performance rather than peak suppression. It doesn't prevent the model from 
+      entering the memorisation phase — it helps it recover to a better solution. 
+      <strong>H3 partially confirmed with caveats.</strong>
+    </p>
+
+    <h2>Hypothesis evaluation</h2>
+    <table class="data-table">
+      <thead>
+        <tr><th>Hypothesis</th><th>Verdict</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>H1: higher noise shifts peak later</td><td>Confirmed at high noise (η=20%, 30%). No convincing peak at η=0%, 10%.</td></tr>
+        <tr><td>H2: label smoothing reduces peak magnitude</td><td>Rejected. Degraded overall performance significantly.</td></tr>
+        <tr><td>H3: Mixup suppresses double descent</td><td>Partially confirmed — better final performance, peak not eliminated.</td></tr>
+        <tr class="highlight"><td>H4: corrupted accuracy inflects at peak</td><td>Confirmed. Strongest result in the project.</td></tr>
+        <tr><td>H5: entropy dips at the peak epoch</td><td>Wrong on timing. Entropy marks recovery, not the peak.</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Why does recovery happen?</h2>
+    <p>
+      The most plausible explanation is cosine annealing. As the learning rate decays toward zero, 
+      the optimiser loses the ability to maintain sharp noise-fitting solutions. Early in training 
+      there's enough gradient signal to memorise individual corrupted labels. As the learning rate 
+      approaches zero, those sharp minima become unreachable and the model drifts toward flatter 
+      regions that generalise better. Figure 2 (the generalisation gap plot) supports this — the 
+      gap between train and test loss closes right as the learning rate enters its final decay phase.
+    </p>
+    <p>
+      This is interpretive rather than proven. Whether recovery would occur with a constant learning 
+      rate is one of the more interesting open questions — and a direct test of this explanation would 
+      be whether eliminating cosine annealing also eliminates recovery.
+    </p>
+
+    <h2>Limitations</h2>
+    <p>
+      Double descent was only clearly observable at η = 20% and 30%. The 10% result didn't produce 
+      a convincing peak, which means the stronger version of H1 — "higher noise shifts the peak later" 
+      — requires the caveat that there needs to be enough noise for a visible peak to exist in the 
+      first place.
+    </p>
+    <p>
+      Only one dataset and one architecture. Only one regularisation strength per intervention. Three 
+      seeds is a reasonable but small sample. And there's a known annotation bug in Figure 3 where 
+      the peak marker shows "ep 3" — this was caught and fixed in the summary table, but the figure 
+      itself retains the wrong label. The visual alignment between corrupted accuracy inflection and 
+      test loss peak is still valid and can be confirmed by comparing figures directly.
+    </p>
+
+  </div>
+
+  <footer>
+    <span class="footer-name"><a href="../index.html">Rahul Ray</a></span>
+    <span class="footer-note">
+      <a href="quake.html" style="color:var(--muted)">← Quake</a>
+      &nbsp;·&nbsp;
+      <a href="../index.html#projects" style="color:var(--accent)">All projects →</a>
+    </span>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('nav')
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 30))
+  </script>
+</body>
+</html>

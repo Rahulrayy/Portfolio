@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AutoInsight — Rahul Ray</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="project.css" />
+</head>
+<body>
+
+  <nav id="nav">
+    <div class="nav-logo"><a href="../index.html">Rahul Ray</a></div>
+    <ul class="nav-links">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../index.html#projects">Projects</a></li>
+      <li><a href="../index.html#experience">Experience</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="project-hero">
+    <a href="../index.html#projects" class="back-link">← Back to projects</a>
+    <p class="project-hero-label">Project 02</p>
+    <h1 class="project-hero-title">AutoInsight — End-to-End <em>AutoML</em> App</h1>
+    <div class="project-meta">
+      <div class="meta-group">
+        <span class="meta-label">Type</span>
+        <span class="meta-value">Full-stack ML Application</span>
+      </div>
+      <div class="meta-group">
+        <span class="meta-label">Stack</span>
+        <span class="meta-value">Streamlit · XGBoost · LightGBM · SHAP · Optuna · Groq</span>
+      </div>
+      <div class="meta-group">
+        <span class="meta-label">License</span>
+        <span class="meta-value">GPL-3.0</span>
+      </div>
+    </div>
+    <div class="hero-tags">
+      <span class="h-tag">Streamlit</span>
+      <span class="h-tag">XGBoost</span>
+      <span class="h-tag">LightGBM</span>
+      <span class="h-tag">CatBoost</span>
+      <span class="h-tag">SHAP</span>
+      <span class="h-tag">Optuna</span>
+      <span class="h-tag">Groq API</span>
+      <span class="h-tag">Plotly</span>
+      <span class="h-tag">pytest</span>
+      <span class="h-tag">pandas · NumPy</span>
+    </div>
+    <a href="https://github.com/Rahulrayy/AutoInsight" target="_blank" class="github-btn">↗ View on GitHub</a>
+  </div>
+
+  <div class="project-body">
+
+    <h2>What it is</h2>
+    <p>
+      AutoInsight is a browser-based AutoML system built for people who need to understand their data 
+      but don't want to spend three days wrangling a Jupyter notebook to do it. You upload a CSV, pick 
+      a target column, and the system handles the rest: profiling the data, preprocessing it, training 
+      a leaderboard of models, computing SHAP feature importances, and generating a plain-language 
+      explanation of what the model found — all with no code required.
+    </p>
+    <p>
+      The project started as a personal exploration of what a lightweight, transparent, and 
+      privacy-aware AutoML tool could look like for tabular data. Most existing AutoML tools 
+      are either too heavy, too opaque, or both. The goal here was to build something that's 
+      fast to run, easy to understand, and honest about what it's doing.
+    </p>
+
+    <div class="result-block">
+      <p>7 classifiers + 7 regressors trained in parallel · Stratified k-fold CV throughout</p>
+      <p>Bayesian hyperparameter tuning via Optuna (40 trials, TPE sampler) · Streamed LLM responses via Groq API</p>
+      <p>Raw user data never sent to an external API — LLM only receives aggregated metrics</p>
+    </div>
+
+    <h2>The pipeline</h2>
+    <p>
+      When a file is uploaded, AutoInsight runs a profiling step before anything else. It identifies 
+      column types (numerical, categorical, datetime), computes missing value ratios, flags near-constant 
+      features where a single value appears in more than 95% of rows, detects high-correlation pairs 
+      using a Pearson threshold of 0.85, and checks class balance — flagging if a dominant class appears 
+      in more than 80% of rows. These findings are shown in the UI and passed to the LLM as context.
+    </p>
+    <p>
+      Preprocessing handles missing values (median imputation for skewed numerical columns, mean otherwise, 
+      mode for categoricals), datetime decomposition into year/month/day/hour/day-of-week features, 
+      IQR-based outlier capping fitted on the training set only, categorical encoding (one-hot for 
+      low-cardinality columns with ≤10 unique values, label encoding for higher-cardinality ones), 
+      StandardScaler normalisation, and SelectKBest feature selection retaining the top 30 features 
+      by mutual information score. All thresholds are configurable via <code>config.yaml</code> or 
+      environment variables.
+    </p>
+    <p>
+      Once preprocessing is done, seven models train in parallel with cross-validation. Classification 
+      tasks run Logistic Regression, Random Forest, Extra Trees, Gradient Boosting, XGBoost, LightGBM, 
+      and CatBoost; regression tasks use the same ensemble minus Logistic Regression, plus Linear 
+      Regression. If a model crashes during training, the pipeline continues with the remaining ones 
+      — it only fails if every single model fails.
+    </p>
+
+    <h2>Hyperparameter tuning</h2>
+    <p>
+      Tuning is optional and user-triggered from the UI. When enabled, it runs Optuna's TPE sampler 
+      for 40 trials on the top-ranked models from the leaderboard. Each model has a defined search 
+      space covering tree depth, number of estimators, learning rate, regularisation strength, and 
+      leaf count. SHAP analysis always prefers the tuned version of a model when both exist.
+    </p>
+
+    <h2>The LLM integration</h2>
+    <p>
+      This was the most deliberate design decision in the whole project. The LLM layer uses the 
+      Groq API with models like <code>llama-3.3-70b-versatile</code> at temperature 0.2 — conservative 
+      enough to keep outputs consistent without being completely rigid.
+    </p>
+    <p>
+      The key constraint: the LLM only ever receives aggregated metrics. Leaderboard scores, 
+      SHAP values, feature importances, dataset profile statistics. It never sees raw rows.
+      This was deliberate for two reasons. First, it reduces the chance of hallucinations, 
+      because the model can't fabricate dataset-specific claims beyond what it's explicitly told.
+      Second — and more importantly — it means potentially sensitive user data never leaves the 
+      browser. The privacy guarantee is structural, not policy-based.
+    </p>
+    <p>
+      The system prompt constrains the LLM to respond only in valid JSON and to avoid comparing 
+      results against external benchmarks unless those benchmarks are explicitly provided. Prompts 
+      live as plain text files in the <code>prompts/</code> directory and are loaded at runtime — 
+      so editing system behaviour doesn't require touching any Python code.
+    </p>
+    <p>
+      For the Q&A tab, responses stream word-by-word via the Groq streaming API, which makes the 
+      interaction feel genuinely responsive rather than giving you a spinner followed by a wall of text.
+    </p>
+
+    <h2>Evaluation metrics</h2>
+    <p>
+      Classification tasks report AUC (one-vs-rest for multiclass), weighted F1, accuracy, and a 
+      confusion matrix. Regression reports RMSE, MAE, and R². All results go into a ranked leaderboard 
+      ordered by the primary metric for the detected task type.
+    </p>
+
+    <h2>Project structure</h2>
+    <div class="code-block">
+AutoInsight/
+├── app.py                 # Main Streamlit app (UI, state management)
+├── config.yaml            # Default pipeline thresholds
+├── pipeline/
+│   ├── ingestion.py       # CSV loading, encoding detection
+│   ├── profiling.py       # Column types, missing values, correlations
+│   ├── preprocessing.py   # Imputation, encoding, scaling, selection
+│   ├── automl.py          # Model definitions and parallel training
+│   ├── evaluation.py      # Metrics and leaderboard
+│   ├── tuning.py          # Optuna search spaces and orchestration
+│   ├── shap_analysis.py   # SHAP values and plot data
+│   └── llm_reasoning.py   # Groq API calls, streaming, prompt assembly
+├── prompts/
+│   ├── system_prompt.txt
+│   ├── model_explanation.txt
+│   └── qa_prompt.txt
+└── tests/                 # pytest suite — LLM layer mocked
+    </div>
+
+    <h2>What I'd change</h2>
+    <p>
+      The biggest limitation is that the pipeline only supports tabular CSV data — images, text corpora, 
+      and proper time-series with sequential dependencies aren't handled. Datetime columns get decomposed 
+      into component features, which captures some temporal signal but loses any sequential structure.
+    </p>
+    <p>
+      There's a stacking ensemble in the codebase that isn't exposed through the main UI. It works, 
+      but adding another layer of complexity to the UI without a good way to explain <em>why</em> 
+      stacking helped felt like the wrong trade-off for a tool aimed at non-technical users.
+    </p>
+    <p>
+      If I were starting over, I'd think harder about how to communicate model uncertainty — not just 
+      which model ranked first, but how confident we should be in that ranking given the dataset size. 
+      A 3-point AUC difference on 500 rows means something very different than the same gap on 50,000.
+    </p>
+
+  </div>
+
+  <footer>
+    <span class="footer-name"><a href="../index.html">Rahul Ray</a></span>
+    <span class="footer-note">
+      <a href="llm-tabular.html" style="color:var(--muted)">← LLMs + Tabular</a>
+      &nbsp;·&nbsp;
+      <a href="quake.html" style="color:var(--accent)">Next: Quake →</a>
+    </span>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('nav')
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 30))
+  </script>
+</body>
+</html>

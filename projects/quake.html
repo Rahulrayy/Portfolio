@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quake — Learned Heuristic A* · Rahul Ray</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="project.css" />
+</head>
+<body>
+
+  <nav id="nav">
+    <div class="nav-logo"><a href="../index.html">Rahul Ray</a></div>
+    <ul class="nav-links">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../index.html#projects">Projects</a></li>
+      <li><a href="../index.html#experience">Experience</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="project-hero">
+    <a href="../index.html#projects" class="back-link">← Back to projects</a>
+    <p class="project-hero-label">Project 03</p>
+    <h1 class="project-hero-title">Learned Heuristic A* on <em>Quake</em> BSP Geometry</h1>
+    <div class="project-meta">
+      <div class="meta-group">
+        <span class="meta-label">Type</span>
+        <span class="meta-value">ML + Heuristic Search / Systems</span>
+      </div>
+      <div class="meta-group">
+        <span class="meta-label">Stack</span>
+        <span class="meta-value">PyTorch · XGBoost · NetworkX · BSP v29</span>
+      </div>
+      <div class="meta-group">
+        <span class="meta-label">Result</span>
+        <span class="meta-value">42% fewer nodes expanded · ~2% path suboptimality</span>
+      </div>
+    </div>
+    <div class="hero-tags">
+      <span class="h-tag">PyTorch</span>
+      <span class="h-tag">XGBoost</span>
+      <span class="h-tag">NetworkX</span>
+      <span class="h-tag">BSP v29 parsing</span>
+      <span class="h-tag">A* search</span>
+      <span class="h-tag">Dijkstra</span>
+      <span class="h-tag">scipy</span>
+      <span class="h-tag">pandas · NumPy</span>
+    </div>
+    <a href="https://github.com/Rahulrayy/quake" target="_blank" class="github-btn">↗ View on GitHub</a>
+  </div>
+
+  <div class="project-body">
+
+    <h2>The motivation</h2>
+    <p>
+      Standard A* uses Euclidean distance as its heuristic — the straight-line cost from the current 
+      node to the goal. In a flat open space this is a pretty good estimate. In a complex 3D environment 
+      full of corridors, stairs, and rooms that you can see across but can't walk straight through, it's 
+      often deeply misleading.
+    </p>
+    <p>
+      Across all 38 Quake 1 maps, the mean ratio of true shortest path cost to Euclidean distance is 
+      <strong>1.46</strong> — meaning the real path is on average 46% longer than the straight-line 
+      estimate. Some source-goal pairs have correction factors above 20. Every time A* follows the 
+      Euclidean heuristic into a dead end, it's paying for that underestimate.
+    </p>
+    <p>
+      The question this project tried to answer: can a learned model predict how much the Euclidean 
+      estimate is off, given the local geometry around each node pair — and can plugging that correction 
+      into A* meaningfully reduce the search effort without producing bad paths?
+    </p>
+
+    <h2>Getting the data: BSP parsing</h2>
+    <p>
+      The first thing to figure out was how to get the geometry. Quake 1 stores its maps in a Binary 
+      Space Partitioning (BSP v29) format — a binary file that the game engine uses for fast rendering 
+      and collision detection. There's no navigation mesh, no pre-built graph. Just the raw BSP.
+    </p>
+    <p>
+      The BSP parser reads the binary directly: extracting face vertices, computing face centroids, 
+      determining which faces are walkable surfaces, and building edges between adjacent walkable 
+      faces. This produces a navigation graph where each node is a face centroid and each edge 
+      connects two geometrically reachable faces. Running this across all 38 maps gives a collection 
+      of graphs that actually reflect the 3D structure of the environment.
+    </p>
+
+    <h2>Generating ground truth</h2>
+    <p>
+      With graphs in hand, the next step was generating training data. Dijkstra's algorithm was run 
+      across approximately 625,000 source-goal pairs (sampled from each map) to compute true shortest 
+      path costs. The regression target is the correction factor:
+    </p>
+    <div class="code-block">correction_factor = true_path_cost / euclidean_distance</div>
+    <p>
+      This formulation is scale-invariant across maps of very different sizes. The model only needs 
+      to learn how much above 1.0 the true cost is — it doesn't need to predict absolute distances. 
+      The label is log-transformed before training to compress the right-skewed distribution and 
+      stabilise training.
+    </p>
+
+    <h2>Feature engineering</h2>
+    <p>
+      Seventeen hand-crafted features capture the spatial and graph-structural context around each 
+      source-goal pair. They fall into three groups:
+    </p>
+    <p>
+      <strong>Spatial (7 features):</strong> Euclidean distance, horizontal distance, height 
+      difference, height ratio, and signed dx/dy/dz components.
+    </p>
+    <p>
+      <strong>Source node context (5 features):</strong> Local node density within 150 units, 
+      degree, average edge length, maximum edge length.
+    </p>
+    <p>
+      <strong>Goal node context (5 features):</strong> Mirror of source context. Two additional 
+      ratio features compare source and goal context directly.
+    </p>
+    <p>
+      The feature importance analysis later confirmed that height features dominate — 
+      <code>height_ratio</code> and <code>height_diff</code> together account for nearly half 
+      the total XGBoost gain. This makes intuitive sense: height differences are the main reason 
+      Euclidean distance underestimates true path cost in Quake geometry. You can see across a 
+      large room vertically, but you have to find stairs or a ramp to actually get there.
+    </p>
+
+    <h2>Models</h2>
+    <p>
+      Two models were trained: a small MLP in PyTorch (three hidden layers, ReLU activations, 
+      trained with early stopping) and an XGBoost regressor. Both were plugged into A* as 
+      multiplicative corrections — at each step, the heuristic is the Euclidean distance 
+      multiplied by the model's predicted correction factor. Predictions are clamped to a 
+      minimum of 1.0 since a correction factor below 1.0 is geometrically impossible.
+    </p>
+
+    <h3>Train/val/test split by episode</h3>
+    <p>
+      Splitting randomly by sample would leak map topology into the test set — if some samples 
+      from a map appear in train and others in test, the model has implicitly seen the map structure. 
+      The split is by episode instead: train on episodes 1 and 2, validate on episode 3, test on 
+      episode 4 and deathmatch maps. The model has never seen the geometry of the test maps during 
+      training.
+    </p>
+
+    <h2>Results</h2>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Method</th><th>Mean nodes expanded</th><th>Path cost ratio</th><th>vs Euclidean</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Dijkstra</td><td>~all nodes</td><td>1.000</td><td>—</td></tr>
+        <tr><td>Euclidean A*</td><td>96.2</td><td>1.000</td><td>Baseline</td></tr>
+        <tr class="highlight"><td>MLP A*</td><td>56.7</td><td>1.020</td><td>−42.4%</td></tr>
+        <tr class="highlight"><td>XGBoost A*</td><td>56.9</td><td>1.020</td><td>−42.2%</td></tr>
+      </tbody>
+    </table>
+
+    <div class="result-block">
+      <p>42% reduction in nodes expanded across all 38 maps · Benchmarked on 38,000 total queries (1,000 per map)</p>
+      <p>Paths ~2% longer than optimal on average · Performance holds on unseen episode 4 and deathmatch maps</p>
+      <p>MLP and XGBoost produce near-identical results — the representation bottleneck dominates over model capacity</p>
+    </div>
+
+    <h2>The most interesting finding</h2>
+    <p>
+      The near-identical performance of MLP and XGBoost (42.4% vs 42.2% reduction) is arguably the 
+      most informative result in the project. Both models have access to the same 17 features. Both 
+      achieve the same improvement. This suggests that the bottleneck isn't model capacity — it's the 
+      feature representation. Richer features like BSP leaf membership, leaf volume, or same-leaf 
+      indicators would likely improve both models equally.
+    </p>
+    <p>
+      A graph neural network that learns directly from nav graph topology without hand-crafted features 
+      would be the natural next step. The current 17-feature representation is already capturing most 
+      of what's extractable from simple spatial and local graph statistics. Getting meaningfully better 
+      would require letting a model learn what features matter from the graph structure directly.
+    </p>
+
+    <h2>Admissibility</h2>
+    <p>
+      Strict admissibility requires that the heuristic never overestimates the true cost — i.e., 
+      the correction factor must always be ≤ the true ratio. The models are trained with an 
+      admissibility penalty on predictions below 1.0, and predictions are clamped at inference time. 
+      This produces <em>near-admissible</em> rather than strictly admissible heuristics: around 2% of 
+      paths are suboptimal by roughly 2% on average, which matches the ~1.020 path cost ratio in 
+      the benchmark results.
+    </p>
+    <p>
+      For the purposes of this project that's a reasonable trade-off — significant reduction in search 
+      effort with minimal path quality loss. A strictly admissible version would require more conservative 
+      predictions and would likely sacrifice some of the node expansion gains.
+    </p>
+
+    <h2>Project structure</h2>
+    <div class="code-block">
+src/
+├── pak_reader.py       # PAK archive parser (extracts .bsp files)
+├── bsp_parser.py       # BSP v29 binary parser
+├── nav_graph.py        # Navigation graph construction
+├── astar.py            # A* with pluggable heuristic interface
+├── features.py         # Feature extraction (17 features)
+├── model.py            # MLP definition and training
+├── learned_heuristics.py  # MLP heuristic wrapper
+├── xg_model.py         # XGBoost training
+└── xg_heuristic.py     # XGBoost heuristic wrapper
+
+scripts/
+├── generate_data.py    # Dijkstra ground truth generation
+├── benchmark.py        # MLP benchmark runner
+├── xg_benchmark.py     # 4-method comparison
+├── visualize.py        # Result plots and EDA
+└── animate.py          # Animated A* comparison (GIF)
+    </div>
+
+  </div>
+
+  <footer>
+    <span class="footer-name"><a href="../index.html">Rahul Ray</a></span>
+    <span class="footer-note">
+      <a href="autoinsight.html" style="color:var(--muted)">← AutoInsight</a>
+      &nbsp;·&nbsp;
+      <a href="double-descent.html" style="color:var(--accent)">Next: Double Descent →</a>
+    </span>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('nav')
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 30))
+  </script>
+</body>
+</html>
