@@ -4,6 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rahul Ray — AI/ML · Data Science</title>
+  <meta name="description" content="Rahul Ray — MSc Data Science student at Leiden University. ML research spanning tabular learning, heuristic search, double descent, and edge AI.">
+  <meta property="og:title" content="Rahul Ray — AI/ML · Data Science">
+  <meta property="og:description" content="MSc Data Science student at Leiden University. ML research spanning tabular learning, heuristic search, double descent, and edge AI.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://rahulrayy.github.io/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Rahul Ray — AI/ML · Data Science">
+  <meta name="twitter:description" content="MSc Data Science student at Leiden University. ML research spanning tabular learning, heuristic search, double descent, and edge AI.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='8' fill='%231443FF'/><text x='50' y='76' font-size='72' text-anchor='middle' fill='white' font-family='Georgia,serif' font-style='italic'>R</text></svg>">
   <link rel="stylesheet" href="style.css" />
   <style>
     /* ── Hero ── */
@@ -52,7 +61,10 @@
     .about-heading { font-family: var(--serif); font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 300; line-height: 1.2; }
     .about-heading em { font-style: italic; color: var(--accent); }
     .about-body p { color: var(--muted); margin-bottom: 1.2rem; font-size: 1rem; }
-    .skills-grid { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; }
+    .skills-grid { display: flex; flex-direction: column; gap: 1.1rem; margin-top: 2rem; }
+    .skills-group { display: flex; flex-direction: column; gap: 0.45rem; }
+    .skills-group-label { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); opacity: 0.65; }
+    .skills-group-chips { display: flex; flex-wrap: wrap; gap: 0.45rem; }
 
     /* ── projects ── */
     #projects { border-top: 1px solid var(--rule); }
@@ -107,6 +119,11 @@
     }
     .cta-gh:hover { color: var(--ink); }
 
+    /* ── Nav CV ── */
+    .nav-links .nav-cv { color: var(--accent); }
+    .nav-links .nav-cv:hover { color: var(--accent); opacity: 0.75; }
+    .nav-links .nav-cv::after { display: none; }
+
     /* ── Carousel ── */
     .carousel-wrapper { position: relative; overflow: hidden; }
     .carousel-track { display: flex; transition: transform 0.5s cubic-bezier(0.4,0,0.2,1); }
@@ -122,6 +139,13 @@
     }
     .carousel-btn:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
     .carousel-counter { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em; color: var(--muted); }
+    .carousel-dots { display: flex; gap: 0.45rem; align-items: center; margin-left: auto; }
+    .carousel-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--rule); border: none; padding: 0; cursor: pointer;
+      transition: background 0.25s, transform 0.25s;
+    }
+    .carousel-dot.active { background: var(--accent); transform: scale(1.4); }
 
     /* ── Experience ── */
     #experience { border-top: 1px solid var(--rule); }
@@ -155,7 +179,10 @@
       .about-grid, .exp-layout { grid-template-columns: 1fr; }
       .exp-heading { position: static; }
       .project-row { grid-template-columns: 40px 1fr; }
-      .project-row-cta { display: none; }
+      .project-row-cta {
+        grid-column: 2; flex-direction: row; justify-content: flex-start;
+        flex-wrap: wrap; gap: 1rem; align-items: center; margin-top: 0.1rem;
+      }
       .timeline-item { grid-template-columns: 1fr; gap: 0.4rem; }
     }
   </style>
@@ -169,6 +196,7 @@
       <li><a href="#projects">Projects</a></li>
       <li><a href="#experience">Experience</a></li>
       <li><a href="#contact">Contact</a></li>
+      <li><a href="cv.pdf" download class="nav-cv">CV ↓</a></li>
     </ul>
   </nav>
 
@@ -210,21 +238,41 @@
           Vision Transformers for edge deployment.
         </p>
         <div class="skills-grid">
-          <span class="skill-tag">Python</span>
-          <span class="skill-tag">PyTorch</span>
-          <span class="skill-tag">XGBoost</span>
-          <span class="skill-tag">scikit-learn</span>
-          <span class="skill-tag">LightGBM · CatBoost</span>
-          <span class="skill-tag">SHAP</span>
-          <span class="skill-tag">Optuna</span>
-          <span class="skill-tag">Groq / LLaMA</span>
-          <span class="skill-tag">sentence-transformers</span>
-          <span class="skill-tag">Vision Transformers</span>
-          <span class="skill-tag">ResNet / CNNs</span>
-          <span class="skill-tag">ONNX · Edge ML</span>
-          <span class="skill-tag">NetworkX</span>
-          <span class="skill-tag">Streamlit</span>
-          <span class="skill-tag">SQL · pandas · NumPy</span>
+          <div class="skills-group">
+            <span class="skills-group-label">Core</span>
+            <div class="skills-group-chips">
+              <span class="skill-tag">Python</span>
+              <span class="skill-tag">PyTorch</span>
+              <span class="skill-tag">SQL · pandas · NumPy</span>
+            </div>
+          </div>
+          <div class="skills-group">
+            <span class="skills-group-label">Classical ML</span>
+            <div class="skills-group-chips">
+              <span class="skill-tag">XGBoost</span>
+              <span class="skill-tag">LightGBM · CatBoost</span>
+              <span class="skill-tag">scikit-learn</span>
+              <span class="skill-tag">SHAP</span>
+              <span class="skill-tag">Optuna</span>
+            </div>
+          </div>
+          <div class="skills-group">
+            <span class="skills-group-label">Deep Learning &amp; LLMs</span>
+            <div class="skills-group-chips">
+              <span class="skill-tag">Vision Transformers</span>
+              <span class="skill-tag">ResNet / CNNs</span>
+              <span class="skill-tag">sentence-transformers</span>
+              <span class="skill-tag">Groq / LLaMA</span>
+            </div>
+          </div>
+          <div class="skills-group">
+            <span class="skills-group-label">Deployment &amp; Tools</span>
+            <div class="skills-group-chips">
+              <span class="skill-tag">ONNX · Edge ML</span>
+              <span class="skill-tag">Streamlit</span>
+              <span class="skill-tag">NetworkX</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -362,6 +410,13 @@
         <button class="carousel-btn" id="prevBtn" aria-label="Previous project">←</button>
         <span class="carousel-counter" id="carouselCounter">01 / 05</span>
         <button class="carousel-btn" id="nextBtn" aria-label="Next project">→</button>
+        <div class="carousel-dots" id="carouselDots">
+          <button class="carousel-dot active" aria-label="Project 1"></button>
+          <button class="carousel-dot" aria-label="Project 2"></button>
+          <button class="carousel-dot" aria-label="Project 3"></button>
+          <button class="carousel-dot" aria-label="Project 4"></button>
+          <button class="carousel-dot" aria-label="Project 5"></button>
+        </div>
       </div>
     </div>
   </section>
@@ -462,6 +517,7 @@
     // Carousel
     const track = document.getElementById('carouselTrack')
     const counter = document.getElementById('carouselCounter')
+    const dots = [...document.getElementById('carouselDots').querySelectorAll('.carousel-dot')]
     const carouselWrapper = track.closest('.carousel-wrapper')
     const slides = track.querySelectorAll('.proj-slide')
     const total = slides.length
@@ -472,14 +528,18 @@
       cur = (n + total) % total
       track.style.transform = `translateX(-${cur * 100}%)`
       counter.textContent = `${String(cur + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`
+      dots.forEach((d, i) => d.classList.toggle('active', i === cur))
     }
 
-    function startAuto() { autoTimer = setInterval(() => goTo(cur + 1), 4000) }
+    dots.forEach((d, i) => d.addEventListener('click', () => { stopAuto(); goTo(i); startAuto() }))
+
+    function startAuto() { autoTimer = setInterval(() => goTo(cur + 1), 6000) }
     function stopAuto() { clearInterval(autoTimer) }
 
     startAuto()
     carouselWrapper.addEventListener('mouseenter', stopAuto)
-    carouselWrapper.addEventListener('mouseleave', startAuto)
+    carouselWrapper.addEventListener('mouseleave', () => { if (!document.hidden) startAuto() })
+    document.addEventListener('visibilitychange', () => { document.hidden ? stopAuto() : startAuto() })
 
     document.getElementById('prevBtn').addEventListener('click', () => { stopAuto(); goTo(cur - 1); startAuto() })
     document.getElementById('nextBtn').addEventListener('click', () => { stopAuto(); goTo(cur + 1); startAuto() })
@@ -487,6 +547,14 @@
       if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return
       if (e.key === 'ArrowLeft') { stopAuto(); goTo(cur - 1); startAuto() }
       if (e.key === 'ArrowRight') { stopAuto(); goTo(cur + 1); startAuto() }
+    })
+
+    // Touch swipe
+    let touchX = 0
+    track.addEventListener('touchstart', e => { touchX = e.touches[0].clientX }, { passive: true })
+    track.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - touchX
+      if (Math.abs(dx) > 50) { stopAuto(); goTo(cur + (dx < 0 ? 1 : -1)); startAuto() }
     })
   </script>
 </body>
