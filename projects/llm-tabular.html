@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Can LLMs Make Tabular ML Better? — Rahul Ray</title>
-  <meta name="description" content="A controlled experiment testing whether LLM-generated semantic features improve XGBoost on tabular data. Rigorously evaluated with nested CV, Wilcoxon tests, and Cohen's d — the results went against the hypothesis.">
-  <meta property="og:title" content="Can LLMs Make Tabular ML Better? — Rahul Ray">
+  <title>Can LLMs Make Tabular ML Better? · Rahul Ray</title>
+  <meta name="description" content="A controlled experiment testing whether LLM-generated semantic features improve XGBoost on tabular data. Rigorously evaluated with nested CV, Wilcoxon tests, and Cohen's d. The results went against the hypothesis.">
+  <meta property="og:title" content="Can LLMs Make Tabular ML Better? · Rahul Ray">
   <meta property="og:description" content="A controlled experiment testing whether LLM-generated semantic features improve XGBoost on tabular data. Negative result, documented honestly.">
   <meta property="og:type" content="article">
   <meta name="twitter:card" content="summary">
@@ -40,7 +40,7 @@
       </div>
       <div class="meta-group">
         <span class="meta-label">Result</span>
-        <span class="meta-value">Negative — documented honestly</span>
+        <span class="meta-value">Negative, documented honestly</span>
       </div>
     </div>
     <div class="hero-tags">
@@ -74,21 +74,21 @@
     <p>
       So the question became: what if you let an LLM describe and contextualise each row, extract those 
       descriptions as features, and then pass everything into XGBoost? The LLM handles semantic enrichment.
-      XGBoost handles the actual learning. Best of both worlds — at least in theory.
+      XGBoost handles the actual learning. Best of both worlds, at least in theory.
     </p>
 
     <h2>Experimental Design</h2>
     <p>
       The core pipeline looks like this: for each data row, three different LLM prompt framings generate 
-      a structured description of the person — as a labour economist, credit analyst, or sociologist. 
+      a structured description of the person, as a labour economist, credit analyst, or sociologist. 
       Critically, the LLM is never told the target variable. It's asked to reason about the person, not 
       to predict the outcome. This avoids leaking the label through the back door.
     </p>
     <p>
       The LLM outputs are parsed into structured fields (career stage, stability score) and a behaviour 
       note, which is then encoded into a 384-dimensional embedding using all-MiniLM-L6-v2. This embedding 
-      captures richer semantic content than the parsed fields alone. The full hybrid feature matrix — raw 
-      features plus LLM-derived features — is then fed to XGBoost.
+      captures richer semantic content than the parsed fields alone. The full hybrid feature matrix, raw 
+      features plus LLM-derived features, is then fed to XGBoost.
     </p>
     <p>
       Three variants are evaluated per dataset: <strong>Baseline</strong> (XGBoost on raw features only), 
@@ -98,10 +98,10 @@
     <h3>The methodology problem this had to solve</h3>
     <p>
       Two things will silently break this kind of experiment. First: PCA leakage. If you fit PCA on all 
-      1,000 rows before splitting into folds, the PCA has seen the test fold — even subtle leakage matters 
+      1,000 rows before splitting into folds, the PCA has seen the test fold, even subtle leakage matters 
       when AUC differences live in the 0.01 range. The fix is fitting PCA exclusively on the training fold 
       inside each outer loop iteration, and transforming the test fold with that fitted PCA. Second: 
-      hyperparameter tuning on evaluation data. The fix is nested CV — 3 repeats of 5-fold, 15 outer 
+      hyperparameter tuning on evaluation data. The fix is nested CV, 3 repeats of 5-fold, 15 outer 
       scores per variant, with 30 Optuna trials using the TPE sampler in the inner loop.
     </p>
     <p>
@@ -112,14 +112,14 @@
     <h2>Datasets</h2>
     <p>
       Two datasets were used, and the choice of the second one was deliberate. The UCI Adult Income 
-      dataset is the obvious first pick — but it's extremely well-known and the LLM almost certainly 
+      dataset is the obvious first pick, but it's extremely well-known and the LLM almost certainly 
       encountered it during pretraining. Any positive result there has a contamination problem.
     </p>
     <p>
       The HMEQ Loan Default dataset was chosen as the contamination control. It originates from SAS 
       Institute educational materials, has minimal Kaggle presence, and is genuinely obscure. The 
       job category and loan reason features carry real semantic meaning that LLM pretraining can 
-      enrich — but the chance of the model having seen this dataset in a labelled ML context is 
+      enrich, but the chance of the model having seen this dataset in a labelled ML context is 
       substantially lower than for Adult.
     </p>
 
@@ -144,7 +144,7 @@
     <div class="result-block">
       <p>Adult Income: hybrid not significantly different from baseline (p = 0.12, Cohen's d = −0.14)</p>
       <p>HMEQ Loan Default: hybrid significantly worse than baseline (p = 0.004, Cohen's d = −0.84)</p>
-      <p>Across all valid prompt framings and both datasets — no hybrid outperformed its baseline.</p>
+      <p>Across all valid prompt framings and both datasets, no hybrid outperformed its baseline.</p>
     </div>
 
     <h2>Why did it fail?</h2>
@@ -162,26 +162,26 @@
       The HMEQ LLM-only result is particularly striking: an AUC of 0.56 is barely above random. Whatever 
       the LLM reasons about financial stability and job trajectory is not capturing the actual default risk 
       structure in the data. The HMEQ hybrid also shows higher variance (std 0.0601 vs 0.0268 for baseline), 
-      suggesting the LLM features aren't just adding noise — they're introducing instability.
+      suggesting the LLM features aren't just adding noise, they're introducing instability.
     </p>
 
     <h2>SHAP Analysis</h2>
     <p>
       SHAP analysis on a separately fitted hybrid model (for interpretability only, not reported as the main result) 
-      showed that on Adult, LLM PCA components ranked between 10th and 14th out of 49 total features — not 
+      showed that on Adult, LLM PCA components ranked between 10th and 14th out of 49 total features, not 
       completely ignored, but not dominant either. The top features remained raw structured columns like 
       capital gain and education level.
     </p>
     <p>
       On HMEQ, LLM features ranked similarly in the middle of the pack. The model was using them, 
-      but they weren't adding predictive value at the macro level — which is consistent with the 
+      but they weren't adding predictive value at the macro level, which is consistent with the 
       significance tests.
     </p>
 
     <h2>What this means</h2>
     <p>
       The hypothesis had genuine theoretical appeal. The methodology was sound. The negative result 
-      isn't an artefact of bad experimental design — it's a genuine signal that at this scale, with 
+      isn't an artefact of bad experimental design, it's a genuine signal that at this scale, with 
       these datasets, LLM-derived features don't bridge the gap between semantic reasoning and 
       discriminative tabular learning.
     </p>
@@ -194,7 +194,7 @@
     </p>
     <p>
       For now, the conclusion is that the gap between LLM reasoning and tabular ML is harder to bridge
-      than the theoretical motivation suggests — and that's worth knowing.
+      than the theoretical motivation suggests, and that's worth knowing.
     </p>
 
     <div class="divider"></div>

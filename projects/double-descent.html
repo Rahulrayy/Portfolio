@@ -1,12 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Epoch-wise Double Descent — Rahul Ray</title>
+  <title>Epoch-wise Double Descent · Rahul Ray</title>
   <meta name="description" content="A reproduction of Nakkiran et al. (2019) epoch-wise double descent on CIFAR-10 with ResNet-18 under varying label noise, with mechanistic investigation into what's happening at the peak.">
-  <meta property="og:title" content="Epoch-wise Double Descent Under Label Noise — Rahul Ray">
-  <meta property="og:description" content="Reproducing epoch-wise double descent on CIFAR-10 with ResNet-18 under label noise — and investigating what's actually happening at the peak.">
+  <meta property="og:title" content="Epoch-wise Double Descent Under Label Noise · Rahul Ray">
+  <meta property="og:description" content="Reproducing epoch-wise double descent on CIFAR-10 with ResNet-18 under label noise. Investigating what's actually happening at the peak.">
   <meta property="og:type" content="article">
   <meta name="twitter:card" content="summary">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='8' fill='%231443FF'/><text x='50' y='76' font-size='72' text-anchor='middle' fill='white' font-family='Georgia,serif' font-style='italic'>R</text></svg>">
@@ -62,13 +62,13 @@
     <p>
       In 2019, Nakkiran et al. at OpenAI published a paper that challenged a fairly fundamental assumption 
       in machine learning. The classical view says that as a model trains longer, at some point it starts 
-      overfitting and test performance degrades — you stop training there, or you add regularisation. 
+      overfitting and test performance degrades, you stop training there, or you add regularisation. 
       Nakkiran et al. showed that if you keep going past that degradation point, performance can actually 
       recover. The test loss peaks, then falls. This is double descent, and it shows up across model size, 
       dataset size, and training time.
     </p>
     <p>
-      The epoch-wise version — across training time — is the least discussed of the three but arguably 
+      The epoch-wise version, across training time, is the least discussed of the three but arguably 
       the most surprising. A model trained on corrupted labels will, at some point during training, 
       appear to be getting worse on the test set. If you stopped there you'd call it overfitting and 
       move on. But if you keep training, the model recovers. This project reproduces that finding, 
@@ -80,7 +80,7 @@
       The model is a CIFAR-adapted ResNet-18: the standard 7×7 convolution with stride 2 is replaced 
       with a 3×3 convolution with stride 1, and the maxpool is replaced with an identity operation to 
       preserve spatial resolution for 32×32 inputs. At approximately 11 million parameters trained on 
-      50,000 examples, the model is intentionally overparameterised — overparameterisation is what 
+      50,000 examples, the model is intentionally overparameterised, overparameterisation is what 
       places it in the regime where double descent can occur.
     </p>
     <p>
@@ -112,18 +112,18 @@
 
     <div class="result-block">
       <p>Double descent clearly visible at η = 20% (peak epoch 385) and η = 30% (peak epoch 473)</p>
-      <p>Peak height nearly doubles from 20% to 30% noise (0.22 → 0.50) — consistent with worse memorisation phase at higher noise</p>
-      <p>η = 0% and η = 10%: no convincing peak — monotonic decrease, as classical theory predicts</p>
+      <p>Peak height nearly doubles from 20% to 30% noise (0.22 → 0.50), consistent with worse memorisation phase at higher noise</p>
+      <p>η = 0% and η = 10%: no convincing peak, monotonic decrease, as classical theory predicts</p>
     </div>
 
     <h2>The mechanistic finding</h2>
     <p>
-      The strongest result in the project isn't the double descent curves themselves — it's what 
+      The strongest result in the project isn't the double descent curves themselves, it's what 
       happens when you track clean and corrupted training accuracy separately throughout training.
     </p>
     <p>
       Corrupted training accuracy follows an almost perfect sigmoid in every noise condition. For hundreds 
-      of epochs it sits near zero — the model is learning the underlying signal and largely ignoring the 
+      of epochs it sits near zero, the model is learning the underlying signal and largely ignoring the 
       corrupted labels. Then at some point it crosses what you might call the interpolation threshold, 
       and corrupted accuracy climbs rapidly toward 100%. The model is now memorising the noise.
     </p>
@@ -131,7 +131,7 @@
       The timing of this sigmoid is what makes it interesting: <strong>the epoch at which corrupted 
       accuracy inflects corresponds closely to the epoch at which test loss peaks</strong>. The model 
       memorises the noise, generalisation degrades, and then cosine annealing decays the learning rate 
-      enough that the sharp noise-fitting solution becomes unreachable — the model drifts toward a 
+      enough that the sharp noise-fitting solution becomes unreachable, the model drifts toward a 
       flatter region of the loss landscape that generalises better.
     </p>
     <p>
@@ -155,7 +155,7 @@
       representations that actually transfer to unseen data.
     </p>
     <p>
-      The hypothesis was wrong on timing, but the signal is real and means something — it marks a 
+      The hypothesis was wrong on timing, but the signal is real and means something, it marks a 
       different transition than the one originally predicted. Worth reporting accurately rather than 
       trying to frame it as a confirmation of something it isn't.
     </p>
@@ -167,17 +167,17 @@
     <p>
       <strong>Label smoothing (ε = 0.1):</strong> A clear failure. Final test loss of 0.87 vs 
       baseline 0.57. Smoothing at this strength appears to prevent the late-training recovery that 
-      produces good final performance — possibly by fighting against cosine annealing in a way that 
+      produces good final performance, possibly by fighting against cosine annealing in a way that 
       keeps the model perpetually uncertain. There's no visible double descent peak in the smoothed 
       curve, but this is not because smoothing prevented the interpolation dynamics. The model simply 
       never recovers well regardless. <strong>H2 rejected.</strong>
     </p>
     <p>
       <strong>Mixup (α = 0.2):</strong> More nuanced. Mixup tracks the baseline through most of 
-      training and ends with a better final loss (0.48 vs 0.57 baseline) — a genuine improvement. 
+      training and ends with a better final loss (0.48 vs 0.57 baseline), a genuine improvement. 
       The peak region looks slightly smoother, but the difference isn't dramatic. Mixup's benefit 
       here is in final performance rather than peak suppression. It doesn't prevent the model from 
-      entering the memorisation phase — it helps it recover to a better solution. 
+      entering the memorisation phase, it helps it recover to a better solution. 
       <strong>H3 partially confirmed with caveats.</strong>
     </p>
 
@@ -189,7 +189,7 @@
       <tbody>
         <tr><td>H1: higher noise shifts peak later</td><td>Confirmed at high noise (η=20%, 30%). No convincing peak at η=0%, 10%.</td></tr>
         <tr><td>H2: label smoothing reduces peak magnitude</td><td>Rejected. Degraded overall performance significantly.</td></tr>
-        <tr><td>H3: Mixup suppresses double descent</td><td>Partially confirmed — better final performance, peak not eliminated.</td></tr>
+        <tr><td>H3: Mixup suppresses double descent</td><td>Partially confirmed, better final performance, peak not eliminated.</td></tr>
         <tr class="highlight"><td>H4: corrupted accuracy inflects at peak</td><td>Confirmed. Strongest result in the project.</td></tr>
         <tr><td>H5: entropy dips at the peak epoch</td><td>Wrong on timing. Entropy marks recovery, not the peak.</td></tr>
       </tbody>
@@ -201,26 +201,26 @@
       the optimiser loses the ability to maintain sharp noise-fitting solutions. Early in training 
       there's enough gradient signal to memorise individual corrupted labels. As the learning rate 
       approaches zero, those sharp minima become unreachable and the model drifts toward flatter 
-      regions that generalise better. Figure 2 (the generalisation gap plot) supports this — the 
+      regions that generalise better. Figure 2 (the generalisation gap plot) supports this, the 
       gap between train and test loss closes right as the learning rate enters its final decay phase.
     </p>
     <p>
       This is interpretive rather than proven. Whether recovery would occur with a constant learning 
-      rate is one of the more interesting open questions — and a direct test of this explanation would 
+      rate is one of the more interesting open questions, and a direct test of this explanation would 
       be whether eliminating cosine annealing also eliminates recovery.
     </p>
 
     <h2>Limitations</h2>
     <p>
       Double descent was only clearly observable at η = 20% and 30%. The 10% result didn't produce 
-      a convincing peak, which means the stronger version of H1 — "higher noise shifts the peak later" 
-      — requires the caveat that there needs to be enough noise for a visible peak to exist in the 
+      a convincing peak, which means the stronger version of H1, "higher noise shifts the peak later" 
+     , requires the caveat that there needs to be enough noise for a visible peak to exist in the 
       first place.
     </p>
     <p>
       Only one dataset and one architecture. Only one regularisation strength per intervention. Three
       seeds is a reasonable but small sample. And there's a known annotation bug in Figure 3 where
-      the peak marker shows "ep 3" — this was caught and fixed in the summary table, but the figure
+      the peak marker shows "ep 3", this was caught and fixed in the summary table, but the figure
       itself retains the wrong label. The visual alignment between corrupted accuracy inflection and
       test loss peak is still valid and can be confirmed by comparing figures directly.
     </p>

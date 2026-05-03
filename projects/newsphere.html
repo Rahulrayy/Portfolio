@@ -1,12 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Newsphere Live — Rahul Ray</title>
-  <meta name="description" content="Newsphere Live — a self-updating 3D semantic news map. Fetches 11 RSS feeds every 6 hours, embeds via MiniLM, clusters with HDBSCAN, and publishes to GitHub Pages. Zero backend, zero cost.">
-  <meta property="og:title" content="Newsphere Live — Semantic News Map · Rahul Ray">
-  <meta property="og:description" content="A self-updating 3D semantic map of current news. Zero backend, zero cost — powered by sentence-transformers, UMAP, HDBSCAN, and GitHub Actions.">
+  <title>Newsphere Live · Rahul Ray</title>
+  <meta name="description" content="Newsphere Live: a self-updating 3D semantic news map. Fetches 11 RSS feeds every 6 hours, embeds via MiniLM, clusters with HDBSCAN, and publishes to GitHub Pages. Zero backend, zero cost.">
+  <meta property="og:title" content="Newsphere Live: Semantic News Map · Rahul Ray">
+  <meta property="og:description" content="A self-updating 3D semantic map of current news. Zero backend, zero cost. Powered by sentence-transformers, UMAP, HDBSCAN, and GitHub Actions.">
   <meta property="og:type" content="article">
   <meta name="twitter:card" content="summary">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='8' fill='%231443FF'/><text x='50' y='76' font-size='72' text-anchor='middle' fill='white' font-family='Georgia,serif' font-style='italic'>R</text></svg>">
@@ -28,7 +28,7 @@
   <div class="project-hero">
     <a href="../index.html#projects" class="back-link">← Back to projects</a>
     <p class="project-hero-label">Project 05</p>
-    <h1 class="project-hero-title">Newsphere Live — <em>Semantic News Map</em></h1>
+    <h1 class="project-hero-title">Newsphere Live: <em>Semantic News Map</em></h1>
     <div class="project-meta">
       <div class="meta-group">
         <span class="meta-label">Type</span>
@@ -68,7 +68,7 @@
       Newsphere Live is a self-updating semantic map of current news. Every six hours, a GitHub Actions
       pipeline fetches articles from 11 RSS feeds, encodes them into 384-dimensional semantic vectors,
       reduces those vectors to three dimensions, clusters them by topic, and publishes an interactive 3D
-      visualization to GitHub Pages — with no backend, no database, and no recurring cost.
+      visualization to GitHub Pages, with no backend, no database, and no recurring cost.
     </p>
     <p>
       The core idea is that proximity in the map means semantic similarity. Stories covering the same
@@ -77,7 +77,7 @@
       topic cluster, or slide the timeline to see what's newly added.
     </p>
     <p>
-      This project extends an earlier static predecessor — a semantic map of 7,000 archived articles
+      This project extends an earlier static predecessor, a semantic map of 7,000 archived articles
       from 2018 built during coursework at Leiden, where clustering parameters were validated against
       silhouette scores and topic coherence. Newsphere Live uses those empirically-validated settings in
       a live, continuously-updating system.
@@ -101,7 +101,7 @@ validate.py         → confirm minimum article + cluster thresholds before comm
 digest.py           → produce digest.html, dispatch email via Resend
     </div>
     <p>
-      If validation fails — too few articles or clusters — the pipeline exits without committing,
+      If validation fails, too few articles or clusters, the pipeline exits without committing,
       preserving the previous stable state on GitHub Pages. This makes the system robust to transient
       fetch failures without user intervention.
     </p>
@@ -133,7 +133,7 @@ digest.py           → produce digest.html, dispatch email via Resend
     <h3>UMAP → 3D</h3>
     <p>
       UMAP reduces the 384-dimensional embeddings to three dimensions for browser rendering. The
-      reduction prioritises preserving local neighbourhood structure — nearby articles in the original
+      reduction prioritises preserving local neighbourhood structure, nearby articles in the original
       space should remain nearby in the projected space. The parameters used (neighbours, min_dist,
       metric) were validated against silhouette scores in the static predecessor project.
     </p>
@@ -142,13 +142,13 @@ digest.py           → produce digest.html, dispatch email via Resend
     <p>
       HDBSCAN identifies dense regions as topic clusters without requiring a pre-specified number of
       clusters. Articles that don't fit cleanly into any cluster are left as noise rather than
-      forced into the nearest group — which matters in news, where genuinely miscellaneous
+      forced into the nearest group, which matters in news, where genuinely miscellaneous
       one-off stories exist alongside coherent topic threads.
     </p>
 
     <h3>c-TF-IDF labels</h3>
     <p>
-      Each cluster gets a human-readable label generated by c-TF-IDF — a variant of TF-IDF applied
+      Each cluster gets a human-readable label generated by c-TF-IDF, a variant of TF-IDF applied
       at the cluster level rather than the document level. It identifies terms that are most
       distinctive within a cluster relative to the rest of the corpus. This produces labels like
       "Gaza ceasefire talks" or "Fed interest rate" rather than generic topic markers.
@@ -187,7 +187,7 @@ digest.py           → produce digest.html, dispatch email via Resend
     </table>
     <p>
       The key constraint enabling zero cost is the fully static architecture. The frontend is HTML, CSS,
-      and JavaScript loading pre-built JSON files — there are no server-side requests at page load.
+      and JavaScript loading pre-built JSON files, there are no server-side requests at page load.
       GitHub Pages hosts static files for public repositories for free. Public GitHub Actions
       repositories get unmetered compute; each pipeline run takes 6–8 minutes.
     </p>

@@ -1,12 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AutoInsight — Rahul Ray</title>
-  <meta name="description" content="AutoInsight — a browser-based AutoML tool that trains 7 models in parallel, generates SHAP explainability, and produces LLM-written plain-language insights. Deployed on Hugging Face Spaces.">
-  <meta property="og:title" content="AutoInsight — End-to-End AutoML App · Rahul Ray">
-  <meta property="og:description" content="Browser-based AutoML: 7 models in parallel, SHAP explainability, LLM insights. Privacy-preserving — data never leaves the browser.">
+  <title>AutoInsight · Rahul Ray</title>
+  <meta name="description" content="AutoInsight: a browser-based AutoML tool that trains 7 models in parallel, generates SHAP explainability, and produces LLM-written plain-language insights. Deployed on Hugging Face Spaces.">
+  <meta property="og:title" content="AutoInsight: End-to-End AutoML App · Rahul Ray">
+  <meta property="og:description" content="Browser-based AutoML: 7 models in parallel, SHAP explainability, LLM insights. Privacy-preserving, data never leaves the browser.">
   <meta property="og:type" content="article">
   <meta name="twitter:card" content="summary">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='8' fill='%231443FF'/><text x='50' y='76' font-size='72' text-anchor='middle' fill='white' font-family='Georgia,serif' font-style='italic'>R</text></svg>">
@@ -28,7 +28,7 @@
   <div class="project-hero">
     <a href="../index.html#projects" class="back-link">← Back to projects</a>
     <p class="project-hero-label">Project 02</p>
-    <h1 class="project-hero-title">AutoInsight — End-to-End <em>AutoML</em> App</h1>
+    <h1 class="project-hero-title">AutoInsight: End-to-End <em>AutoML</em> App</h1>
     <div class="project-meta">
       <div class="meta-group">
         <span class="meta-label">Type</span>
@@ -69,7 +69,7 @@
       but don't want to spend three days wrangling a Jupyter notebook to do it. You upload a CSV, pick 
       a target column, and the system handles the rest: profiling the data, preprocessing it, training 
       a leaderboard of models, computing SHAP feature importances, and generating a plain-language 
-      explanation of what the model found — all with no code required.
+      explanation of what the model found, all with no code required.
     </p>
     <p>
       The project started as a personal exploration of what a lightweight, transparent, and 
@@ -81,7 +81,7 @@
     <div class="result-block">
       <p>7 classifiers + 7 regressors trained in parallel · Stratified k-fold CV throughout</p>
       <p>Bayesian hyperparameter tuning via Optuna (40 trials, TPE sampler) · Streamed LLM responses via Groq API</p>
-      <p>Raw user data never sent to an external API — LLM only receives aggregated metrics</p>
+      <p>Raw user data never sent to an external API, LLM only receives aggregated metrics</p>
     </div>
 
     <h2>The pipeline</h2>
@@ -89,7 +89,7 @@
       When a file is uploaded, AutoInsight runs a profiling step before anything else. It identifies 
       column types (numerical, categorical, datetime), computes missing value ratios, flags near-constant 
       features where a single value appears in more than 95% of rows, detects high-correlation pairs 
-      using a Pearson threshold of 0.85, and checks class balance — flagging if a dominant class appears 
+      using a Pearson threshold of 0.85, and checks class balance, flagging if a dominant class appears 
       in more than 80% of rows. These findings are shown in the UI and passed to the LLM as context.
     </p>
     <p>
@@ -106,7 +106,7 @@
       tasks run Logistic Regression, Random Forest, Extra Trees, Gradient Boosting, XGBoost, LightGBM, 
       and CatBoost; regression tasks use the same ensemble minus Logistic Regression, plus Linear 
       Regression. If a model crashes during training, the pipeline continues with the remaining ones 
-      — it only fails if every single model fails.
+     , it only fails if every single model fails.
     </p>
 
     <h2>Hyperparameter tuning</h2>
@@ -120,7 +120,7 @@
     <h2>The LLM integration</h2>
     <p>
       This was the most deliberate design decision in the whole project. The LLM layer uses the 
-      Groq API with models like <code>llama-3.3-70b-versatile</code> at temperature 0.2 — conservative 
+      Groq API with models like <code>llama-3.3-70b-versatile</code> at temperature 0.2, conservative 
       enough to keep outputs consistent without being completely rigid.
     </p>
     <p>
@@ -128,13 +128,13 @@
       SHAP values, feature importances, dataset profile statistics. It never sees raw rows.
       This was deliberate for two reasons. First, it reduces the chance of hallucinations, 
       because the model can't fabricate dataset-specific claims beyond what it's explicitly told.
-      Second — and more importantly — it means potentially sensitive user data never leaves the 
+      Second, and more importantly, it means potentially sensitive user data never leaves the 
       browser. The privacy guarantee is structural, not policy-based.
     </p>
     <p>
       The system prompt constrains the LLM to respond only in valid JSON and to avoid comparing 
       results against external benchmarks unless those benchmarks are explicitly provided. Prompts 
-      live as plain text files in the <code>prompts/</code> directory and are loaded at runtime — 
+      live as plain text files in the <code>prompts/</code> directory and are loaded at runtime, 
       so editing system behaviour doesn't require touching any Python code.
     </p>
     <p>
@@ -167,12 +167,12 @@ AutoInsight/
 │   ├── system_prompt.txt
 │   ├── model_explanation.txt
 │   └── qa_prompt.txt
-└── tests/                 # pytest suite — LLM layer mocked
+└── tests/                 # pytest suite, LLM layer mocked
     </div>
 
     <h2>What I'd change</h2>
     <p>
-      The biggest limitation is that the pipeline only supports tabular CSV data — images, text corpora, 
+      The biggest limitation is that the pipeline only supports tabular CSV data, images, text corpora, 
       and proper time-series with sequential dependencies aren't handled. Datetime columns get decomposed 
       into component features, which captures some temporal signal but loses any sequential structure.
     </p>
@@ -182,7 +182,7 @@ AutoInsight/
       stacking helped felt like the wrong trade-off for a tool aimed at non-technical users.
     </p>
     <p>
-      If I were starting over, I'd think harder about how to communicate model uncertainty — not just 
+      If I were starting over, I'd think harder about how to communicate model uncertainty, not just 
       which model ranked first, but how confident we should be in that ranking given the dataset size. 
       A 3-point AUC difference on 500 rows means something very different than the same gap on 50,000.
     </p>
