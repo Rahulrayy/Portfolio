@@ -69,6 +69,7 @@
       cursor: default;
     }
     .project-row:hover .project-row-title { color: var(--accent); }
+    .project-row-title a { color: inherit; transition: color 0.2s; }
     .project-num {
       font-family: var(--mono); font-size: 0.65rem;
       letter-spacing: 0.12em; color: var(--muted);
@@ -240,7 +241,7 @@
           <div class="project-row">
             <span class="project-num">01</span>
             <div class="project-row-body">
-              <div class="project-row-title">Can LLMs Make Tabular ML Better?</div>
+              <div class="project-row-title"><a href="projects/llm-tabular.html">Can LLMs Make Tabular ML Better?</a></div>
               <div class="project-row-desc">
                 A controlled experiment testing whether LLM-generated semantic features improve XGBoost on structured data — using nested CV, Wilcoxon tests, and Cohen's d to evaluate the hybrid approach properly.
                 The results went against the hypothesis, and that turned out to be the more interesting finding.
@@ -264,7 +265,7 @@
           <div class="project-row">
             <span class="project-num">02</span>
             <div class="project-row-body">
-              <div class="project-row-title">AutoInsight — End-to-End AutoML App</div>
+              <div class="project-row-title"><a href="projects/autoinsight.html">AutoInsight — End-to-End AutoML App</a></div>
               <div class="project-row-desc">
                 A browser-based AutoML tool that trains 7 models in parallel, generates SHAP explainability,
                 and produces LLM-written plain-language insights — with a privacy-preserving design where raw data never leaves the browser.
@@ -289,7 +290,7 @@
           <div class="project-row">
             <span class="project-num">03</span>
             <div class="project-row-body">
-              <div class="project-row-title">Quake — Learned Heuristic A* on BSP Geometry</div>
+              <div class="project-row-title"><a href="projects/quake.html">Quake — Learned Heuristic A* on BSP Geometry</a></div>
               <div class="project-row-desc">
                 Parsed Quake 1's raw binary map format to build navigation graphs, generated 625k ground-truth
                 pathfinding pairs, then trained learned heuristics that cut A*'s node expansions by 42% while keeping paths near-optimal.
@@ -313,7 +314,7 @@
           <div class="project-row">
             <span class="project-num">04</span>
             <div class="project-row-body">
-              <div class="project-row-title">Epoch-wise Double Descent Under Label Noise</div>
+              <div class="project-row-title"><a href="projects/double-descent.html">Epoch-wise Double Descent Under Label Noise</a></div>
               <div class="project-row-desc">
                 A reproduction of Nakkiran et al. (2019)'s epoch-wise double descent on CIFAR-10 with ResNet-18 under varying label noise — with a mechanistic investigation into what's actually happening at the peak.
               </div>
@@ -336,7 +337,7 @@
           <div class="project-row">
             <span class="project-num">05</span>
             <div class="project-row-body">
-              <div class="project-row-title">Newsphere Live — Semantic News Map</div>
+              <div class="project-row-title"><a href="projects/newsphere.html">Newsphere Live — Semantic News Map</a></div>
               <div class="project-row-desc">
                 A self-updating 3D map of current news where proximity means semantic similarity. Fetches 11 RSS feeds every 6 hours, embeds articles via MiniLM, reduces to 3D with UMAP, clusters with HDBSCAN, and publishes to GitHub Pages — zero backend, zero cost.
               </div>
@@ -461,9 +462,11 @@
     // Carousel
     const track = document.getElementById('carouselTrack')
     const counter = document.getElementById('carouselCounter')
+    const carouselWrapper = track.closest('.carousel-wrapper')
     const slides = track.querySelectorAll('.proj-slide')
     const total = slides.length
     let cur = 0
+    let autoTimer
 
     function goTo(n) {
       cur = (n + total) % total
@@ -471,12 +474,19 @@
       counter.textContent = `${String(cur + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`
     }
 
-    document.getElementById('prevBtn').addEventListener('click', () => goTo(cur - 1))
-    document.getElementById('nextBtn').addEventListener('click', () => goTo(cur + 1))
+    function startAuto() { autoTimer = setInterval(() => goTo(cur + 1), 4000) }
+    function stopAuto() { clearInterval(autoTimer) }
+
+    startAuto()
+    carouselWrapper.addEventListener('mouseenter', stopAuto)
+    carouselWrapper.addEventListener('mouseleave', startAuto)
+
+    document.getElementById('prevBtn').addEventListener('click', () => { stopAuto(); goTo(cur - 1); startAuto() })
+    document.getElementById('nextBtn').addEventListener('click', () => { stopAuto(); goTo(cur + 1); startAuto() })
     document.addEventListener('keydown', e => {
       if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return
-      if (e.key === 'ArrowLeft') goTo(cur - 1)
-      if (e.key === 'ArrowRight') goTo(cur + 1)
+      if (e.key === 'ArrowLeft') { stopAuto(); goTo(cur - 1); startAuto() }
+      if (e.key === 'ArrowRight') { stopAuto(); goTo(cur + 1); startAuto() }
     })
   </script>
 </body>
