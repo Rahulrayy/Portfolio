@@ -37,13 +37,21 @@
 .meta-value { font-size: 0.92rem; color: var(--ink); }
 .hero-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
 .h-tag { font-family: var(--mono); font-size: 0.63rem; letter-spacing: 0.04em; padding: 0.25rem 0.7rem; background: var(--surface); color: var(--muted); }
+.hero-btns { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; align-items: center; }
 .github-btn {
-  display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 2rem;
+  display: inline-flex; align-items: center; gap: 0.5rem;
   font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase;
   padding: 0.65rem 1.4rem; border: 1px solid var(--ink); color: var(--ink);
   transition: background 0.2s, color 0.2s;
 }
 .github-btn:hover { background: var(--ink); color: var(--bg); }
+.live-btn {
+  display: inline-flex; align-items: center; gap: 0.5rem;
+  font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 0.65rem 1.4rem; border: 1px solid var(--accent); color: var(--accent);
+  transition: background 0.2s, color 0.2s;
+}
+.live-btn:hover { background: var(--accent); color: var(--bg); }
 
 /* ── Article body ── */
 .project-body {
