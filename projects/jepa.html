@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JEPA-IR: Image Retrieval Benchmark · Rahul Ray</title>
+  <meta name="description" content="Benchmarking I-JEPA as a frozen feature extractor for image retrieval against CLIP and ResNet-50 on Oxford5k and Paris6k. Can a model never trained contrastively still retrieve well?">
+  <meta property="og:title" content="JEPA-IR: Image Retrieval Benchmark · Rahul Ray">
+  <meta property="og:description" content="I-JEPA vs CLIP vs ResNet-50 on Oxford5k and Paris6k landmark retrieval. Can self-supervised representation prediction compete with contrastive learning at retrieval?">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='8' fill='%231443FF'/><text x='50' y='76' font-size='72' text-anchor='middle' fill='white' font-family='Georgia,serif' font-style='italic'>R</text></svg>">
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="project.css" />
+</head>
+<body>
+
+  <nav id="nav">
+    <div class="nav-logo"><a href="../index.html">Rahul Ray</a></div>
+    <ul class="nav-links">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../index.html#projects">Projects</a></li>
+      <li><a href="../index.html#experience">Experience</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <div class="project-hero">
+    <a href="../index.html#projects" class="back-link">← Back to projects</a>
+    <p class="project-hero-label">Project 06</p>
+    <h1 class="project-hero-title">JEPA-IR: <em>Can a Model Never Trained Contrastively Still Retrieve Well?</em></h1>
+    <div class="project-meta">
+      <div class="meta-group">
+        <span class="meta-label">Type</span>
+        <span class="meta-value">Deep Learning Research / Image Retrieval</span>
+      </div>
+      <div class="meta-group">
+        <span class="meta-label">Benchmarks</span>
+        <span class="meta-value">Oxford5k · Paris6k · 55 queries each</span>
+      </div>
+      <div class="meta-group">
+        <span class="meta-label">Stack</span>
+        <span class="meta-value">PyTorch · CLIP · FAISS · torchvision</span>
+      </div>
+    </div>
+    <div class="hero-tags">
+      <span class="h-tag">I-JEPA</span>
+      <span class="h-tag">ViT-H/14</span>
+      <span class="h-tag">CLIP</span>
+      <span class="h-tag">ResNet-50</span>
+      <span class="h-tag">FAISS</span>
+      <span class="h-tag">Oxford5k</span>
+      <span class="h-tag">Paris6k</span>
+      <span class="h-tag">mAP</span>
+      <span class="h-tag">Self-Supervised Learning</span>
+    </div>
+    <div class="hero-btns">
+      <a href="https://github.com/Rahulrayy/JEPA-IR" target="_blank" class="github-btn">↗ View on GitHub</a>
+    </div>
+  </div>
+
+  <div class="project-body">
+
+    <h2>The question</h2>
+    <p>
+      I-JEPA learns by predicting masked image patch representations — no contrastive pairs, no labels,
+      no explicit notion of similarity between images. CLIP, by contrast, is explicitly trained to align
+      images and text that belong together and push apart pairs that don't. These are fundamentally
+      different objectives.
+    </p>
+    <p>
+      The question this project asks is simple: does the distinction matter for retrieval? If you take
+      I-JEPA's frozen encoder, extract embeddings, and search for similar images, does it work? And how
+      far behind CLIP does it fall?
+    </p>
+
+    <h2>Setup</h2>
+    <p>
+      Three models, all used as frozen feature extractors — no fine-tuning, no task-specific training.
+      Embeddings are L2 normalized before indexing, and retrieval uses exhaustive cosine similarity search
+      via a FAISS FlatIP index.
+    </p>
+    <table class="data-table">
+      <thead>
+        <tr><th>Model</th><th>Embedding Dim</th><th>Pooling</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>I-JEPA ViT-H/14</td><td>1280</td><td>Mean-pool patch tokens</td></tr>
+        <tr><td>CLIP ViT-B/32</td><td>512</td><td>Image encoder (official OpenAI library)</td></tr>
+        <tr><td>ResNet-50</td><td>2048</td><td>Global average pool (IMAGENET1K_V1 weights)</td></tr>
+      </tbody>
+    </table>
+    <p>
+      Evaluation is on Oxford5k (5,062 database images, 55 landmark queries) and Paris6k (6,412 images,
+      55 queries). Both use a three-tier ground truth (good, ok, junk) and standard mean average precision
+      as the metric.
+    </p>
+
+    <h2>Results</h2>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Model</th><th>Oxford5k mAP</th><th>Paris6k mAP</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>I-JEPA ViT-H/14</td><td>0.1822</td><td>0.3161</td></tr>
+        <tr><td>ResNet-50</td><td>0.3706</td><td>0.5707</td></tr>
+        <tr class="highlight"><td>CLIP ViT-B/32</td><td>0.4884</td><td>0.6555</td></tr>
+      </tbody>
+    </table>
+
+    <div class="result-block">
+      <p>I-JEPA trails ResNet-50 by ~19 points mAP on Oxford5k and ~25 points on Paris6k</p>
+      <p>CLIP leads by ~30 points mAP on Oxford5k — a model 3× smaller in embedding dimension</p>
+    </div>
+
+    <p>
+      I-JEPA significantly underperforms both baselines. A pretrained ResNet-50 with standard ImageNet
+      weights — a much simpler model with no explicit similarity objective — comfortably outperforms it.
+      CLIP's margin is larger still.
+    </p>
+
+    <h2>What the failures look like</h2>
+    <p>
+      The qualitative results clarify where I-JEPA breaks down. It performs best on landmarks with
+      distinctive geometry — the Radcliffe Camera, Hertford College — where the patch-level structure
+      of the building is sufficient to find similar images. It struggles with semantically complex scenes
+      that require understanding of <em>place</em> rather than just shape.
+    </p>
+    <p>
+      I-JEPA tends to retrieve architecturally similar buildings rather than the specific landmark
+      queried. It has learned something about structure, but not the kind of landmark identity that
+      retrieval benchmarks measure.
+    </p>
+
+    <h2>Query expansion</h2>
+    <p>
+      Query expansion (α = 3.0) adds the top retrieved embeddings back into the query vector before
+      re-ranking. For CLIP, this provides a +0.011 mAP gain — meaningful, and expected, since the
+      embedding space is well-structured enough for nearby points to genuinely refine the query.
+    </p>
+    <p>
+      For I-JEPA, the gain is +0.002 mAP — essentially nothing. This is the diagnostic finding. If the
+      embedding space were well-structured and the problem were simply a threshold issue, query expansion
+      would help. The near-zero gain points to something more fundamental: the embedding space itself
+      isn't organized in a way that makes retrieval tractable, regardless of how the query is refined.
+    </p>
+
+    <h2>Interpretation</h2>
+    <p>
+      The gap makes sense once you consider what each objective is actually optimizing for. CLIP's
+      contrastive objective directly trains the model to place matching images close together and
+      non-matching images far apart — which is exactly what retrieval requires. I-JEPA's objective
+      trains for prediction of masked patch representations within a single image, with no signal
+      about inter-image relationships at all.
+    </p>
+    <p>
+      I-JEPA's embeddings capture local structure well, but the global organization of the embedding
+      space doesn't reflect image similarity in the sense retrieval benchmarks measure. The training
+      objective simply doesn't ask that question.
+    </p>
+
+    <div class="divider"></div>
+    <p>Full source, evaluation scripts, and replication steps on <a href="https://github.com/Rahulrayy/JEPA-IR" target="_blank">GitHub →</a></p>
+
+  </div>
+
+  <footer>
+    <span class="footer-name"><a href="../index.html">Rahul Ray</a></span>
+    <span class="footer-note">
+      <a href="newsphere.html" style="color:var(--muted)">← Newsphere Live</a>
+      &nbsp;·&nbsp;
+      <a href="../index.html#projects" style="color:var(--accent)">All projects →</a>
+    </span>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('nav')
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 30))
+  </script>
+</body>
+</html>
