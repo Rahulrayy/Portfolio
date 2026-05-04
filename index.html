@@ -241,35 +241,64 @@
           <div class="skills-group">
             <span class="skills-group-label">Core</span>
             <div class="skills-group-chips">
-              <span class="skill-tag">Python</span>
-              <span class="skill-tag">PyTorch</span>
-              <span class="skill-tag">SQL · pandas · NumPy</span>
+              <span class="skill-tag">Python · PyTorch</span>
+              <span class="skill-tag">pandas · NumPy · scikit-learn</span>
+              <span class="skill-tag">Experiment Design</span>
+              <span class="skill-tag">Statistical Testing · Nested CV</span>
             </div>
           </div>
           <div class="skills-group">
-            <span class="skills-group-label">Classical ML</span>
+            <span class="skills-group-label">Classical &amp; Tabular ML</span>
             <div class="skills-group-chips">
-              <span class="skill-tag">XGBoost</span>
-              <span class="skill-tag">LightGBM · CatBoost</span>
-              <span class="skill-tag">scikit-learn</span>
-              <span class="skill-tag">SHAP</span>
-              <span class="skill-tag">Optuna</span>
+              <span class="skill-tag">XGBoost · LightGBM · CatBoost</span>
+              <span class="skill-tag">SHAP · Optuna</span>
+              <span class="skill-tag">Feature Engineering · Selection</span>
+              <span class="skill-tag">Wilcoxon · Cohen's d</span>
             </div>
           </div>
           <div class="skills-group">
-            <span class="skills-group-label">Deep Learning &amp; LLMs</span>
+            <span class="skills-group-label">Deep Learning</span>
             <div class="skills-group-chips">
-              <span class="skill-tag">Vision Transformers</span>
-              <span class="skill-tag">ResNet / CNNs</span>
+              <span class="skill-tag">Vision Transformers · ResNet / CNNs</span>
+              <span class="skill-tag">Self-Supervised Learning</span>
+              <span class="skill-tag">Mixup · Label Smoothing</span>
+              <span class="skill-tag">Generalisation Theory</span>
+            </div>
+          </div>
+          <div class="skills-group">
+            <span class="skills-group-label">Reinforcement Learning</span>
+            <div class="skills-group-chips">
+              <span class="skill-tag">Q-Learning · DQN</span>
+              <span class="skill-tag">Policy Gradients · PPO</span>
+              <span class="skill-tag">Actor-Critic</span>
+              <span class="skill-tag">Gymnasium</span>
+            </div>
+          </div>
+          <div class="skills-group">
+            <span class="skills-group-label">Text Mining &amp; NLP</span>
+            <div class="skills-group-chips">
               <span class="skill-tag">sentence-transformers</span>
-              <span class="skill-tag">Groq / LLaMA</span>
+              <span class="skill-tag">TF-IDF · BM25 · c-TF-IDF</span>
+              <span class="skill-tag">Topic Modelling · NER</span>
+              <span class="skill-tag">UMAP · HDBSCAN</span>
             </div>
           </div>
           <div class="skills-group">
-            <span class="skills-group-label">Deployment &amp; Tools</span>
+            <span class="skills-group-label">Information Retrieval</span>
             <div class="skills-group-chips">
-              <span class="skill-tag">ONNX · Edge ML</span>
-              <span class="skill-tag">Streamlit</span>
+              <span class="skill-tag">FAISS · Dense Retrieval</span>
+              <span class="skill-tag">CLIP · Multimodal Retrieval</span>
+              <span class="skill-tag">mAP · NDCG · Recall@k</span>
+              <span class="skill-tag">Query Expansion · Re-ranking</span>
+            </div>
+          </div>
+          <div class="skills-group">
+            <span class="skills-group-label">MLOps &amp; Deployment</span>
+            <div class="skills-group-chips">
+              <span class="skill-tag">Automated ML pipelines</span>
+              <span class="skill-tag">Edge deployment · Model compression</span>
+              <span class="skill-tag">Heuristic &amp; graph search</span>
+              <span class="skill-tag">Hugging Face · Streamlit</span>
             </div>
           </div>
         </div>
@@ -404,10 +433,34 @@
           </div>
         </div>
 
+        <div class="proj-slide">
+          <div class="project-row">
+            <span class="project-num">06</span>
+            <div class="project-row-body">
+              <div class="project-row-title"><a href="projects/jepa.html">JEPA-IR: Benchmarking I-JEPA for Image Retrieval</a></div>
+              <div class="project-row-desc">
+                Can a model never trained contrastively still retrieve well? Benchmarks I-JEPA (ViT-H/14) as a frozen feature extractor against CLIP and ResNet-50 on Oxford5k and Paris6k. The gap — and the near-zero query expansion gain for I-JEPA — points to a fundamental embedding space issue, not a tuning problem.
+              </div>
+              <div class="project-row-tags">
+                <span class="p-tag">I-JEPA</span>
+                <span class="p-tag">CLIP</span>
+                <span class="p-tag">FAISS</span>
+                <span class="p-tag">Oxford5k · Paris6k</span>
+                <span class="p-tag">mAP</span>
+                <span class="p-tag">PyTorch</span>
+              </div>
+            </div>
+            <div class="project-row-cta">
+              <a href="projects/jepa.html" class="cta-link">Read writeup →</a>
+              <a href="https://github.com/Rahulrayy/JEPA-IR" target="_blank" class="cta-gh">↗ GitHub</a>
+            </div>
+          </div>
+        </div>
+
       </div>
       <div class="carousel-nav">
         <button class="carousel-btn" id="prevBtn" aria-label="Previous project">←</button>
-        <span class="carousel-counter" id="carouselCounter">01 / 05</span>
+        <span class="carousel-counter" id="carouselCounter">01 / 06</span>
         <button class="carousel-btn" id="nextBtn" aria-label="Next project">→</button>
         <div class="carousel-dots" id="carouselDots">
           <button class="carousel-dot active" aria-label="Project 1"></button>
@@ -415,6 +468,7 @@
           <button class="carousel-dot" aria-label="Project 3"></button>
           <button class="carousel-dot" aria-label="Project 4"></button>
           <button class="carousel-dot" aria-label="Project 5"></button>
+          <button class="carousel-dot" aria-label="Project 6"></button>
         </div>
       </div>
     </div>
