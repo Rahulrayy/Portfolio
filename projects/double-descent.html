@@ -23,7 +23,11 @@
       <li><a href="../index.html#experience">Experience</a></li>
       <li><a href="../index.html#contact">Contact</a></li>
     </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
+  <div class="nav-overlay" id="navOverlay"></div>
 
   <div class="project-hero">
     <a href="../index.html#projects" class="back-link">← Back to projects</a>
@@ -103,8 +107,8 @@
         <tr><th>Noise Rate</th><th>Peak Epoch</th><th>Peak Loss</th><th>Peak Height</th><th>Final Loss</th><th>Final Acc</th></tr>
       </thead>
       <tbody>
-        <tr><td>η = 0%</td><td>N/A</td><td>—</td><td>—</td><td>0.172</td><td>95.5%</td></tr>
-        <tr><td>η = 10%</td><td>N/A</td><td>—</td><td>—</td><td>0.351</td><td>91.2%</td></tr>
+        <tr><td>η = 0%</td><td>N/A</td><td>N/A</td><td>N/A</td><td>0.172</td><td>95.5%</td></tr>
+        <tr><td>η = 10%</td><td>N/A</td><td>N/A</td><td>N/A</td><td>0.351</td><td>91.2%</td></tr>
         <tr class="highlight"><td>η = 20%</td><td>385</td><td>0.856</td><td>0.219</td><td>0.572</td><td>85.5%</td></tr>
         <tr class="highlight"><td>η = 30%</td><td>473</td><td>1.276</td><td>0.500</td><td>0.883</td><td>78.5%</td></tr>
       </tbody>
@@ -242,6 +246,13 @@
   <script>
     const nav = document.getElementById('nav')
     window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 30))
+    const navToggle = document.getElementById('navToggle')
+    const navOverlay = document.getElementById('navOverlay')
+    if (navToggle) {
+      navToggle.addEventListener('click', () => { nav.classList.toggle('nav-open'); navOverlay.classList.toggle('visible') })
+      navOverlay.addEventListener('click', () => { nav.classList.remove('nav-open'); navOverlay.classList.remove('visible') })
+      document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => { nav.classList.remove('nav-open'); navOverlay.classList.remove('visible') }))
+    }
   </script>
 </body>
 </html>

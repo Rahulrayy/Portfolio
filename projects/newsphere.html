@@ -23,7 +23,11 @@
       <li><a href="../index.html#experience">Experience</a></li>
       <li><a href="../index.html#contact">Contact</a></li>
     </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
+  <div class="nav-overlay" id="navOverlay"></div>
 
   <div class="project-hero">
     <a href="../index.html#projects" class="back-link">← Back to projects</a>
@@ -92,14 +96,6 @@
     <p>
       Six Python scripts run sequentially on every cron trigger (00:00, 06:00, 12:00, 18:00 UTC):
     </p>
-    <div class="code-block">
-fetch_articles.py   → aggregate 11 RSS feeds, title-normalize dedup, rolling 7-day store
-embed.py            → encode each article via all-MiniLM-L6-v2 (384 dims)
-cluster.py          → cosine-sim dedup, UMAP 3D, Procrustes align, HDBSCAN, c-TF-IDF labels
-diff.py             → identify new articles by URL comparison with previous run
-validate.py         → confirm minimum article + cluster thresholds before committing
-digest.py           → produce digest.html, dispatch email via Resend
-    </div>
     <p>
       If validation fails, too few articles or clusters, the pipeline exits without committing,
       preserving the previous stable state on GitHub Pages. This makes the system robust to transient
@@ -235,6 +231,13 @@ digest.py           → produce digest.html, dispatch email via Resend
   <script>
     const nav = document.getElementById('nav')
     window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 30))
+    const navToggle = document.getElementById('navToggle')
+    const navOverlay = document.getElementById('navOverlay')
+    if (navToggle) {
+      navToggle.addEventListener('click', () => { nav.classList.toggle('nav-open'); navOverlay.classList.toggle('visible') })
+      navOverlay.addEventListener('click', () => { nav.classList.remove('nav-open'); navOverlay.classList.remove('visible') })
+      document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => { nav.classList.remove('nav-open'); navOverlay.classList.remove('visible') }))
+    }
   </script>
 </body>
 </html>

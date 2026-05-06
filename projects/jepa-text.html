@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Text-JEPA: Representation Prediction for Language · Rahul Ray</title>
+  <meta name="description" content="Adapting I-JEPA's masked representation prediction objective from vision to language using DistilBERT on WikiText-103. Finding: geometric isotropy and downstream task utility decouple.">
+  <meta property="og:title" content="Text-JEPA: Representation Prediction for Language · Rahul Ray">
+  <meta property="og:description" content="Can predicting masked token representations rather than tokens themselves improve embedding geometry? A DistilBERT-based JEPA implementation with findings on the geometry–task utility tradeoff.">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='8' fill='%231443FF'/><text x='50' y='76' font-size='72' text-anchor='middle' fill='white' font-family='Georgia,serif' font-style='italic'>R</text></svg>">
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="project.css" />
+</head>
+<body>
+
+  <nav id="nav">
+    <div class="nav-logo"><a href="../index.html">Rahul Ray</a></div>
+    <ul class="nav-links">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../index.html#projects">Projects</a></li>
+      <li><a href="../index.html#experience">Experience</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div class="nav-overlay" id="navOverlay"></div>
+
+  <div class="project-hero">
+    <a href="../index.html#projects" class="back-link">← Back to projects</a>
+    <p class="project-hero-label">Project 07</p>
+    <h1 class="project-hero-title">Text-JEPA: <em>Does Predicting Representations Fix Embedding Geometry?</em></h1>
+    <div class="project-meta">
+      <div class="meta-group">
+        <span class="meta-label">Type</span>
+        <span class="meta-value">Self-Supervised NLP Research</span>
+      </div>
+      <div class="meta-group">
+        <span class="meta-label">Corpus</span>
+        <span class="meta-value">WikiText-103 · 103M tokens</span>
+      </div>
+      <div class="meta-group">
+        <span class="meta-label">Stack</span>
+        <span class="meta-value">PyTorch · HuggingFace · DistilBERT</span>
+      </div>
+    </div>
+    <div class="hero-tags">
+      <span class="h-tag">Text-JEPA</span>
+      <span class="h-tag">DistilBERT</span>
+      <span class="h-tag">Self-Supervised Learning</span>
+      <span class="h-tag">EMA</span>
+      <span class="h-tag">WikiText-103</span>
+      <span class="h-tag">SST-2</span>
+      <span class="h-tag">STS-B</span>
+      <span class="h-tag">Linear Probing</span>
+      <span class="h-tag">PyTorch</span>
+    </div>
+    <div class="hero-btns">
+      <a href="https://github.com/Rahulrayy/JEPA-TEXT" target="_blank" class="github-btn">↗ View on GitHub</a>
+    </div>
+  </div>
+
+  <div class="project-body">
+
+    <h2>The idea</h2>
+    <p>
+      Masked language modelling (BERT-style) trains a model to reconstruct discrete tokens from masked
+      positions: the prediction target is a one-hot token identity. I-JEPA, applied originally to
+      vision, replaces that with a different objective: predict the <em>representation</em> of the
+      masked region, not the pixel values or discrete class labels.
+    </p>
+    <p>
+      Text-JEPA adapts this to language. Instead of predicting which tokens were masked, the model
+      predicts what the target encoder's representation of those tokens would look like. The model never
+      decodes back to discrete tokens; everything happens in representation space.
+    </p>
+
+    <h2>Architecture</h2>
+    <p>
+      Three components interact during training:
+    </p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Component</th><th>Architecture</th><th>Role</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Context Encoder</td>
+          <td>6-layer transformer (distilbert-base-uncased, 66M params)</td>
+          <td>Processes masked input; receives gradient updates</td>
+        </tr>
+        <tr>
+          <td>Target Encoder</td>
+          <td>EMA copy of context encoder</td>
+          <td>Produces stable prediction targets; updated via EMA only, no gradients</td>
+        </tr>
+        <tr>
+          <td>Predictor</td>
+          <td>3-layer transformer bottleneck (768 → 384 → 768)</td>
+          <td>Maps context encoder output to predicted target representations</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      The target encoder is never directly trained. Its weights are an exponential moving average of
+      the context encoder's weights, which provides prediction targets that are stable enough to train
+      against without gradient collapse. The predictor is intentionally shallow: it is meant to bridge
+      context to target representation, not to reduplicate the full transformer's capacity.
+    </p>
+    <p>
+      The loss is cosine similarity between the predicted and target representations after L2
+      normalization (loss = 2 - 2 * (pred · tgt)), where 0 means perfect alignment and 2 means
+      opposite directions. Minimising this directly trains the model to produce representations
+      that structurally match what a more stable version of itself would output.
+    </p>
+
+    <h2>Training setup</h2>
+    <table class="data-table">
+      <thead>
+        <tr><th>Parameter</th><th>Value</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Base model</td><td>distilbert-base-uncased</td></tr>
+        <tr><td>Corpus</td><td>WikiText-103 (103M tokens)</td></tr>
+        <tr><td>Training steps</td><td>5,000</td></tr>
+        <tr><td>Effective batch size</td><td>256 (gradient accumulation)</td></tr>
+        <tr><td>Learning rate</td><td>1.5e-4, cosine decay</td></tr>
+        <tr><td>Masking strategy</td><td>4 contiguous spans per sequence, mean length 5 tokens</td></tr>
+      </tbody>
+    </table>
+    <p>
+      Span masking rather than uniform random masking is a deliberate choice. Predicting a single
+      missing token is close to trivial given surrounding context; predicting a contiguous span of
+      five tokens forces the model to reason about something closer to phrase-level structure.
+    </p>
+
+    <h2>Results</h2>
+    <table class="data-table">
+      <thead>
+        <tr><th>Metric</th><th>DistilBERT baseline</th><th>Text-JEPA (5k steps)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Avg pairwise cosine similarity</td><td>0.93</td><td>0.60</td></tr>
+        <tr><td>SST-2 linear probe accuracy</td><td>~81%</td><td>75%</td></tr>
+        <tr><td>STS-B Pearson correlation</td><td>~0.48</td><td>0.16</td></tr>
+      </tbody>
+    </table>
+
+    <div class="result-block">
+      <p>Embedding geometry improved substantially: avg cosine similarity dropped from 0.93 to 0.60, reducing anisotropy</p>
+      <p>Downstream task performance declined across both classification (SST-2) and semantic similarity (STS-B)</p>
+      <p>Between steps 2000-4000, geometry kept improving while SST-2 accuracy partially recovered; the two metrics decouple</p>
+    </div>
+
+    <h2>The geometry–task utility split</h2>
+    <p>
+      The most interesting finding is not the performance numbers themselves, but the decoupling
+      between them. Between steps 2000 and 4000, embedding geometry continued to improve: cosine
+      similarity kept falling, the space became more isotropic, while SST-2 accuracy was moving
+      in the opposite direction, partially recovering. Two quality dimensions that are often
+      conflated were demonstrably moving independently.
+    </p>
+    <p>
+      BERT and its variants are famously anisotropic: all token embeddings cluster in a narrow cone
+      of the embedding space, which limits the expressiveness of the representations and causes
+      problems for distance-based downstream uses. The representation prediction objective does fix
+      this: the cosine similarity drop from 0.93 to 0.60 is substantial. But the features that
+      make a space isotropic are not the same as the features that make it useful for sentiment
+      classification or semantic similarity.
+    </p>
+    <p>
+      What this suggests is that a better-structured embedding space is a necessary but not
+      sufficient condition for better task performance. The JEPA objective improves geometry, but
+      something is being reorganised in the process that the linear probes can't recover from at
+      this training scale.
+    </p>
+
+    <h2>Limitations</h2>
+    <p>
+      5,000 training steps is substantially shorter than what JEPA-style objectives typically require.
+      Standard self-supervised pretraining uses hundreds of thousands of steps. At 5k, the model may
+      simply be in an early reorganisation phase: the representation structure is being disrupted
+      and rebuilt, but hasn't converged to something downstream-useful yet. Whether task utility
+      would recover with longer training is an open question this experiment can't answer.
+    </p>
+    <p>
+      The initialization from pretrained distilbert-base-uncased weights also complicates attribution.
+      Improvements to geometry could be due to the JEPA objective specifically, to general disruption
+      of the pretrained anisotropic structure, or to some interaction between the two. A clean
+      attribution would require training from random initialization, which is expensive at corpus scale.
+    </p>
+
+    <div class="divider"></div>
+    <p>Full source, training scripts, and evaluation code on <a href="https://github.com/Rahulrayy/JEPA-TEXT" target="_blank">GitHub →</a></p>
+
+  </div>
+
+  <footer>
+    <span class="footer-name"><a href="../index.html">Rahul Ray</a></span>
+    <span class="footer-note">
+      <a href="jepa.html" style="color:var(--muted)">← JEPA-IR</a>
+      &nbsp;·&nbsp;
+      <a href="../index.html#projects" style="color:var(--accent)">All projects →</a>
+    </span>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('nav')
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 30))
+    const navToggle = document.getElementById('navToggle')
+    const navOverlay = document.getElementById('navOverlay')
+    if (navToggle) {
+      navToggle.addEventListener('click', () => { nav.classList.toggle('nav-open'); navOverlay.classList.toggle('visible') })
+      navOverlay.addEventListener('click', () => { nav.classList.remove('nav-open'); navOverlay.classList.remove('visible') })
+      document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => { nav.classList.remove('nav-open'); navOverlay.classList.remove('visible') }))
+    }
+  </script>
+</body>
+</html>

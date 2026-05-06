@@ -23,7 +23,11 @@
       <li><a href="../index.html#experience">Experience</a></li>
       <li><a href="../index.html#contact">Contact</a></li>
     </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
+  <div class="nav-overlay" id="navOverlay"></div>
 
   <div class="project-hero">
     <a href="../index.html#projects" class="back-link">← Back to projects</a>
@@ -132,10 +136,10 @@
         </tr>
       </thead>
       <tbody>
-        <tr><td>Adult</td><td>Baseline</td><td>0.9010</td><td>0.0291</td><td>—</td><td>—</td></tr>
+        <tr><td>Adult</td><td>Baseline</td><td>0.9010</td><td>0.0291</td><td>N/A</td><td>N/A</td></tr>
         <tr><td>Adult</td><td>LLM-only</td><td>0.8411</td><td>0.0314</td><td>−1.975</td><td>Yes (worse)</td></tr>
         <tr><td>Adult</td><td>Hybrid</td><td>0.8969</td><td>0.0287</td><td>−0.139</td><td>No</td></tr>
-        <tr><td>HMEQ</td><td>Baseline</td><td>0.9044</td><td>0.0268</td><td>—</td><td>—</td></tr>
+        <tr><td>HMEQ</td><td>Baseline</td><td>0.9044</td><td>0.0268</td><td>N/A</td><td>N/A</td></tr>
         <tr><td>HMEQ</td><td>LLM-only</td><td>0.5587</td><td>0.0630</td><td>−7.144</td><td>Yes (worse)</td></tr>
         <tr class="highlight"><td>HMEQ</td><td>Hybrid</td><td>0.8654</td><td>0.0601</td><td>−0.837</td><td>Yes (worse)</td></tr>
       </tbody>
@@ -212,6 +216,13 @@
   <script>
     const nav = document.getElementById('nav')
     window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 30))
+    const navToggle = document.getElementById('navToggle')
+    const navOverlay = document.getElementById('navOverlay')
+    if (navToggle) {
+      navToggle.addEventListener('click', () => { nav.classList.toggle('nav-open'); navOverlay.classList.toggle('visible') })
+      navOverlay.addEventListener('click', () => { nav.classList.remove('nav-open'); navOverlay.classList.remove('visible') })
+      document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => { nav.classList.remove('nav-open'); navOverlay.classList.remove('visible') }))
+    }
   </script>
 </body>
 </html>

@@ -61,7 +61,7 @@
     .about-heading { font-family: var(--serif); font-size: clamp(2.2rem, 4vw, 3.4rem); font-weight: 300; line-height: 1.2; }
     .about-heading em { font-style: italic; color: var(--accent); }
     .about-body p { color: var(--muted); margin-bottom: 1.2rem; font-size: 1rem; }
-    .skills-grid { display: flex; flex-direction: column; gap: 1.1rem; margin-top: 2rem; }
+    .skills-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem 2.5rem; margin-top: 2rem; }
     .skills-group { display: flex; flex-direction: column; gap: 0.45rem; }
     .skills-group-label { font-family: var(--mono); font-size: 0.58rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); opacity: 0.65; }
     .skills-group-chips { display: flex; flex-wrap: wrap; gap: 0.45rem; }
@@ -185,6 +185,32 @@
       }
       .timeline-item { grid-template-columns: 1fr; gap: 0.4rem; }
     }
+
+    @media (max-width: 640px) {
+      #hero { padding-top: 5.5rem; min-height: auto; padding-bottom: 4rem; }
+      .hero-desc { font-size: 0.97rem; margin-bottom: 2rem; }
+      .hero-cta { gap: 0.8rem; flex-direction: column; align-items: flex-start; }
+      .scroll-hint { display: none; }
+
+      #projects, #about, #experience, #contact { padding-top: 3.5rem; padding-bottom: 3.5rem; }
+      .projects-heading { margin-bottom: 2rem; }
+      .project-row { gap: 1rem; padding: 1.6rem 0; }
+      .project-row-title { font-size: 1.2rem; }
+      .project-row-desc { font-size: 0.87rem; }
+      .project-row-cta { gap: 0.75rem; }
+      .carousel-nav { gap: 0.8rem; padding-top: 1.1rem; }
+      .carousel-dots { display: none; }
+
+      .about-heading { font-size: 1.9rem; }
+      .skills-grid { grid-template-columns: 1fr; gap: 0.9rem; }
+
+      .exp-group-label { padding-top: 1.5rem; }
+      .timeline-date { font-size: 0.65rem; }
+      .timeline-role { font-size: 1.1rem; }
+
+      .contact-heading { font-size: clamp(1.9rem, 8vw, 3rem); }
+      .contact-sub { font-size: 0.95rem; margin-bottom: 2rem; }
+    }
   </style>
 </head>
 <body>
@@ -198,7 +224,11 @@
       <li><a href="#contact">Contact</a></li>
       <li><a href="CV.pdf" download class="nav-cv">CV ↓</a></li>
     </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
+  <div class="nav-overlay" id="navOverlay"></div>
 
   <!-- Hero -->
   <section id="hero">
@@ -257,21 +287,17 @@
             </div>
           </div>
           <div class="skills-group">
-            <span class="skills-group-label">Deep Learning</span>
+            <span class="skills-group-label">Deep Learning &amp; RL</span>
             <div class="skills-group-chips">
               <span class="skill-tag">Vision Transformers · ResNet / CNNs</span>
               <span class="skill-tag">Self-Supervised Learning</span>
-              <span class="skill-tag">Mixup · Label Smoothing</span>
-              <span class="skill-tag">Generalisation Theory</span>
-            </div>
-          </div>
-          <div class="skills-group">
-            <span class="skills-group-label">Reinforcement Learning</span>
-            <div class="skills-group-chips">
+              <span class="skill-tag">Masked Representation Prediction</span>
+              <span class="skill-tag">EMA / Momentum Encoders</span>
               <span class="skill-tag">Q-Learning · DQN</span>
               <span class="skill-tag">Policy Gradients · PPO</span>
               <span class="skill-tag">Actor-Critic</span>
-              <span class="skill-tag">Gymnasium</span>
+              <span class="skill-tag">Mixup · Label Smoothing</span>
+              <span class="skill-tag">Generalisation Theory</span>
             </div>
           </div>
           <div class="skills-group">
@@ -296,7 +322,7 @@
             <span class="skills-group-label">MLOps &amp; Deployment</span>
             <div class="skills-group-chips">
               <span class="skill-tag">Automated ML pipelines</span>
-              <span class="skill-tag">Edge deployment · Model compression</span>
+              <span class="skill-tag">Edge deployment · Model quantization</span>
               <span class="skill-tag">Heuristic &amp; graph search</span>
               <span class="skill-tag">Hugging Face · Streamlit</span>
             </div>
@@ -439,7 +465,7 @@
             <div class="project-row-body">
               <div class="project-row-title"><a href="projects/jepa.html">JEPA-IR: Benchmarking I-JEPA for Image Retrieval</a></div>
               <div class="project-row-desc">
-                Can a model never trained contrastively still retrieve well? Benchmarks I-JEPA (ViT-H/14) as a frozen feature extractor against CLIP and ResNet-50 on Oxford5k and Paris6k. The gap — and the near-zero query expansion gain for I-JEPA — points to a fundamental embedding space issue, not a tuning problem.
+                Can a model never trained contrastively still retrieve well? Benchmarks I-JEPA (ViT-H/14) as a frozen feature extractor against CLIP and ResNet-50 on Oxford5k and Paris6k. The gap, and the near-zero query expansion gain for I-JEPA, points to a fundamental embedding space issue, not a tuning problem.
               </div>
               <div class="project-row-tags">
                 <span class="p-tag">I-JEPA</span>
@@ -457,10 +483,34 @@
           </div>
         </div>
 
+        <div class="proj-slide">
+          <div class="project-row">
+            <span class="project-num">07</span>
+            <div class="project-row-body">
+              <div class="project-row-title"><a href="projects/jepa-text.html">Text-JEPA: Representation Prediction for Language</a></div>
+              <div class="project-row-desc">
+                Adapts I-JEPA's masked representation prediction objective from vision to language using a DistilBERT-based context encoder, EMA target encoder, and shallow predictor. Trained on WikiText-103. Embedding geometry improved markedly (cosine similarity 0.93 → 0.60), but downstream task utility fell; the two metrics decoupled mid-training.
+              </div>
+              <div class="project-row-tags">
+                <span class="p-tag">Text-JEPA</span>
+                <span class="p-tag">DistilBERT</span>
+                <span class="p-tag">Self-Supervised Learning</span>
+                <span class="p-tag">EMA</span>
+                <span class="p-tag">WikiText-103</span>
+                <span class="p-tag">PyTorch</span>
+              </div>
+            </div>
+            <div class="project-row-cta">
+              <a href="projects/jepa-text.html" class="cta-link">Read writeup →</a>
+              <a href="https://github.com/Rahulrayy/JEPA-TEXT" target="_blank" class="cta-gh">↗ GitHub</a>
+            </div>
+          </div>
+        </div>
+
       </div>
       <div class="carousel-nav">
         <button class="carousel-btn" id="prevBtn" aria-label="Previous project">←</button>
-        <span class="carousel-counter" id="carouselCounter">01 / 06</span>
+        <span class="carousel-counter" id="carouselCounter">01 / 07</span>
         <button class="carousel-btn" id="nextBtn" aria-label="Next project">→</button>
         <div class="carousel-dots" id="carouselDots">
           <button class="carousel-dot active" aria-label="Project 1"></button>
@@ -469,6 +519,7 @@
           <button class="carousel-dot" aria-label="Project 4"></button>
           <button class="carousel-dot" aria-label="Project 5"></button>
           <button class="carousel-dot" aria-label="Project 6"></button>
+          <button class="carousel-dot" aria-label="Project 7"></button>
         </div>
       </div>
     </div>
@@ -543,6 +594,15 @@
   <script>
     const nav = document.getElementById('nav')
     window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 30))
+
+    // Mobile nav
+    const navToggle = document.getElementById('navToggle')
+    const navOverlay = document.getElementById('navOverlay')
+    if (navToggle) {
+      navToggle.addEventListener('click', () => { nav.classList.toggle('nav-open'); navOverlay.classList.toggle('visible') })
+      navOverlay.addEventListener('click', () => { nav.classList.remove('nav-open'); navOverlay.classList.remove('visible') })
+      document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => { nav.classList.remove('nav-open'); navOverlay.classList.remove('visible') }))
+    }
     const observer = new IntersectionObserver(
       entries => entries.forEach(e => {
         if (e.isIntersecting) {

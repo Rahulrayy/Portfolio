@@ -72,10 +72,8 @@ section { padding: 7rem 5vw; }
 /* ── Skill / tag chips ── */
 .skill-tag {
   font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
-  padding: 0.3rem 0.8rem; border: 1px solid var(--rule); color: var(--muted);
-  transition: border-color 0.2s, color 0.2s;
+  padding: 0.3rem 0.8rem; background: var(--surface); color: var(--ink);
 }
-.skill-tag:hover { border-color: var(--accent); color: var(--accent); }
 
 /* ── Footer ── */
 footer {
@@ -95,7 +93,45 @@ footer {
 .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
 .reveal.visible { opacity: 1; transform: none; }
 
+/* ── Mobile nav toggle ── */
+.nav-toggle {
+  display: none; flex-direction: column; gap: 5px;
+  background: none; border: none; cursor: pointer; padding: 4px; z-index: 101;
+}
+.nav-toggle span {
+  display: block; width: 22px; height: 1.5px; background: var(--ink);
+  transition: transform 0.3s, opacity 0.3s;
+}
+.nav-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(17,16,16,0.3); z-index: 98;
+}
+.nav-overlay.visible { display: block; }
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .nav-links { gap: 1.4rem; }
+}
+
+@media (max-width: 640px) {
+  section { padding: 4rem 6vw; }
+
+  .nav-toggle { display: flex; }
+  .nav-links {
+    position: fixed; top: 0; right: 0;
+    width: min(72vw, 260px); height: 100dvh;
+    background: var(--bg); border-left: 1px solid var(--rule);
+    flex-direction: column; gap: 2rem;
+    padding: 5.5rem 2rem 3rem;
+    transform: translateX(110%);
+    transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+    z-index: 100; align-items: flex-start;
+  }
+  .nav-links a { font-size: 0.82rem; }
+  nav.nav-open .nav-links { transform: translateX(0); }
+  nav.nav-open .nav-toggle span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+  nav.nav-open .nav-toggle span:nth-child(2) { opacity: 0; }
+  nav.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+  .btn { padding: 0.65rem 1.4rem; font-size: 0.7rem; }
 }

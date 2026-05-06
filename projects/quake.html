@@ -23,7 +23,11 @@
       <li><a href="../index.html#experience">Experience</a></li>
       <li><a href="../index.html#contact">Contact</a></li>
     </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
+  <div class="nav-overlay" id="navOverlay"></div>
 
   <div class="project-hero">
     <a href="../index.html#projects" class="back-link">← Back to projects</a>
@@ -95,9 +99,8 @@
     <p>
       With graphs in hand, the next step was generating training data. Dijkstra's algorithm was run 
       across approximately 625,000 source-goal pairs (sampled from each map) to compute true shortest 
-      path costs. The regression target is the correction factor:
+      path costs. The regression target is the correction factor (correction_factor = true_path_cost / euclidean_distance).
     </p>
-    <div class="code-block">correction_factor = true_path_cost / euclidean_distance</div>
     <p>
       This formulation is scale-invariant across maps of very different sizes. The model only needs 
       to learn how much above 1.0 the true cost is, it doesn't need to predict absolute distances. 
@@ -155,7 +158,7 @@
         <tr><th>Method</th><th>Mean nodes expanded</th><th>Path cost ratio</th><th>vs Euclidean</th></tr>
       </thead>
       <tbody>
-        <tr><td>Dijkstra</td><td>~all nodes</td><td>1.000</td><td>—</td></tr>
+        <tr><td>Dijkstra</td><td>~all nodes</td><td>1.000</td><td>N/A</td></tr>
         <tr><td>Euclidean A*</td><td>96.2</td><td>1.000</td><td>Baseline</td></tr>
         <tr class="highlight"><td>MLP A*</td><td>56.7</td><td>1.020</td><td>−42.4%</td></tr>
         <tr class="highlight"><td>XGBoost A*</td><td>56.9</td><td>1.020</td><td>−42.2%</td></tr>
@@ -198,27 +201,6 @@
       predictions and would likely sacrifice some of the node expansion gains.
     </p>
 
-    <h2>Project structure</h2>
-    <div class="code-block">
-src/
-├── pak_reader.py       # PAK archive parser (extracts .bsp files)
-├── bsp_parser.py       # BSP v29 binary parser
-├── nav_graph.py        # Navigation graph construction
-├── astar.py            # A* with pluggable heuristic interface
-├── features.py         # Feature extraction (17 features)
-├── model.py            # MLP definition and training
-├── learned_heuristics.py  # MLP heuristic wrapper
-├── xg_model.py         # XGBoost training
-└── xg_heuristic.py     # XGBoost heuristic wrapper
-
-scripts/
-├── generate_data.py    # Dijkstra ground truth generation
-├── benchmark.py        # MLP benchmark runner
-├── xg_benchmark.py     # 4-method comparison
-├── visualize.py        # Result plots and EDA
-└── animate.py          # Animated A* comparison (GIF)
-    </div>
-
     <div class="divider"></div>
     <p>Full source code and benchmarks on <a href="https://github.com/Rahulrayy/quake" target="_blank">GitHub →</a></p>
 
@@ -236,6 +218,13 @@ scripts/
   <script>
     const nav = document.getElementById('nav')
     window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 30))
+    const navToggle = document.getElementById('navToggle')
+    const navOverlay = document.getElementById('navOverlay')
+    if (navToggle) {
+      navToggle.addEventListener('click', () => { nav.classList.toggle('nav-open'); navOverlay.classList.toggle('visible') })
+      navOverlay.addEventListener('click', () => { nav.classList.remove('nav-open'); navOverlay.classList.remove('visible') })
+      document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => { nav.classList.remove('nav-open'); navOverlay.classList.remove('visible') }))
+    }
   </script>
 </body>
 </html>

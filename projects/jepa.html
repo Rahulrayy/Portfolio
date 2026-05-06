@@ -23,7 +23,11 @@
       <li><a href="../index.html#experience">Experience</a></li>
       <li><a href="../index.html#contact">Contact</a></li>
     </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
+  <div class="nav-overlay" id="navOverlay"></div>
 
   <div class="project-hero">
     <a href="../index.html#projects" class="back-link">← Back to projects</a>
@@ -63,7 +67,7 @@
 
     <h2>The question</h2>
     <p>
-      I-JEPA learns by predicting masked image patch representations — no contrastive pairs, no labels,
+      I-JEPA learns by predicting masked image patch representations: no contrastive pairs, no labels,
       no explicit notion of similarity between images. CLIP, by contrast, is explicitly trained to align
       images and text that belong together and push apart pairs that don't. These are fundamentally
       different objectives.
@@ -76,7 +80,7 @@
 
     <h2>Setup</h2>
     <p>
-      Three models, all used as frozen feature extractors — no fine-tuning, no task-specific training.
+      Three models, all used as frozen feature extractors: no fine-tuning, no task-specific training.
       Embeddings are L2 normalized before indexing, and retrieval uses exhaustive cosine similarity search
       via a FAISS FlatIP index.
     </p>
@@ -111,19 +115,19 @@
 
     <div class="result-block">
       <p>I-JEPA trails ResNet-50 by ~19 points mAP on Oxford5k and ~25 points on Paris6k</p>
-      <p>CLIP leads by ~30 points mAP on Oxford5k — a model 3× smaller in embedding dimension</p>
+      <p>CLIP leads by ~30 points mAP on Oxford5k, a model 3x smaller in embedding dimension</p>
     </div>
 
     <p>
       I-JEPA significantly underperforms both baselines. A pretrained ResNet-50 with standard ImageNet
-      weights — a much simpler model with no explicit similarity objective — comfortably outperforms it.
+      weights, a much simpler model with no explicit similarity objective, comfortably outperforms it.
       CLIP's margin is larger still.
     </p>
 
     <h2>What the failures look like</h2>
     <p>
       The qualitative results clarify where I-JEPA breaks down. It performs best on landmarks with
-      distinctive geometry — the Radcliffe Camera, Hertford College — where the patch-level structure
+      distinctive geometry (the Radcliffe Camera, Hertford College) where the patch-level structure
       of the building is sufficient to find similar images. It struggles with semantically complex scenes
       that require understanding of <em>place</em> rather than just shape.
     </p>
@@ -136,11 +140,11 @@
     <h2>Query expansion</h2>
     <p>
       Query expansion (α = 3.0) adds the top retrieved embeddings back into the query vector before
-      re-ranking. For CLIP, this provides a +0.011 mAP gain — meaningful, and expected, since the
+      re-ranking. For CLIP, this provides a +0.011 mAP gain, meaningful and expected, since the
       embedding space is well-structured enough for nearby points to genuinely refine the query.
     </p>
     <p>
-      For I-JEPA, the gain is +0.002 mAP — essentially nothing. This is the diagnostic finding. If the
+      For I-JEPA, the gain is +0.002 mAP: essentially nothing. This is the diagnostic finding. If the
       embedding space were well-structured and the problem were simply a threshold issue, query expansion
       would help. The near-zero gain points to something more fundamental: the embedding space itself
       isn't organized in a way that makes retrieval tractable, regardless of how the query is refined.
@@ -150,7 +154,7 @@
     <p>
       The gap makes sense once you consider what each objective is actually optimizing for. CLIP's
       contrastive objective directly trains the model to place matching images close together and
-      non-matching images far apart — which is exactly what retrieval requires. I-JEPA's objective
+      non-matching images far apart, which is exactly what retrieval requires. I-JEPA's objective
       trains for prediction of masked patch representations within a single image, with no signal
       about inter-image relationships at all.
     </p>
@@ -177,6 +181,13 @@
   <script>
     const nav = document.getElementById('nav')
     window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 30))
+    const navToggle = document.getElementById('navToggle')
+    const navOverlay = document.getElementById('navOverlay')
+    if (navToggle) {
+      navToggle.addEventListener('click', () => { nav.classList.toggle('nav-open'); navOverlay.classList.toggle('visible') })
+      navOverlay.addEventListener('click', () => { nav.classList.remove('nav-open'); navOverlay.classList.remove('visible') })
+      document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => { nav.classList.remove('nav-open'); navOverlay.classList.remove('visible') }))
+    }
   </script>
 </body>
 </html>

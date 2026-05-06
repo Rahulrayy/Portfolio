@@ -124,3 +124,15 @@
   .project-meta { gap: 1.5rem; }
   .project-hero-title { font-size: 2.2rem; }
 }
+
+@media (max-width: 640px) {
+  .project-hero { padding-top: 6.5rem; padding-bottom: 2.5rem; }
+  .project-hero-title { font-size: 1.9rem; }
+  .project-body { padding: 3rem 6vw; }
+  .project-body h2 { font-size: 1.55rem; margin-top: 2.5rem; }
+  .data-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .result-block { padding: 1rem 1.1rem; }
+  .hero-btns { flex-direction: column; align-items: flex-start; }
+  .github-btn, .live-btn { width: 100%; justify-content: center; text-align: center; }
+  .back-link { margin-bottom: 2rem; }
+}
