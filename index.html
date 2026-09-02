@@ -4,14 +4,20 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Rahul Ray: AI/ML · Data Science</title>
-  <meta name="description" content="Rahul Ray, MSc Data Science student at Leiden University. ML research spanning tabular learning, heuristic search, double descent, and edge AI.">
+  <meta name="description" content="Rahul Ray, MSc Data Science student at Leiden University. ML research on RAG evaluation, quantization, self-supervised learning and tabular ML, built on controlled baselines and honest reporting.">
+  <link rel="canonical" href="https://rahulrayy.github.io/Portfolio/">
   <meta property="og:title" content="Rahul Ray: AI/ML · Data Science">
-  <meta property="og:description" content="MSc Data Science student at Leiden University. ML research spanning tabular learning, heuristic search, double descent, and edge AI.">
+  <meta property="og:description" content="MSc Data Science student at Leiden University. ML research on RAG evaluation, quantization, self-supervised learning and tabular ML, built on controlled baselines and honest reporting.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://rahulrayy.github.io/">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:url" content="https://rahulrayy.github.io/Portfolio/">
+  <meta property="og:image" content="https://rahulrayy.github.io/Portfolio/assets/og-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Rahul Ray — MSc Data Science, Leiden University">
+  <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Rahul Ray: AI/ML · Data Science">
-  <meta name="twitter:description" content="MSc Data Science student at Leiden University. ML research spanning tabular learning, heuristic search, double descent, and edge AI.">
+  <meta name="twitter:description" content="MSc Data Science student at Leiden University. ML research on RAG evaluation, quantization, self-supervised learning and tabular ML, built on controlled baselines and honest reporting.">
+  <meta name="twitter:image" content="https://rahulrayy.github.io/Portfolio/assets/og-card.png">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='8' fill='%231443FF'/><text x='50' y='76' font-size='72' text-anchor='middle' fill='white' font-family='Georgia,serif' font-style='italic'>R</text></svg>">
   <link rel="stylesheet" href="style.css" />
   <style>
@@ -619,7 +625,7 @@
     <div class="contact-inner">
       <h2 class="contact-heading reveal">Let's work on something <em>worth working on.</em></h2>
       <p class="contact-sub reveal">
-        Actively looking for ML and data science internships for 2026. Also open to research
+        Actively looking for ML and data science internships and thesis placements for 2027. Also open to research
         collaborations and conversations about generalisation, tabular learning, or edge AI.
         Reach me at <a href="mailto:rahulraypm2002@gmail.com">rahulraypm2002@gmail.com</a>,
         find my work on <a href="https://github.com/Rahulrayy" target="_blank">GitHub</a>,
@@ -661,35 +667,33 @@
     const track = document.getElementById('carouselTrack')
     const counter = document.getElementById('carouselCounter')
     const dots = [...document.getElementById('carouselDots').querySelectorAll('.carousel-dot')]
-    const carouselWrapper = track.closest('.carousel-wrapper')
-    const slides = track.querySelectorAll('.proj-slide')
+    const slides = [...track.querySelectorAll('.proj-slide')]
     const total = slides.length
     let cur = 0
-    let autoTimer
 
+    // Reader-driven only: no autoplay. Slides advance on arrows, dots,
+    // keyboard or swipe, so a project stays put while it is being read.
     function goTo(n) {
       cur = (n + total) % total
       track.style.transform = `translateX(-${cur * 100}%)`
       counter.textContent = `${String(cur + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`
       dots.forEach((d, i) => d.classList.toggle('active', i === cur))
+      // Keep off-screen slides out of the tab order.
+      slides.forEach((s, i) => {
+        const hidden = i !== cur
+        s.setAttribute('aria-hidden', hidden ? 'true' : 'false')
+        s.querySelectorAll('a').forEach(a => a.tabIndex = hidden ? -1 : 0)
+      })
     }
 
-    dots.forEach((d, i) => d.addEventListener('click', () => { stopAuto(); goTo(i); startAuto() }))
+    dots.forEach((d, i) => d.addEventListener('click', () => goTo(i)))
+    document.getElementById('prevBtn').addEventListener('click', () => goTo(cur - 1))
+    document.getElementById('nextBtn').addEventListener('click', () => goTo(cur + 1))
 
-    function startAuto() { autoTimer = setInterval(() => goTo(cur + 1), 6000) }
-    function stopAuto() { clearInterval(autoTimer) }
-
-    startAuto()
-    carouselWrapper.addEventListener('mouseenter', stopAuto)
-    carouselWrapper.addEventListener('mouseleave', () => { if (!document.hidden) startAuto() })
-    document.addEventListener('visibilitychange', () => { document.hidden ? stopAuto() : startAuto() })
-
-    document.getElementById('prevBtn').addEventListener('click', () => { stopAuto(); goTo(cur - 1); startAuto() })
-    document.getElementById('nextBtn').addEventListener('click', () => { stopAuto(); goTo(cur + 1); startAuto() })
     document.addEventListener('keydown', e => {
       if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return
-      if (e.key === 'ArrowLeft') { stopAuto(); goTo(cur - 1); startAuto() }
-      if (e.key === 'ArrowRight') { stopAuto(); goTo(cur + 1); startAuto() }
+      if (e.key === 'ArrowLeft') goTo(cur - 1)
+      if (e.key === 'ArrowRight') goTo(cur + 1)
     })
 
     // Touch swipe
@@ -697,8 +701,10 @@
     track.addEventListener('touchstart', e => { touchX = e.touches[0].clientX }, { passive: true })
     track.addEventListener('touchend', e => {
       const dx = e.changedTouches[0].clientX - touchX
-      if (Math.abs(dx) > 50) { stopAuto(); goTo(cur + (dx < 0 ? 1 : -1)); startAuto() }
+      if (Math.abs(dx) > 50) goTo(cur + (dx < 0 ? 1 : -1))
     })
+
+    goTo(0)
   </script>
 </body>
 </html>

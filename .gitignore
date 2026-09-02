@@ -1,0 +1,10 @@
+# CV source lives in Overleaf; only the exported PDF is tracked
+CV.tex
+*.aux
+*.log
+*.out
+*.synctex.gz
+
+.venv/
+.idea/
+__pycache__/
