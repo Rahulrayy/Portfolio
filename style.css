@@ -135,3 +135,42 @@ footer {
 
   .btn { padding: 0.65rem 1.4rem; font-size: 0.7rem; }
 }
+
+/* ── Reduced motion ──────────────────────────────────────────
+   Two rules, deliberately split.
+
+   1. The blanket rule collapses DURATIONS only. It must not touch
+      `transform`, because several transforms here are positional
+      rather than decorative: the mobile nav sits off-canvas at
+      translateX(110%), the hamburger bars rotate into an X, and the
+      carousel track is positioned by an inline translateX. Resetting
+      those would pin the menu open and stack every slide on slide 1.
+
+   2. Elements that animate IN start at opacity:0 and are only made
+      visible by the animation finishing. Cancelling their animation
+      without restoring opacity would leave the hero permanently
+      blank, so they are explicitly forced visible here.
+   ────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+
+  html { scroll-behavior: auto !important; }
+
+  .hero-eyebrow, .hero-name, .hero-desc, .hero-cta, .scroll-hint {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  .reveal, .reveal.visible {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
