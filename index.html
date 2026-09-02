@@ -343,6 +343,52 @@
           <div class="project-row">
             <span class="project-num">01</span>
             <div class="project-row-body">
+              <div class="project-row-title"><a href="projects/rag-permutation.html">Is it the Pruning, or the Ordering?</a></div>
+              <div class="project-row-desc">
+                Context pruning in RAG repositions the passages it keeps, so reported gains confound selection with positional promotion. A placebo pruner that discards by position without reading, plus five orderings per question across 45,510 generations, separates the two. Pre-registered before any data existed; the main hypothesis did not hold.
+              </div>
+              <div class="project-row-tags">
+                <span class="p-tag">RAG</span>
+                <span class="p-tag">Context Pruning</span>
+                <span class="p-tag">HotpotQA</span>
+                <span class="p-tag">Qwen2.5-3B</span>
+                <span class="p-tag">Pre-registration</span>
+                <span class="p-tag">LLMLingua-2</span>
+              </div>
+            </div>
+            <div class="project-row-cta">
+              <a href="projects/rag-permutation.html" class="cta-link">Read writeup →</a>
+              <a href="https://github.com/Rahulrayy/rag-permutation-study" target="_blank" class="cta-gh">↗ GitHub</a>
+            </div>
+          </div>
+        </div>
+        <div class="proj-slide">
+          <div class="project-row">
+            <span class="project-num">02</span>
+            <div class="project-row-body">
+              <div class="project-row-title"><a href="projects/attention-sinks-quant.html">Attention Sinks and Quantization: An Audit</a></div>
+              <div class="project-row-desc">
+                Does fixing attention sinks architecturally make a model easier to quantize? Five checkpoints differing by one boolean in config.json, 360 grid cells, everything with bootstrap confidence intervals. The fix works, it is also redundant under modern per-token scaling, and the variant with the lowest sink mass is the only one 8-bit quantization destroys.
+              </div>
+              <div class="project-row-tags">
+                <span class="p-tag">Activation Quantization</span>
+                <span class="p-tag">Gated Attention</span>
+                <span class="p-tag">FineWeb-Edu</span>
+                <span class="p-tag">LAMBADA</span>
+                <span class="p-tag">Bootstrap CIs</span>
+                <span class="p-tag">PyTorch</span>
+              </div>
+            </div>
+            <div class="project-row-cta">
+              <a href="projects/attention-sinks-quant.html" class="cta-link">Read writeup →</a>
+              <a href="https://github.com/Rahulrayy/attention-sinks-quant" target="_blank" class="cta-gh">↗ GitHub</a>
+            </div>
+          </div>
+        </div>
+        <div class="proj-slide">
+          <div class="project-row">
+            <span class="project-num">03</span>
+            <div class="project-row-body">
               <div class="project-row-title"><a href="projects/llm-tabular.html">Can LLMs Make Tabular ML Better?</a></div>
               <div class="project-row-desc">
                 A controlled experiment testing whether LLM-generated semantic features improve XGBoost on structured data, using nested CV, Wilcoxon tests, and Cohen's d to evaluate the hybrid approach properly.
@@ -362,10 +408,9 @@
             </div>
           </div>
         </div>
-
         <div class="proj-slide">
           <div class="project-row">
-            <span class="project-num">02</span>
+            <span class="project-num">04</span>
             <div class="project-row-body">
               <div class="project-row-title"><a href="projects/autoinsight.html">AutoInsight: End-to-End AutoML App</a></div>
               <div class="project-row-desc">
@@ -387,10 +432,9 @@
             </div>
           </div>
         </div>
-
         <div class="proj-slide">
           <div class="project-row">
-            <span class="project-num">03</span>
+            <span class="project-num">05</span>
             <div class="project-row-body">
               <div class="project-row-title"><a href="projects/quake.html">Quake: Learned Heuristic A* on BSP Geometry</a></div>
               <div class="project-row-desc">
@@ -411,10 +455,9 @@
             </div>
           </div>
         </div>
-
         <div class="proj-slide">
           <div class="project-row">
-            <span class="project-num">04</span>
+            <span class="project-num">06</span>
             <div class="project-row-body">
               <div class="project-row-title"><a href="projects/double-descent.html">Epoch-wise Double Descent Under Label Noise</a></div>
               <div class="project-row-desc">
@@ -434,10 +477,9 @@
             </div>
           </div>
         </div>
-
         <div class="proj-slide">
           <div class="project-row">
-            <span class="project-num">05</span>
+            <span class="project-num">07</span>
             <div class="project-row-body">
               <div class="project-row-title"><a href="projects/newsphere.html">Newsphere Live: Semantic News Map</a></div>
               <div class="project-row-desc">
@@ -458,10 +500,9 @@
             </div>
           </div>
         </div>
-
         <div class="proj-slide">
           <div class="project-row">
-            <span class="project-num">06</span>
+            <span class="project-num">08</span>
             <div class="project-row-body">
               <div class="project-row-title"><a href="projects/jepa.html">JEPA-IR: Benchmarking I-JEPA for Image Retrieval</a></div>
               <div class="project-row-desc">
@@ -482,10 +523,9 @@
             </div>
           </div>
         </div>
-
         <div class="proj-slide">
           <div class="project-row">
-            <span class="project-num">07</span>
+            <span class="project-num">09</span>
             <div class="project-row-body">
               <div class="project-row-title"><a href="projects/jepa-text.html">Text-JEPA: Representation Prediction for Language</a></div>
               <div class="project-row-desc">
@@ -510,7 +550,7 @@
       </div>
       <div class="carousel-nav">
         <button class="carousel-btn" id="prevBtn" aria-label="Previous project">←</button>
-        <span class="carousel-counter" id="carouselCounter">01 / 07</span>
+        <span class="carousel-counter" id="carouselCounter">01 / 09</span>
         <button class="carousel-btn" id="nextBtn" aria-label="Next project">→</button>
         <div class="carousel-dots" id="carouselDots">
           <button class="carousel-dot active" aria-label="Project 1"></button>
@@ -520,6 +560,8 @@
           <button class="carousel-dot" aria-label="Project 5"></button>
           <button class="carousel-dot" aria-label="Project 6"></button>
           <button class="carousel-dot" aria-label="Project 7"></button>
+          <button class="carousel-dot" aria-label="Project 8"></button>
+          <button class="carousel-dot" aria-label="Project 9"></button>
         </div>
       </div>
     </div>

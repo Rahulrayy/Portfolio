@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attention Sinks and Quantization: An Audit · Rahul Ray</title>
+  <meta name="description" content="Does fixing attention sinks architecturally make a model easier to quantize? Five checkpoints, three bit widths, 360 grid cells, bootstrap confidence intervals. Mostly no, and the best-known fix makes one model far worse.">
+  <meta property="og:title" content="Attention Sinks and Quantization: An Audit · Rahul Ray">
+  <meta property="og:description" content="An audit of whether architectural attention-sink mitigation buys measurable robustness to low-bit activation quantization, on checkpoints that differ by a single boolean in config.json.">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='8' fill='%231443FF'/><text x='50' y='76' font-size='72' text-anchor='middle' fill='white' font-family='Georgia,serif' font-style='italic'>R</text></svg>">
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="project.css" />
+</head>
+<body>
+
+  <nav id="nav">
+    <div class="nav-logo"><a href="../index.html">Rahul Ray</a></div>
+    <ul class="nav-links">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../index.html#projects">Projects</a></li>
+      <li><a href="../index.html#experience">Experience</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div class="nav-overlay" id="navOverlay"></div>
+
+  <div class="project-hero">
+    <a href="../index.html#projects" class="back-link">← Back to projects</a>
+    <p class="project-hero-label">Project 02</p>
+    <h1 class="project-hero-title">Attention Sinks and Quantization: <em>Does the Architectural Fix Still Pay?</em></h1>
+    <div class="project-meta">
+      <div class="meta-group">
+        <span class="meta-label">Type</span>
+        <span class="meta-value">Audit of a Published Claim</span>
+      </div>
+      <div class="meta-group">
+        <span class="meta-label">Scale</span>
+        <span class="meta-value">5 checkpoints · 360 grid cells</span>
+      </div>
+      <div class="meta-group">
+        <span class="meta-label">Stack</span>
+        <span class="meta-value">PyTorch · transformers · lm-eval-harness</span>
+      </div>
+    </div>
+    <div class="hero-tags">
+      <span class="h-tag">Attention Sinks</span>
+      <span class="h-tag">Activation Quantization</span>
+      <span class="h-tag">Gated Attention</span>
+      <span class="h-tag">Perplexity</span>
+      <span class="h-tag">LAMBADA</span>
+      <span class="h-tag">Bootstrap CIs</span>
+      <span class="h-tag">FineWeb-Edu</span>
+      <span class="h-tag">PyTorch</span>
+    </div>
+    <div class="hero-btns">
+      <a href="https://github.com/Rahulrayy/attention-sinks-quant" target="_blank" class="github-btn">↗ View on GitHub</a>
+    </div>
+  </div>
+
+  <div class="project-body">
+
+    <h2>The question</h2>
+    <p>
+      Large language models concentrate a disproportionate share of attention mass on a
+      handful of token positions, usually position 0. Those positions carry extreme
+      residual-stream outliers. Both facts are established, and neither is re-tested here.
+      The claim under audit is the third one: that these outliers are what breaks low-bit
+      activation quantization, and that mitigating them architecturally buys measurable
+      robustness.
+    </p>
+    <p>
+      That literature was largely built against per-tensor activation quantization and
+      pre-QK-Norm architectures. Both have moved on. The question is whether the
+      architectural fix still pays once it is compared against a properly configured modern
+      baseline, meaning per-token activation scaling on models that already use QK-Norm,
+      and reported with confidence intervals, which almost none of the prior work does.
+    </p>
+    <p>
+      A negative result, that the architectural fix is largely redundant under modern
+      quantization practice, was treated as the null hypothesis rather than a
+      disappointment. The result came back partly negative, which turned out to be the
+      more interesting outcome.
+    </p>
+
+    <h2>Setup</h2>
+    <p>
+      Five checkpoints, three of which are 1.7B models from the same training run that
+      differ by a single boolean in <code>config.json</code>: an ungated baseline, a
+      head-wise gate adding 0.1% parameters, and an element-wise gate adding 12%. The
+      gated checkpoints are Qiu et al. (NeurIPS 2025), used as released rather than
+      reimplemented. GPT-2 small and Qwen3-0.6B-Base supply cross-architecture context.
+    </p>
+    <p>
+      The headline metric is <strong>D_sink = Δppl(all quantized) − Δppl(sink tokens
+      fp16)</strong>: the quantization damage attributable specifically to the sink
+      positions, in nats, with 95% sequence-bootstrap confidence intervals over 32 held-out
+      sequences. 360 grid cells on 281 FineWeb-Edu documents at 8, 6 and 4-bit activations,
+      plus a 60-cell replication on a second corpus of Python source, and one downstream
+      task.
+    </p>
+
+    <h2>Three results, all true at once</h2>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Model</th><th>ppl_ref</th><th>D_sink per-tensor (2023)</th><th>D_sink per-token (modern)</th><th>Ratio</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>GPT-2 small</td><td>29.6</td><td>+0.2097</td><td>+0.0047 (zero)</td><td>44×</td></tr>
+        <tr><td>Qwen3-0.6B-Base</td><td>17.9</td><td>+0.4378</td><td>+0.0096</td><td>46×</td></tr>
+        <tr><td>1B_baseline</td><td>14.7</td><td>+0.6450</td><td>+0.0203</td><td>32×</td></tr>
+        <tr class="highlight"><td>1B_headwise (+0.1%)</td><td>14.6</td><td>+0.0117 (zero)</td><td>+0.0012 (zero)</td><td>—</td></tr>
+        <tr><td>1B_elementwise (+12%)</td><td>14.5</td><td>destroyed</td><td>+0.0009 (zero)</td><td>—</td></tr>
+      </tbody>
+    </table>
+
+    <div class="result-block">
+      <p>The fix works: on the matched pair, per-tensor sink damage falls 55× (+0.6450 → +0.0117 nats) for 0.1% extra parameters</p>
+      <p>It is redundant: switching the quantizer from per-tensor to per-token scaling buys the same 32–46× reduction on every model, with no architecture change</p>
+      <p>The standard metric ranks the worst model first: the variant with the lowest sink mass is the only checkpoint per-tensor 8-bit quantization destroys</p>
+    </div>
+
+    <p>
+      Each result on its own gives a misleading impression. The first says the fix works.
+      The second says it is unnecessary. The third says the best-known variant of it is
+      harmful in exactly the setting it was designed for. A paper reporting only the first
+      column would be correct but misleading; one reporting only the second would conclude
+      the mitigation does not work.
+    </p>
+
+    <h2>Sink mass is not a sufficient predictor</h2>
+    <p>
+      Ranking the checkpoints by mean sink mass and then by how much damage per-tensor
+      8-bit activation quantization actually does puts them in nearly opposite orders at
+      the top:
+    </p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>By sink mass (least first)</th><th>Sink mass</th><th>By per-tensor 8-bit damage (least first)</th><th>Δppl</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1B_elementwise</td><td>0.019</td><td>1B_headwise</td><td>+2.2</td></tr>
+        <tr><td>1B_headwise</td><td>0.057</td><td>GPT-2 small</td><td>+8.1</td></tr>
+        <tr><td>GPT-2 small</td><td>0.383</td><td>Qwen3-0.6B</td><td>+14.3</td></tr>
+        <tr><td>1B_baseline</td><td>0.439</td><td>1B_baseline</td><td>+18.5</td></tr>
+        <tr class="highlight"><td>Qwen3-0.6B</td><td>0.523</td><td>1B_elementwise</td><td>+3600</td></tr>
+      </tbody>
+    </table>
+
+    <p>
+      The element-wise gate carries the least sink mass in the set and takes 195× more
+      damage than the ungated baseline it is meant to improve on, against an unquantized
+      perplexity of 14.5. Selecting or evaluating an architecture on sink mass alone, as
+      much of this literature does, uses a proxy that can rank two real models the wrong
+      way round, and it does so here on the pair a practitioner would most likely be
+      choosing between.
+    </p>
+    <p>
+      Attention entropy explains the direction. Head-wise holds entropy nearly flat across
+      depth (3.04 → 2.76), while element-wise still concentrates sharply (2.96 → 1.53),
+      closer to the ungated baseline's fall of 1.26 than to its head-wise sibling. So
+      "sink-free" does not imply "unconcentrated", and the two gates are not doing the
+      same thing.
+    </p>
+    <p>
+      The claim made is narrow: this is an existence proof that the standard metric inverts
+      on real checkpoints. The stronger claim, that sink mass is the wrong metric in
+      general, is not supported by two arms of one lab's training run and is not made.
+    </p>
+
+    <h2>Where the damage actually is</h2>
+    <p>
+      The obvious suspect was the gate itself, fused into <code>q_proj</code> as extra
+      output width. Leaving <code>q_proj</code> entirely in fp16, gate included, changes
+      nothing: the model is destroyed either way. Exempting <code>o_proj</code>, which
+      consumes the gated output, recovers about 10%, which on a model at 235× its
+      reference perplexity is not a rescue. The amplification explanation was tested and
+      is wrong.
+    </p>
+    <p>
+      Per-tensor and per-token scaling differ in exactly one respect, which is whether the
+      scale is shared across token rows. Same rounding, same clamp, same bit width. So the
+      entire gap must be expressible as a property of how magnitude is distributed across
+      rows. Measuring that directly on every layer's input, while quantizing nothing,
+      localised the failure to one tensor: the layer-0 MLP input feeding both branches of
+      the SwiGLU.
+    </p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Model (layer-0 MLP input)</th><th>Row dispersion</th><th>Underflow per-tensor</th><th>Per-token</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Qwen3-0.6B</td><td>1.4×</td><td>0.1181</td><td>0.0851</td></tr>
+        <tr><td>1B baseline (ungated)</td><td>1.6×</td><td>0.0957</td><td>0.0681</td></tr>
+        <tr><td>1B head-wise (+0.1%)</td><td>1.6×</td><td>0.0705</td><td>0.0343</td></tr>
+        <tr class="highlight"><td>1B element-wise (+12%)</td><td>28.4×</td><td>0.9926</td><td>0.4620</td></tr>
+      </tbody>
+    </table>
+
+    <p>
+      Under a shared 8-bit scale that tensor loses <strong>99.26%</strong> of its entries
+      to rounding, against 9.6% for the ungated baseline. Under per-row scales the same
+      tensor loses 46%, elevated but survivable, which is why per-token damage stays at
+      +0.68 nats on the same checkpoint. Holding that single MLP in fp16, three modules out
+      of 196, takes the model from 241× its reference perplexity back to 1.45×.
+    </p>
+    <p>
+      That failure is not sink-attributable at all: holding the sink in fp16 does not
+      rescue it, and the element-wise checkpoint has no residual outlier channel to exempt
+      in the first place. Whatever destroys it, a residual-stream outlier is not it.
+    </p>
+
+    <h2>Does any of it reach behaviour?</h2>
+    <p>
+      Everything above is an ordering of perplexity damage, and this project's corrections
+      log is mostly about perplexity orderings that did not survive a second corpus or a
+      second threshold. LAMBADA, scored as greedy exact-match on 1000 examples, was the
+      independent check planned from the start. The protocol reproduces a published number
+      first: GPT-2 small scores 0.3070 against roughly 0.326 published on the full 5153
+      examples.
+    </p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Model</th><th>fp16 acc</th><th>Per-tensor acc</th><th>Drop</th><th>Per-token acc</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>GPT-2 small</td><td>0.3070</td><td>0.1950</td><td>+0.1120</td><td>0.3070</td></tr>
+        <tr><td>Qwen3-0.6B-Base</td><td>0.5260</td><td>0.2120</td><td>+0.3140</td><td>0.5010</td></tr>
+        <tr><td>1B_baseline</td><td>0.5950</td><td>0.2440</td><td>+0.3510</td><td>0.6090</td></tr>
+        <tr class="highlight"><td>1B_headwise (+0.1%)</td><td>0.6070</td><td>0.5100</td><td>+0.0970</td><td>0.6060</td></tr>
+        <tr><td>1B_elementwise (+12%)</td><td>0.6110</td><td>0.0010 (floor)</td><td>+0.6100</td><td>0.5910</td></tr>
+      </tbody>
+    </table>
+
+    <p>
+      The fix is worth 25 accuracy points on the matched pair under per-tensor: the ungated
+      baseline loses 35.1 points, the head-wise gate loses 9.7, with non-overlapping
+      intervals, for one boolean and 0.1% extra parameters. But perplexity overstates the
+      size of that win. Total Δppl makes head-wise a 7.8× improvement (+17.94 → +2.29);
+      accuracy makes it 3.6× (0.351 → 0.097). Same direction, less than half the magnitude,
+      which is the kind of calibration a second metric exists to provide.
+    </p>
+    <p>
+      The damage also concentrates on the hard tokens. LAMBADA target perplexity goes to
+      7.11× reference on the baseline under per-tensor, against a 2.22× whole-corpus ratio
+      on FineWeb-Edu. Quantization hurts most on exactly the tokens that require long-range
+      context, which an averaged perplexity hides.
+    </p>
+
+    <h2>Guarding the metric</h2>
+    <p>
+      D_sink is a difference between two damaged models. Once both are destroyed, that
+      difference no longer says anything about which degrades more gracefully. Any cell
+      whose quantized perplexity exceeds 10× its own reference is flagged as destroyed in
+      code, hatched in the figures, and excluded from ratio columns. The threshold is a
+      judgement call, so the sweep is published: measured ratios cluster at 1.01–2.22×,
+      two borderline cells at 8.7× and 8.9×, and 15 cells at 42.7× and above. A threshold
+      of 10× falls inside the empty gap, and anything from 10× to 20× behaves identically.
+    </p>
+    <p>
+      An earlier version of this work made the sink-mass argument from D_sink itself, which
+      was invalid for exactly this reason: at Δppl +3600 the element-wise per-tensor cell is
+      a destroyed model. The claim survived the correction in a stronger form, based on
+      total damage rather than a difference of differences, and the flagging is now enforced
+      in code rather than left to the reader. That correction, and 27 others, are in the
+      repository's corrections log.
+    </p>
+
+    <h2>Limitations</h2>
+    <p>
+      The largest model here is 1.7B, so none of this is frontier-scale. The controlled set
+      is one lab's training run, which makes the metric-inversion result an existence proof
+      rather than a population study. The element-wise arm confounds gating with a 12%
+      capacity increase and is not parameter-matched. Quantization is simulated: no int8
+      kernels, no speedup measured, so nothing here says anything about latency. LAMBADA is
+      one task, in one language, at one sample size.
+    </p>
+    <p>
+      A pretraining arm for <code>softmax1</code> was specified, partly built, and
+      deliberately cut. <code>softmax1</code> cannot be retrofitted onto pretrained weights
+      because the output is the original convex combination scaled down uniformly, so a
+      retrofitted model would degrade for reasons that say nothing about the mechanism. The
+      identity is verified in tests; the intervention remains unevaluated with confidence
+      intervals, here and elsewhere.
+    </p>
+
+    <div class="divider"></div>
+    <p>Full audit, corrections log, and reproduction instructions on <a href="https://github.com/Rahulrayy/attention-sinks-quant" target="_blank">GitHub →</a></p>
+
+  </div>
+
+  <footer>
+    <span class="footer-name"><a href="../index.html">Rahul Ray</a></span>
+    <span class="footer-note">
+      <a href="rag-permutation.html" style="color:var(--muted)">&larr; Is it the Pruning?</a>
+      &nbsp;&middot;&nbsp;
+      <a href="../index.html#projects" style="color:var(--accent)">All projects &rarr;</a>
+    </span>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('nav')
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 30))
+    const navToggle = document.getElementById('navToggle')
+    const navOverlay = document.getElementById('navOverlay')
+    if (navToggle) {
+      navToggle.addEventListener('click', () => { nav.classList.toggle('nav-open'); navOverlay.classList.toggle('visible') })
+      navOverlay.addEventListener('click', () => { nav.classList.remove('nav-open'); navOverlay.classList.remove('visible') })
+      document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => { nav.classList.remove('nav-open'); navOverlay.classList.remove('visible') }))
+    }
+  </script>
+</body>
+</html>

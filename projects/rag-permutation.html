@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Is it the Pruning, or the Ordering? · Rahul Ray</title>
+  <meta name="description" content="A permutation-controlled re-evaluation of context selection in RAG. A placebo pruner, five orderings per question, 45,510 generations, and a pre-registered analysis plan.">
+  <meta property="og:title" content="Is it the Pruning, or the Ordering? · Rahul Ray">
+  <meta property="og:description" content="Context pruning repositions the passages it keeps, so reported gains confound selection with positional promotion. Two controls separate them.">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='8' fill='%231443FF'/><text x='50' y='76' font-size='72' text-anchor='middle' fill='white' font-family='Georgia,serif' font-style='italic'>R</text></svg>">
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="project.css" />
+</head>
+<body>
+
+  <nav id="nav">
+    <div class="nav-logo"><a href="../index.html">Rahul Ray</a></div>
+    <ul class="nav-links">
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../index.html#projects">Projects</a></li>
+      <li><a href="../index.html#experience">Experience</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div class="nav-overlay" id="navOverlay"></div>
+
+  <div class="project-hero">
+    <a href="../index.html#projects" class="back-link">← Back to projects</a>
+    <p class="project-hero-label">Project 01</p>
+    <h1 class="project-hero-title">Is it the Pruning, <em>or the Ordering?</em></h1>
+    <div class="project-meta">
+      <div class="meta-group">
+        <span class="meta-label">Type</span>
+        <span class="meta-value">Pre-registered Evaluation Study</span>
+      </div>
+      <div class="meta-group">
+        <span class="meta-label">Scale</span>
+        <span class="meta-value">45,510 generations · 11 arms</span>
+      </div>
+      <div class="meta-group">
+        <span class="meta-label">Stack</span>
+        <span class="meta-value">PyTorch · HotpotQA · Qwen2.5-3B</span>
+      </div>
+    </div>
+    <div class="hero-tags">
+      <span class="h-tag">RAG</span>
+      <span class="h-tag">Context Pruning</span>
+      <span class="h-tag">Position Bias</span>
+      <span class="h-tag">Pre-registration</span>
+      <span class="h-tag">HotpotQA</span>
+      <span class="h-tag">Qwen2.5-3B</span>
+      <span class="h-tag">LLMLingua-2</span>
+      <span class="h-tag">Bootstrap CIs</span>
+    </div>
+    <div class="hero-btns">
+      <a href="https://github.com/Rahulrayy/rag-permutation-study" target="_blank" class="github-btn">↗ View on GitHub</a>
+    </div>
+  </div>
+
+  <div class="project-body">
+
+    <h2>The confound</h2>
+    <p>
+      When a retrieval-augmented system answers a question, something fetches ten passages
+      and pastes them into the prompt. Long prompts are slow and expensive, so there is now
+      a whole category of tools that read those ten and throw most of them away, keeping the
+      two or three that matter. Every published evaluation scores them the same way: feed
+      the passages in, check the answer is still right.
+    </p>
+    <p>
+      Two things were already known. Language models care about the order things appear in
+      their prompt. And pruning tools throw passages away. Those two facts interact. When
+      you delete passages 3, 5 and 7 from a list of ten, you do not only remove them, you
+      promote everything underneath. Passage 8 slides up into a more prominent slot.
+    </p>
+    <p>
+      Stated precisely: a context pruning method is scored against a reference point that
+      <em>moves when the method acts</em>. Reported gains confound evidence selection with
+      positional promotion, and a single-order evaluation cannot separate them. This is not
+      a new pruning method. It is an evaluation protocol, two controls, and a set of numbers.
+    </p>
+
+    <h2>The two controls</h2>
+    <p>
+      The first is shuffling. Ask the same question five times over, with the surviving
+      passages in a different order each time. Same words, same content, greedy decoding
+      everywhere so that sampling noise cannot be mistaken for ordering noise. That isolates
+      the position effect.
+    </p>
+    <p>
+      The second does the real work. <code>placebo_pos</code> is a pruner that discards
+      exactly as many passages as a real method, chosen by position alone, without reading
+      a word. It is the equivalent of testing someone who claims they can pick the three
+      best bottles out of ten by taste against a person who grabs bottles 1, 9 and 10 and
+      never opens any of them. If a method cannot beat that at equal keep-count, it is not
+      selecting on content.
+    </p>
+
+    <table class="data-table">
+      <thead>
+        <tr><th>Component</th><th>Setting</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Dataset</td><td>HotpotQA distractor: 10 paragraphs per question, 2 relevant, no retrieval needed</td></tr>
+        <tr><td>Generator</td><td>Qwen2.5-3B-Instruct, 4-bit, run locally, greedy decoding</td></tr>
+        <tr><td>Protocol</td><td>For every (question, method, budget): generate under 5 orderings of whatever survived</td></tr>
+        <tr><td>Statistics</td><td>Permutations nested inside questions; resampling treats the question as the unit</td></tr>
+        <tr><td>Scale</td><td>45,510 generations · 11 arms · 274 questions · 3 budgets · 1,655 hosted replication calls</td></tr>
+      </tbody>
+    </table>
+
+    <p>
+      Treating the cells as independent would inflate the sample fivefold and manufacture
+      significance, so the bootstrap carries all five permutations with the question it
+      belongs to.
+    </p>
+
+    <h2>What came out</h2>
+
+    <div class="result-block">
+      <p>Reordering an identical context changes the answer about half the time; only 35% of questions return a byte-identical answer under all five orderings</p>
+      <p>Pruning methods beat the placebo by +0.2760 token-F1 — the main hypothesis was that they exploit position, and the data did not support it</p>
+      <p>But no practical method separates from plain rerank-and-truncate by more than the noise that reordering alone creates</p>
+      <p>Ask an LLM which passages to keep, reorder them, ask again: it picks differently in 98 of 100 questions</p>
+    </div>
+
+    <h3>Order changes the answer about half the time</h3>
+    <p>
+      Same passages, same words, greedy decoding, only the order differs. Half of questions
+      swing by about 0.39 token-F1, on a metric bounded at 0 and 1. There is no "typical"
+      question: the distribution has two modes and little in between. And "unchanged" needs
+      care, because on the other half the <em>score</em> does not move while the model still
+      gives a different answer on 15% of all questions, wrong in a different way each time
+      and scoring zero either way.
+    </p>
+    <p>
+      It is not a formatting artifact. Re-running the whole thing with the context fenced in
+      <code>&lt;context&gt;</code> tags instead of bare moves the effect by 0.0047 token-F1,
+      95% CI [−0.0140, 0.0239], which does not separate from zero. That check was registered
+      before the main run.
+    </p>
+    <p>
+      What drives it is the number of slots, not only the evidence. Holding the retained gold
+      passages fixed and varying only how many passages the context presents, the swing still
+      rises by +0.0372 to +0.0809 token-F1 going from 2 slots to 5 or 10, in every evidence
+      stratum. It holds even when the context contains <em>neither</em> gold passage. Most of
+      the sensitivity is bought by the first few slots and it flattens after five, so pruning
+      hard reduces order sensitivity as a side effect.
+    </p>
+
+    <h3>The pruners are selecting on content</h3>
+    <p>
+      This was the study's main hypothesis and the data did not support it. Real pruners beat
+      the placebo by <strong>+0.2760 token-F1</strong>, 95% CI [0.2223, 0.3297], at every
+      budget tested. The control behaves too: an arm that drops passages at random is
+      indistinguishable from the placebo, exactly as it should be.
+    </p>
+
+    <h3>Yet method choice matters less than a formatting decision</h3>
+    <p>
+      Measure each method's gain in units of "how much does the score move when you just
+      reshuffle the passages", and every practical method fails to separate from simple
+      rerank-and-truncate. The one arm that clears that bar is a cheating upper bound that
+      peeks at the answer. Put carefully: in this setting, the spread between pruning methods
+      is smaller than the spread a single method shows across orderings of the same passages.
+    </p>
+    <p>
+      Pruning is still worth doing. Against keeping all ten passages, the best pruner reduces
+      the context to <strong>27%</strong> with no statistically distinguishable loss in
+      token-F1 (−0.011, [−0.0510, +0.0284]), while a plain rerank-and-truncate loses 0.045
+      and does separate from zero. Read narrowly: "cost" here means answer quality under
+      token-F1 on this dataset and generator. Latency, compute, and the pruner's own
+      selection overhead were not measured anywhere in this study.
+    </p>
+
+    <h3>The strange one: methods that are order-dependent inside themselves</h3>
+    <p>
+      The same effect, one level further in. Ask a language model which three passages to
+      keep, then show it the same three in a different order and ask again. Agreement between
+      its three selections is <strong>0.213</strong>, where 1.000 would mean order makes no
+      difference and 0.047 is random guessing. The selection changed in 98 of 100 questions,
+      and in 23 of them the three attempts had <em>no passage in common at all</em>. The tool
+      does not really have an answer. It has a distribution over answers, and a single run
+      gives you one draw from it.
+    </p>
+    <p>
+      LLMLingua-2 compresses a concatenated context differently depending on the order it is
+      given: 0 of 100 passages survive identically across orderings when applied the normal
+      way. Unlike the LLM pruner this is expected rather than anomalous, since reordering
+      genuinely changes its input. What is worth knowing is the scale, because people treat
+      the compressed output as a property of the passage set, and not one passage in a
+      hundred survives that assumption.
+    </p>
+    <p>
+      The LLM pruner also fails to name the requested number of passages in 24.3% of cases,
+      and that rate reproduces to four decimal places on a 27B model from a different size
+      class (0.2432 against 0.2433). It is a property of asking a model to name k items, not
+      a quirk of one small model.
+    </p>
+
+    <h2>Does it survive scale?</h2>
+    <p>
+      A hosted replication on a 27B model was matched to the main run exactly: same questions,
+      same three orderings, byte-identical passage orders, so only the generator differs.
+      Order sensitivity is intact, with every interval excluding zero at the primary budget.
+      But on an un-pruned context the 3B's swing is <strong>4.5×</strong> the 27B's (0.1668
+      against 0.0374, paired difference 0.1294 [0.0679, 0.1910]). The 27B still answers 16%
+      of questions differently on order alone.
+    </p>
+    <p>
+      So the protocol transfers and the magnitudes do not. Every number above should be read
+      as belonging to a 3B rather than to generators in general. The placebo gap replicates
+      at 27B; the LLM pruner's budget defect is scale-invariant where the ordering effect is
+      not.
+    </p>
+    <p>
+      Memorization is not the explanation. Only 8.7% of questions can be answered exactly
+      with no passages at all, and the analysis is restricted to questions the model gets
+      wrong without context, where the no-context score is 0.0089 token-F1. That rate triples
+      with scale, to 26% on the 27B, which is why the filter is recomputed per generator
+      rather than shared.
+    </p>
+
+    <h2>The part I care most about</h2>
+    <p>
+      Before collecting any data I wrote down what I expected, what would count as success,
+      and exactly which comparisons I would run, then committed that to version control so
+      the timestamps prove it. The registered text is retrievable at a commit dated two days
+      before the first main-run result. That is what stops you quietly redefining success
+      once you have seen how things turned out — and it is what makes the headline finding
+      here reportable as a failed hypothesis rather than quietly reframed.
+    </p>
+    <p>
+      Next to it is a log of every mistake found afterwards, published in full: a caching bug
+      that quietly corrupted one method's results from the day it was written, a statistic
+      that reported a rounding error as a real finding, a check promised in advance and then
+      never run. None of them changed a conclusion. They are all in there anyway, because a
+      log that records only the things that went right would not be much of a log.
+    </p>
+    <p>
+      255 tests pass in about 15 seconds. Every generation is cached on a hash of the model,
+      prompt and decode parameters and flushed as it goes, so reruns are free and
+      interrupting a long run loses nothing.
+    </p>
+
+    <h2>Limitations</h2>
+    <p>
+      Pruner checkpoints are used as published on a dataset they were not tuned for, so this
+      measures deployed behaviour rather than each method's ceiling. Results come from one
+      dataset and one model family, which is the main limitation. A cross-family probe
+      confirms the effect exists elsewhere but not its size, and the 27B replication within
+      the same lineage shows it shrinking about fourfold with scale — on two points, which
+      cannot tell a smooth decay from a threshold. The reference ordering is the dataset's
+      own as-given paragraph order rather than a retriever ranking, since the distractor
+      setting has no retriever.
+    </p>
+
+    <div class="divider"></div>
+    <p>Full write-up, pre-registered analysis plan, and complete result tables on <a href="https://github.com/Rahulrayy/rag-permutation-study" target="_blank">GitHub →</a></p>
+
+  </div>
+
+  <footer>
+    <span class="footer-name"><a href="../index.html">Rahul Ray</a></span>
+    <span class="footer-note">
+      <a href="attention-sinks-quant.html" style="color:var(--accent)">Next: Attention Sinks &rarr;</a>
+    </span>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('nav')
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 30))
+    const navToggle = document.getElementById('navToggle')
+    const navOverlay = document.getElementById('navOverlay')
+    if (navToggle) {
+      navToggle.addEventListener('click', () => { nav.classList.toggle('nav-open'); navOverlay.classList.toggle('visible') })
+      navOverlay.addEventListener('click', () => { nav.classList.remove('nav-open'); navOverlay.classList.remove('visible') })
+      document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => { nav.classList.remove('nav-open'); navOverlay.classList.remove('visible') }))
+    }
+  </script>
+</body>
+</html>

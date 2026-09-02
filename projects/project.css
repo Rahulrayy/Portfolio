@@ -136,3 +136,10 @@
   .github-btn, .live-btn { width: 100%; justify-content: center; text-align: center; }
   .back-link { margin-bottom: 2rem; }
 }
+
+/* ── Inline code ── */
+.project-body code {
+  font-family: var(--mono); font-size: 0.85em;
+  background: var(--surface); border: 1px solid var(--rule);
+  padding: 0.08em 0.35em; border-radius: 3px;
+}
