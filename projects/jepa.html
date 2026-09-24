@@ -5,21 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>JEPA-IR: Image Retrieval Benchmark · Rahul Ray</title>
   <meta name="description" content="Benchmarking I-JEPA as a frozen feature extractor for image retrieval against CLIP and ResNet-50 on Oxford5k and Paris6k. Can a model never trained contrastively still retrieve well?">
+  <link rel="canonical" href="https://rahulrayy.github.io/Portfolio/projects/jepa.html">
   <meta property="og:title" content="JEPA-IR: Image Retrieval Benchmark · Rahul Ray">
   <meta property="og:description" content="I-JEPA vs CLIP vs ResNet-50 on Oxford5k and Paris6k landmark retrieval. Can self-supervised representation prediction compete with contrastive learning at retrieval?">
   <meta property="og:type" content="article">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:url" content="https://rahulrayy.github.io/Portfolio/projects/jepa.html">
+  <meta property="og:site_name" content="Rahul Ray">
+  <meta property="og:image" content="https://rahulrayy.github.io/Portfolio/assets/og/jepa.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="JEPA-IR: Image Retrieval Benchmark · Rahul Ray">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="JEPA-IR: Image Retrieval Benchmark · Rahul Ray">
+  <meta name="twitter:description" content="I-JEPA vs CLIP vs ResNet-50 on Oxford5k and Paris6k landmark retrieval. Can self-supervised representation prediction compete with contrastive learning at retrieval?">
+  <meta name="twitter:image" content="https://rahulrayy.github.io/Portfolio/assets/og/jepa.png">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='8' fill='%231443FF'/><text x='50' y='76' font-size='72' text-anchor='middle' fill='white' font-family='Georgia,serif' font-style='italic'>R</text></svg>">
   <link rel="stylesheet" href="../style.css" />
   <link rel="stylesheet" href="project.css" />
+  <script src="../theme.js"></script>
 </head>
 <body>
 
   <nav id="nav">
     <div class="nav-logo"><a href="../index.html">Rahul Ray</a></div>
     <ul class="nav-links">
-      <li><a href="../index.html#about">About</a></li>
       <li><a href="../index.html#projects">Projects</a></li>
+      <li><a href="../index.html#about">About</a></li>
       <li><a href="../index.html#experience">Experience</a></li>
       <li><a href="../index.html#contact">Contact</a></li>
     </ul>
@@ -31,35 +42,34 @@
 
   <div class="project-hero">
     <a href="../index.html#projects" class="back-link">← Back to projects</a>
-    <p class="project-hero-label">Project 08</p>
-    <h1 class="project-hero-title">JEPA-IR: <em>Can a Model Never Trained Contrastively Still Retrieve Well?</em></h1>
-    <div class="project-meta">
-      <div class="meta-group">
-        <span class="meta-label">Type</span>
-        <span class="meta-value">Deep Learning Research / Image Retrieval</span>
+    <div class="project-hero-grid">
+      <div class="project-hero-main">
+        <p class="project-hero-label">Project 08</p>
+        <h1 class="project-hero-title">JEPA-IR: <em>Can a Model Never Trained Contrastively Still Retrieve Well?</em></h1>
+        <div class="hero-tags">
+          <span class="h-tag">I-JEPA</span>
+          <span class="h-tag">ViT-H/14</span>
+          <span class="h-tag">CLIP</span>
+          <span class="h-tag">ResNet-50</span>
+          <span class="h-tag">FAISS</span>
+          <span class="h-tag">Oxford5k</span>
+          <span class="h-tag">Paris6k</span>
+          <span class="h-tag">mAP</span>
+          <span class="h-tag">Self-Supervised Learning</span>
+        </div>
+        <div class="hero-btns">
+          <a href="https://github.com/Rahulrayy/JEPA-IR" target="_blank" class="github-btn">↗ View on GitHub</a>
+        </div>
       </div>
-      <div class="meta-group">
-        <span class="meta-label">Benchmarks</span>
-        <span class="meta-value">Oxford5k · Paris6k · 55 queries each</span>
-      </div>
-      <div class="meta-group">
-        <span class="meta-label">Stack</span>
-        <span class="meta-value">PyTorch · CLIP · FAISS · torchvision</span>
-      </div>
-    </div>
-    <div class="hero-tags">
-      <span class="h-tag">I-JEPA</span>
-      <span class="h-tag">ViT-H/14</span>
-      <span class="h-tag">CLIP</span>
-      <span class="h-tag">ResNet-50</span>
-      <span class="h-tag">FAISS</span>
-      <span class="h-tag">Oxford5k</span>
-      <span class="h-tag">Paris6k</span>
-      <span class="h-tag">mAP</span>
-      <span class="h-tag">Self-Supervised Learning</span>
-    </div>
-    <div class="hero-btns">
-      <a href="https://github.com/Rahulrayy/JEPA-IR" target="_blank" class="github-btn">↗ View on GitHub</a>
+      <aside class="exhibit" aria-label="Project summary">
+        <div class="exhibit-fig"><svg viewBox="0 0 240 110" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M70 6 V86"/><rect x="70" y="12" width="146.5" height="13" fill="currentColor" opacity=".4" stroke="none"/><text x="64.0" y="21.2" text-anchor="end" stroke="none">CLIP</text><text x="219.5" y="21.2" stroke="none">0.49</text><rect x="70" y="37" width="111.2" height="13" fill="currentColor" opacity=".4" stroke="none"/><text x="64.0" y="46.2" text-anchor="end" stroke="none">ResNet-50</text><text x="184.2" y="46.2" stroke="none">0.37</text><rect x="70" y="62" width="54.7" height="13" class="af" stroke="none"/><text x="64.0" y="71.2" text-anchor="end" stroke="none">I-JEPA</text><text x="127.7" y="71.2" stroke="none" class="af">0.18</text><path d="M70.0 86 V89"/><text x="70.0" y="97.0" text-anchor="middle" stroke="none">0</text><path d="M145.0 86 V89"/><text x="145.0" y="97.0" text-anchor="middle" stroke="none">0.25</text><path d="M220.0 86 V89"/><text x="220.0" y="97.0" text-anchor="middle" stroke="none">0.5</text><text x="220.0" y="107.0" text-anchor="end" stroke="none">mAP · Oxford5k</text></svg></div>
+        <div class="exhibit-cap"><span>Fig. 08 · Benchmark</span><span class="exhibit-metric">−19 mAP<small>I-JEPA vs ResNet-50</small></span></div>
+        <dl class="exhibit-spec">
+          <dt>type</dt><dd>Deep Learning Research / Image Retrieval</dd>
+          <dt>benchmarks</dt><dd>Oxford5k · Paris6k · 55 queries each</dd>
+          <dt>stack</dt><dd>PyTorch · CLIP · FAISS · torchvision</dd>
+        </dl>
+      </aside>
     </div>
   </div>
 
@@ -169,13 +179,14 @@
 
   </div>
 
+  <div class="more-work" role="navigation" aria-label="More projects">
+    <a class="mw" href="newsphere.html"><span class="mw-cap">← Previous · Fig. 07</span><span class="mw-title">Newsphere Live: Semantic News Map</span></a>
+    <a class="mw mw-next" href="jepa-text.html"><span class="mw-cap">Next · Fig. 09 →</span><span class="mw-title">Text-JEPA: Representation Prediction for Language</span></a>
+  </div>
+
   <footer>
     <span class="footer-name"><a href="../index.html">Rahul Ray</a></span>
-    <span class="footer-note">
-      <a href="newsphere.html" style="color:var(--muted)">&larr; Newsphere Live</a>
-      &nbsp;&middot;&nbsp;
-      <a href="../index.html#projects" style="color:var(--accent)">All projects &rarr;</a>
-    </span>
+    <span class="footer-note"><a href="../index.html#projects" style="color:var(--accent)">All projects &rarr;</a></span>
   </footer>
 
   <script>

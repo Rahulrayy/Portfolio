@@ -10,6 +10,7 @@
   <meta property="og:description" content="MSc Data Science student at Leiden University. ML research on RAG evaluation, quantization, self-supervised learning and tabular ML, built on controlled baselines and honest reporting.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://rahulrayy.github.io/Portfolio/">
+  <meta property="og:site_name" content="Rahul Ray">
   <meta property="og:image" content="https://rahulrayy.github.io/Portfolio/assets/og-card.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -20,18 +21,24 @@
   <meta name="twitter:image" content="https://rahulrayy.github.io/Portfolio/assets/og-card.png">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='8' fill='%231443FF'/><text x='50' y='76' font-size='72' text-anchor='middle' fill='white' font-family='Georgia,serif' font-style='italic'>R</text></svg>">
   <link rel="stylesheet" href="style.css" />
+  <script src="theme.js"></script>
   <style>
     /* ── Hero ── */
     #hero {
-      min-height: 100vh; display: flex; flex-direction: column;
-      justify-content: center; padding-top: 7rem;
-      position: relative; overflow: hidden;
+      position: relative; isolation: isolate;
+      display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+      gap: 4rem; align-items: center;
+      padding-top: 9.5rem; padding-bottom: 6rem;
     }
+    /* Graph paper, fading out towards the projects. */
     #hero::before {
-      content: ''; position: absolute; top: -20%; right: -10%;
-      width: 55vw; height: 55vw; border-radius: 50%;
-      background: radial-gradient(circle, rgba(20,67,255,0.05) 0%, transparent 70%);
-      pointer-events: none;
+      content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 28px 28px;
+      -webkit-mask-image: linear-gradient(to bottom, #000 35%, transparent);
+              mask-image: linear-gradient(to bottom, #000 35%, transparent);
     }
     .hero-eyebrow {
       font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em;
@@ -39,27 +46,34 @@
       opacity: 0; animation: fadeUp 0.8s ease 0.2s forwards;
     }
     .hero-name {
-      font-family: var(--serif); font-size: clamp(3.6rem, 9vw, 8rem);
-      font-weight: 300; line-height: 1.0; margin-bottom: 1.6rem;
+      font-family: var(--serif); font-size: clamp(3.6rem, 8.5vw, 7.6rem);
+      font-weight: 300; line-height: 0.98; margin-bottom: 1.6rem;
       opacity: 0; animation: fadeUp 0.9s ease 0.35s forwards;
     }
     .hero-name em { font-style: italic; color: var(--accent); }
     .hero-desc {
       max-width: 520px; font-size: 1.05rem; color: var(--muted);
-      line-height: 1.8; margin-bottom: 3rem;
+      line-height: 1.8; margin-bottom: 2.6rem;
       opacity: 0; animation: fadeUp 0.9s ease 0.5s forwards;
     }
     .hero-cta {
       display: flex; gap: 1.2rem; flex-wrap: wrap;
       opacity: 0; animation: fadeUp 0.9s ease 0.65s forwards;
     }
-    .scroll-hint {
-      position: absolute; bottom: 2.5rem; left: 5vw;
-      display: flex; align-items: center; gap: 0.7rem;
-      font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.1em; color: var(--muted);
-      opacity: 0; animation: fadeIn 1s ease 1.2s forwards;
+    .hero-panel {
+      background: var(--bg); border: 1px solid var(--ink);
+      font-family: var(--mono); font-size: 0.76rem; line-height: 1.55;
+      opacity: 0; animation: fadeUp 0.9s ease 0.8s forwards;
     }
-    .scroll-hint-line { width: 28px; height: 1px; background: var(--muted); }
+    .hero-panel-head {
+      display: flex; justify-content: space-between; gap: 1rem;
+      padding: 0.65rem 1.1rem; border-bottom: 1px solid var(--ink);
+      font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+    }
+    .hero-panel-head b { font-weight: 400; color: var(--accent); }
+    .hero-panel dl { display: grid; grid-template-columns: 76px 1fr; gap: 0.6rem 1rem; padding: 1.15rem 1.1rem 1.25rem; }
+    .hero-panel dt { color: var(--muted); }
+    .hero-panel dd { color: var(--ink); }
 
     /* ── About ── */
     #about { border-top: 1px solid var(--rule); }
@@ -75,49 +89,68 @@
     /* ── projects ── */
     #projects { border-top: 1px solid var(--rule); }
     .projects-heading { font-family: var(--serif); font-size: clamp(2.2rem, 4vw, 3.2rem); font-weight: 300; margin-bottom: 3.5rem; }
-    .project-row {
-      display: grid;
-      grid-template-columns: 56px 1fr auto;
-      gap: 2rem;
-      align-items: center;
-      padding: 2.2rem 0;
-      border-top: 1px solid var(--rule);
-      border-bottom: 1px solid var(--rule);
-      transition: background 0.2s;
-      cursor: default;
+    .projects-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 2rem 4rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
+    .projects-head .projects-heading { margin-bottom: 0; }
+    .projects-intro { max-width: 420px; font-size: 0.92rem; color: var(--muted); line-height: 1.7; }
+
+    .cards { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
+    .card {
+      position: relative; display: flex; flex-direction: column;
+      background: var(--card); border: 1px solid var(--rule);
+      transition: border-color 0.2s;
     }
-    .project-row:hover .project-row-title { color: var(--accent); }
-    .project-row-title a { color: inherit; transition: color 0.2s; }
-    .project-num {
-      font-family: var(--mono); font-size: 0.65rem;
-      letter-spacing: 0.12em; color: var(--muted);
-      align-self: flex-start; padding-top: 0.3rem;
+    .card:hover, .card:focus-within { border-color: var(--accent); }
+    .card:hover .card-title, .card:focus-within .card-title { color: var(--accent); }
+    .card:hover .cta-link { gap: 0.7rem; }
+    /* The whole card opens the writeup; external links sit above that. */
+    .card-title a::after { content: ''; position: absolute; inset: 0; }
+    .card-links a { position: relative; z-index: 1; }
+
+    /* Figures are line drawings of each project's idea, not data plots. */
+    .card-fig {
+      height: 160px; display: flex; align-items: center; justify-content: center;
+      border-bottom: 1px solid var(--rule); color: var(--fig-ink);
+      background-color: var(--surface);
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 14px 14px;
     }
-    .project-row-body {}
-    .project-row-title {
-      font-family: var(--serif); font-size: 1.45rem;
-      font-weight: 400; line-height: 1.2; margin-bottom: 0.5rem;
-      transition: color 0.2s;
+    .card-fig svg { width: 100%; max-width: 310px; height: 140px; }
+    .card-fig .a { stroke: var(--accent); }
+    .card-fig .af { fill: var(--accent); }
+    .card-fig text { font-family: var(--mono); font-size: 7px; fill: currentColor; letter-spacing: 0.04em; }
+
+    .card-main { display: flex; flex-direction: column; flex: 1; padding: 0.8rem 1.4rem 1.35rem; }
+    .card-cap {
+      display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.2rem 1rem;
+      font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
     }
-    .project-row-desc {
-      font-size: 0.9rem; color: var(--muted); line-height: 1.65;
-      max-width: 640px;
-    }
-    .project-row-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.75rem; }
+    .card-metric { color: var(--accent); font-size: 0.82rem; letter-spacing: 0; text-transform: none; white-space: nowrap; }
+    .card-metric small { font-size: 0.66rem; color: var(--muted); margin-left: 0.35rem; }
+    .card-title { font-family: var(--serif); font-size: 1.45rem; font-weight: 400; line-height: 1.2; margin-top: 0.55rem; transition: color 0.2s; }
+    .card-finding { font-size: 0.9rem; color: var(--ink); opacity: 0.85; line-height: 1.6; margin: 0.45rem 0 0.9rem; }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: auto; }
     .p-tag {
       font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.04em;
       padding: 0.18rem 0.55rem; background: var(--surface); color: var(--muted);
     }
-    .project-row-cta {
-      display: flex; flex-direction: column; gap: 0.6rem;
-      align-items: flex-end; flex-shrink: 0;
-    }
+    .card-links { display: flex; flex-wrap: wrap; align-items: center; gap: 1.1rem; margin-top: 1rem; }
+
+    /* Newest project: full width, figure beside the text. */
+    .card-featured { grid-column: 1 / -1; flex-direction: row; }
+    .card-featured .card-fig { width: 48%; flex-shrink: 0; height: auto; min-height: 250px; border-bottom: none; border-right: 1px solid var(--rule); }
+    .card-featured .card-fig svg { max-width: 420px; height: 190px; }
+    .card-featured .card-main { padding: 1.6rem 2rem 1.7rem; justify-content: center; }
+    .card-featured .card-title { font-size: 1.9rem; }
+    .card-featured .card-finding { font-size: 0.98rem; max-width: 520px; }
+    .card-featured .card-tags { margin-top: 0.2rem; }
+
     .cta-link {
       font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.06em;
       text-transform: uppercase; color: var(--accent);
       display: inline-flex; align-items: center; gap: 0.4rem; transition: gap 0.2s;
     }
-    .cta-link:hover { gap: 0.7rem; }
     .cta-gh {
       font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.05em;
       color: var(--muted); display: inline-flex; align-items: center; gap: 0.35rem;
@@ -129,29 +162,6 @@
     .nav-links .nav-cv { color: var(--accent); }
     .nav-links .nav-cv:hover { color: var(--accent); opacity: 0.75; }
     .nav-links .nav-cv::after { display: none; }
-
-    /* ── Carousel ── */
-    .carousel-wrapper { position: relative; overflow: hidden; }
-    .carousel-track { display: flex; transition: transform 0.5s cubic-bezier(0.4,0,0.2,1); }
-    .proj-slide { min-width: 100%; }
-    .carousel-nav {
-      display: flex; align-items: center; gap: 1.4rem; padding-top: 1.6rem;
-    }
-    .carousel-btn {
-      font-family: var(--mono); font-size: 0.85rem; line-height: 1;
-      background: none; border: 1px solid var(--rule); color: var(--ink);
-      cursor: pointer; padding: 0.42rem 0.78rem;
-      transition: background 0.2s, color 0.2s, border-color 0.2s;
-    }
-    .carousel-btn:hover { background: var(--ink); color: var(--bg); border-color: var(--ink); }
-    .carousel-counter { font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.1em; color: var(--muted); }
-    .carousel-dots { display: flex; gap: 0.45rem; align-items: center; margin-left: auto; }
-    .carousel-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--rule); border: none; padding: 0; cursor: pointer;
-      transition: background 0.25s, transform 0.25s;
-    }
-    .carousel-dot.active { background: var(--accent); transform: scale(1.4); }
 
     /* ── Experience ── */
     #experience { border-top: 1px solid var(--rule); }
@@ -184,28 +194,30 @@
     @media (max-width: 768px) {
       .about-grid, .exp-layout { grid-template-columns: 1fr; }
       .exp-heading { position: static; }
-      .project-row { grid-template-columns: 40px 1fr; }
-      .project-row-cta {
-        grid-column: 2; flex-direction: row; justify-content: flex-start;
-        flex-wrap: wrap; gap: 1rem; align-items: center; margin-top: 0.1rem;
-      }
+      #hero { grid-template-columns: 1fr; gap: 2.5rem; }
+      .cards { grid-template-columns: 1fr; }
+      .card-featured { flex-direction: column; }
+      .card-featured .card-fig { width: auto; min-height: 0; height: 180px; border-right: none; border-bottom: 1px solid var(--rule); }
+      .card-featured .card-fig svg { height: 160px; }
+      .card-featured .card-main { padding: 0.8rem 1.4rem 1.35rem; }
+      .card-featured .card-title { font-size: 1.55rem; }
       .timeline-item { grid-template-columns: 1fr; gap: 0.4rem; }
     }
 
     @media (max-width: 640px) {
-      #hero { padding-top: 5.5rem; min-height: auto; padding-bottom: 4rem; }
+      #hero { padding-top: 6.5rem; padding-bottom: 3.5rem; }
       .hero-desc { font-size: 0.97rem; margin-bottom: 2rem; }
       .hero-cta { gap: 0.8rem; flex-direction: column; align-items: flex-start; }
-      .scroll-hint { display: none; }
+      .hero-panel { font-size: 0.72rem; }
+      .hero-panel dl { grid-template-columns: 64px 1fr; }
 
       #projects, #about, #experience, #contact { padding-top: 3.5rem; padding-bottom: 3.5rem; }
       .projects-heading { margin-bottom: 2rem; }
-      .project-row { gap: 1rem; padding: 1.6rem 0; }
-      .project-row-title { font-size: 1.2rem; }
-      .project-row-desc { font-size: 0.87rem; }
-      .project-row-cta { gap: 0.75rem; }
-      .carousel-nav { gap: 0.8rem; padding-top: 1.1rem; }
-      .carousel-dots { display: none; }
+      .card-fig { height: 140px; }
+      .card-fig svg { height: 124px; }
+      .card-main { padding: 0.75rem 1.1rem 1.2rem; }
+      .card-title { font-size: 1.3rem; }
+      .card-finding { font-size: 0.88rem; }
 
       .about-heading { font-size: 1.9rem; }
       .skills-grid { grid-template-columns: 1fr; gap: 0.9rem; }
@@ -224,8 +236,8 @@
   <nav id="nav">
     <div class="nav-logo"><a href="index.html">Rahul Ray</a></div>
     <ul class="nav-links">
-      <li><a href="#about">About</a></li>
       <li><a href="#projects">Projects</a></li>
+      <li><a href="#about">About</a></li>
       <li><a href="#experience">Experience</a></li>
       <li><a href="#contact">Contact</a></li>
       <li><a href="CV.pdf" download class="nav-cv">CV ↓</a></li>
@@ -238,21 +250,159 @@
 
   <!-- Hero -->
   <section id="hero">
-    <p class="hero-eyebrow">AI · ML · Data Science</p>
-    <h1 class="hero-name">Rahul<br /><em>Ray</em></h1>
-    <p class="hero-desc">
-      MSc Data Science student at Leiden University. I build things to answer questions 
-      I couldn't find clean answers to, and I'm interested in what actually happens 
-      when you push a method past its assumptions.
-    </p>
-    <div class="hero-cta">
-      <a href="#projects" class="btn primary">View my work</a>
-      <a href="#contact" class="btn">Get in touch</a>
+    <div>
+      <p class="hero-eyebrow">AI · ML · Data Science</p>
+      <h1 class="hero-name">Rahul<br /><em>Ray</em></h1>
+      <p class="hero-desc">
+        MSc Data Science student at Leiden University. I build things to answer questions
+        I couldn't find clean answers to, and I'm interested in what actually happens
+        when you push a method past its assumptions.
+      </p>
+      <div class="hero-cta">
+        <a href="#projects" class="btn primary">View my work</a>
+        <a href="#contact" class="btn">Get in touch</a>
+      </div>
     </div>
-    <div class="scroll-hint">
-      <div class="scroll-hint-line"></div>
-      scroll
+    <div class="hero-panel">
+      <div class="hero-panel-head"><span>Status</span><b>● Open to 2027 roles</b></div>
+      <dl>
+        <dt>now</dt><dd>MSc Data Science, Leiden (2025–27)</dd>
+        <dt>seeking</dt><dd>ML / DS internships and thesis placements, 2027</dd>
+        <dt>focus</dt><dd>evaluation · quantization · self-supervised learning</dd>
+        <dt>method</dt><dd>controlled baselines, CIs, negative results in full</dd>
+        <dt>before</dt><dd>ML intern, Fox Solutions: ViTs on the edge</dd>
+      </dl>
     </div>
+  </section>
+
+  <!-- projects -->
+  <section id="projects">
+    <p class="section-label reveal">Projects</p>
+    <div class="projects-head reveal">
+      <h2 class="projects-heading">Selected work</h2>
+      <p class="projects-intro">Nine projects, most of them controlled experiments. Each links to a full writeup with the method, the numbers and the limitations.</p>
+    </div>
+    <ol class="cards">
+      <li class="card card-featured reveal">
+        <div class="card-fig"><svg viewBox="0 0 240 110" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><text x="26.0" y="8.6" text-anchor="end" stroke="none">1</text><rect x="30" y="3.0" width="56" height="6"/><text x="26.0" y="18.2" text-anchor="end" stroke="none">2</text><rect x="30" y="12.6" width="56" height="6"/><text x="26.0" y="27.8" text-anchor="end" stroke="none">3</text><rect x="30" y="22.2" width="56" height="6" opacity=".35" stroke-dasharray="2 2"/><text x="26.0" y="37.4" text-anchor="end" stroke="none">4</text><rect x="30" y="31.8" width="56" height="6"/><text x="26.0" y="47.0" text-anchor="end" stroke="none">5</text><rect x="30" y="41.4" width="56" height="6" opacity=".35" stroke-dasharray="2 2"/><text x="26.0" y="56.6" text-anchor="end" stroke="none">6</text><rect x="30" y="51.0" width="56" height="6"/><text x="26.0" y="66.2" text-anchor="end" stroke="none">7</text><rect x="30" y="60.6" width="56" height="6" opacity=".35" stroke-dasharray="2 2"/><text x="26.0" y="75.8" text-anchor="end" stroke="none">8</text><rect x="30" y="70.2" width="56" height="6" class="a"/><text x="26.0" y="85.4" text-anchor="end" stroke="none">9</text><rect x="30" y="79.8" width="56" height="6"/><text x="26.0" y="95.0" text-anchor="end" stroke="none">10</text><rect x="30" y="89.4" width="56" height="6"/><path d="M86 6.0 C120 6.0 116 6.0 150 6.0" stroke-dasharray="2 2" opacity=".7"/><rect x="150" y="3.0" width="56" height="6"/><text x="210.0" y="8.6" stroke="none">1</text><path d="M86 15.6 C120 15.6 116 15.6 150 15.6" stroke-dasharray="2 2" opacity=".7"/><rect x="150" y="12.6" width="56" height="6"/><text x="210.0" y="18.2" stroke="none">2</text><path d="M86 34.8 C120 34.8 116 25.2 150 25.2" stroke-dasharray="2 2" opacity=".7"/><rect x="150" y="22.2" width="56" height="6"/><text x="210.0" y="27.8" stroke="none">4</text><path d="M86 54.0 C120 54.0 116 34.8 150 34.8" stroke-dasharray="2 2" opacity=".7"/><rect x="150" y="31.8" width="56" height="6"/><text x="210.0" y="37.4" stroke="none">6</text><path d="M86 73.2 C120 73.2 116 44.4 150 44.4" class="a" /><rect x="150" y="41.4" width="56" height="6" class="a af"/><text x="210.0" y="47.0" stroke="none">8</text><path d="M86 82.8 C120 82.8 116 54.0 150 54.0" stroke-dasharray="2 2" opacity=".7"/><rect x="150" y="51.0" width="56" height="6"/><text x="210.0" y="56.6" stroke="none">9</text><path d="M86 92.4 C120 92.4 116 63.6 150 63.6" stroke-dasharray="2 2" opacity=".7"/><rect x="150" y="60.6" width="56" height="6"/><text x="210.0" y="66.2" stroke="none">10</text><text x="146.0" y="84.0" stroke="none">prune 3, 5, 7</text><text x="146.0" y="94.0" stroke="none" class="af">8 moves up to slot 5</text></svg></div>
+        <div class="card-main">
+          <div class="card-cap"><span>Fig. 01 · Evaluation study</span><span class="card-metric">+0.28<small>token-F1 over placebo</small></span></div>
+          <h3 class="card-title"><a href="projects/rag-permutation.html">Is it the Pruning, or the Ordering?</a></h3>
+          <p class="card-finding">Pruners beat a position-only placebo by +0.28 token-F1, yet reordering the same passages changes the answer about half the time.</p>
+          <div class="card-tags"><span class="p-tag">RAG</span><span class="p-tag">Context Pruning</span><span class="p-tag">Qwen2.5-3B</span><span class="p-tag">Pre-registration</span></div>
+          <div class="card-links">
+            <span class="cta-link" aria-hidden="true">Writeup →</span>
+            <a href="https://github.com/Rahulrayy/rag-permutation-study" target="_blank" rel="noopener" class="cta-gh">↗ GitHub</a>
+          </div>
+        </div>
+      </li>
+      <li class="card reveal">
+        <div class="card-fig"><svg viewBox="0 0 240 110" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><rect x="84" y="4" width="9.5" height="9.5" class="af" stroke="none" opacity=".9"/><rect x="84" y="15" width="9.5" height="9.5" class="af" stroke="none" opacity=".9"/><rect x="95" y="15" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.29"/><rect x="84" y="26" width="9.5" height="9.5" class="af" stroke="none" opacity=".9"/><rect x="95" y="26" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.29"/><rect x="106" y="26" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.09"/><rect x="84" y="37" width="9.5" height="9.5" class="af" stroke="none" opacity=".9"/><rect x="95" y="37" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.10"/><rect x="106" y="37" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.26"/><rect x="117" y="37" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.24"/><rect x="84" y="48" width="9.5" height="9.5" class="af" stroke="none" opacity=".9"/><rect x="95" y="48" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.23"/><rect x="106" y="48" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.15"/><rect x="117" y="48" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.21"/><rect x="128" y="48" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.21"/><rect x="84" y="59" width="9.5" height="9.5" class="af" stroke="none" opacity=".9"/><rect x="95" y="59" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.21"/><rect x="106" y="59" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.11"/><rect x="117" y="59" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.17"/><rect x="128" y="59" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.17"/><rect x="139" y="59" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.24"/><rect x="84" y="70" width="9.5" height="9.5" class="af" stroke="none" opacity=".9"/><rect x="95" y="70" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.30"/><rect x="106" y="70" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.29"/><rect x="117" y="70" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.20"/><rect x="128" y="70" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.18"/><rect x="139" y="70" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.14"/><rect x="150" y="70" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.09"/><rect x="84" y="81" width="9.5" height="9.5" class="af" stroke="none" opacity=".9"/><rect x="95" y="81" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.09"/><rect x="106" y="81" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.18"/><rect x="117" y="81" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.15"/><rect x="128" y="81" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.16"/><rect x="139" y="81" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.28"/><rect x="150" y="81" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.20"/><rect x="161" y="81" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.20"/><text x="88.5" y="101.0" text-anchor="middle" stroke="none" class="af">sink</text><text x="134.0" y="101.0" text-anchor="middle" stroke="none">keys →</text><text transform="translate(78 48) rotate(-90)" text-anchor="middle" stroke="none">queries →</text></svg></div>
+        <div class="card-main">
+          <div class="card-cap"><span>Fig. 02 · Audit</span><span class="card-metric">1 of 5<small>checkpoints broken by per-tensor 8-bit</small></span></div>
+          <h3 class="card-title"><a href="projects/attention-sinks-quant.html">Attention Sinks and Quantization: An Audit</a></h3>
+          <p class="card-finding">The sink fix works but is redundant under per-token scaling, and the lowest-sink variant is the only one per-tensor 8-bit quantization destroys.</p>
+          <div class="card-tags"><span class="p-tag">Activation Quantization</span><span class="p-tag">Gated Attention</span><span class="p-tag">Bootstrap CIs</span></div>
+          <div class="card-links">
+            <span class="cta-link" aria-hidden="true">Writeup →</span>
+            <a href="https://github.com/Rahulrayy/attention-sinks-quant" target="_blank" rel="noopener" class="cta-gh">↗ GitHub</a>
+          </div>
+        </div>
+      </li>
+      <li class="card reveal">
+        <div class="card-fig"><svg viewBox="0 0 240 110" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M40 82.7 H226" opacity=".18"/><text x="36.0" y="85.1" text-anchor="end" stroke="none">0.80</text><path d="M40 59.3 H226" opacity=".18"/><text x="36.0" y="61.7" text-anchor="end" stroke="none">0.85</text><path d="M40 36.0 H226" opacity=".18"/><text x="36.0" y="38.4" text-anchor="end" stroke="none">0.90</text><path d="M40 12.7 H226" opacity=".18"/><text x="36.0" y="15.1" text-anchor="end" stroke="none">0.95</text><path d="M40 8 V92 H226"/><path d="M77 49.1 V22.0 M74 49.1 H80 M74 22.0 H80" opacity=".6"/><circle cx="77" cy="35.5" r="2.6" fill="currentColor" opacity=".6" stroke="none"/><path d="M99 50.8 V24.1 M96 50.8 H102 M96 24.1 H102" class="a"/><circle cx="99" cy="37.4" r="2.6" class="af" stroke="none"/><text x="88.0" y="103.0" text-anchor="middle" stroke="none">Adult</text><path d="M157 46.5 V21.4 M154 46.5 H160 M154 21.4 H160" opacity=".6"/><circle cx="157" cy="33.9" r="2.6" fill="currentColor" opacity=".6" stroke="none"/><path d="M179 80.2 V24.1 M176 80.2 H182 M176 24.1 H182" class="a"/><circle cx="179" cy="52.1" r="2.6" class="af" stroke="none"/><text x="168.0" y="103.0" text-anchor="middle" stroke="none">HMEQ</text><text x="42.0" y="7.0" stroke="none">AUC, mean ± sd</text><circle cx="196" cy="68" r="2.4" fill="currentColor" opacity=".6" stroke="none"/><text x="201.0" y="70.4" stroke="none">baseline</text><circle cx="196" cy="78" r="2.4" class="af" stroke="none"/><text x="201.0" y="80.4" stroke="none">hybrid</text></svg></div>
+        <div class="card-main">
+          <div class="card-cap"><span>Fig. 03 · Controlled experiment</span><span class="card-metric">d = −0.84<small>hybrid vs baseline, HMEQ</small></span></div>
+          <h3 class="card-title"><a href="projects/llm-tabular.html">Can LLMs Make Tabular ML Better?</a></h3>
+          <p class="card-finding">No hybrid beat its baseline. On HMEQ the LLM features made XGBoost significantly worse (p = 0.004).</p>
+          <div class="card-tags"><span class="p-tag">XGBoost</span><span class="p-tag">LLaMA 3.1</span><span class="p-tag">Nested CV</span><span class="p-tag">SHAP</span></div>
+          <div class="card-links">
+            <span class="cta-link" aria-hidden="true">Writeup →</span>
+            <a href="https://github.com/Rahulrayy/Can-LLMs-Make-Tabular-ML-Better" target="_blank" rel="noopener" class="cta-gh">↗ GitHub</a>
+          </div>
+        </div>
+      </li>
+      <li class="card reveal">
+        <div class="card-fig"><svg viewBox="0 0 240 110" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><rect x="14" y="40" width="40" height="30"/><text x="34.0" y="58.0" text-anchor="middle" stroke="none">data</text><rect x="170" y="40" width="62" height="30" class="a"/><text x="201.0" y="58.0" text-anchor="middle" stroke="none">leaderboard</text><path d="M54 55 L116 10" opacity=".6"/><path d="M122 10 L174 55" opacity=".6"/><circle cx="119" cy="10" r="3" class="af" stroke="none"/><path d="M54 55 L116 25" opacity=".6"/><path d="M122 25 L174 55" opacity=".6"/><circle cx="119" cy="25" r="3" class="af" stroke="none"/><path d="M54 55 L116 40" opacity=".6"/><path d="M122 40 L174 55" opacity=".6"/><circle cx="119" cy="40" r="3" class="af" stroke="none"/><path d="M54 55 L116 55" opacity=".6"/><path d="M122 55 L174 55" opacity=".6"/><circle cx="119" cy="55" r="3" class="af" stroke="none"/><path d="M54 55 L116 70" opacity=".6"/><path d="M122 70 L174 55" opacity=".6"/><circle cx="119" cy="70" r="3" class="af" stroke="none"/><path d="M54 55 L116 85" opacity=".6"/><path d="M122 85 L174 55" opacity=".6"/><circle cx="119" cy="85" r="3" class="af" stroke="none"/><path d="M54 55 L116 100" opacity=".6"/><path d="M122 100 L174 55" opacity=".6"/><circle cx="119" cy="100" r="3" class="af" stroke="none"/><text x="119.0" y="108.0" text-anchor="middle" stroke="none">7 models, in parallel</text></svg></div>
+        <div class="card-main">
+          <div class="card-cap"><span>Fig. 04 · Application</span><span class="card-metric">7 models<small>in parallel, per task</small></span></div>
+          <h3 class="card-title"><a href="projects/autoinsight.html">AutoInsight: End-to-End AutoML App</a></h3>
+          <p class="card-finding">Seven models train in parallel for either task type and land in a ranked leaderboard; the LLM only ever sees aggregated metrics, never raw data.</p>
+          <div class="card-tags"><span class="p-tag">Streamlit</span><span class="p-tag">SHAP</span><span class="p-tag">Optuna</span><span class="p-tag">Groq API</span></div>
+          <div class="card-links">
+            <span class="cta-link" aria-hidden="true">Writeup →</span>
+            <a href="https://huggingface.co/spaces/rayy5/AutoInsight" target="_blank" rel="noopener" class="cta-gh">↗ HF Space</a>
+            <a href="https://github.com/Rahulrayy/AutoInsight" target="_blank" rel="noopener" class="cta-gh">↗ GitHub</a>
+          </div>
+        </div>
+      </li>
+      <li class="card reveal">
+        <div class="card-fig"><svg viewBox="0 0 240 110" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M9.8 8.3 L23.1 6.0" opacity=".16"/><path d="M9.8 8.3 L11.9 20.0" opacity=".16"/><path d="M9.8 8.3 L24.3 22.2" opacity=".16"/><path d="M11.9 20.0 L24.3 22.2" opacity=".16"/><path d="M11.9 20.0 L10.0 32.8" opacity=".16"/><path d="M11.9 20.0 L22.9 32.9" opacity=".16"/><path d="M11.9 20.0 L23.1 6.0" opacity=".16"/><path d="M10.0 32.8 L22.9 32.9" opacity=".16"/><path d="M10.0 32.8 L8.6 44.7" opacity=".16"/><path d="M10.0 32.8 L20.7 42.5" opacity=".16"/><path d="M10.0 32.8 L24.3 22.2" opacity=".16"/><path d="M8.6 44.7 L20.7 42.5" opacity=".16"/><path d="M8.6 44.7 L10.6 58.1" opacity=".16"/><path d="M8.6 44.7 L22.3 54.9" opacity=".16"/><path d="M8.6 44.7 L22.9 32.9" opacity=".16"/><path d="M10.6 58.1 L22.3 54.9" opacity=".16"/><path d="M10.6 58.1 L8.2 68.1" opacity=".16"/><path d="M10.6 58.1 L20.8 67.9" opacity=".16"/><path d="M10.6 58.1 L20.7 42.5" opacity=".16"/><path d="M8.2 68.1 L20.8 67.9" opacity=".16"/><path d="M8.2 68.1 L8.2 82.6" opacity=".16"/><path d="M8.2 68.1 L20.1 81.0" opacity=".16"/><path d="M8.2 68.1 L22.3 54.9" opacity=".16"/><path d="M8.2 82.6 L20.1 81.0" opacity=".16"/><path d="M8.2 82.6 L20.8 67.9" opacity=".16"/><path d="M23.1 6.0 L34.1 9.5" opacity=".16"/><path d="M23.1 6.0 L24.3 22.2" opacity=".16"/><path d="M23.1 6.0 L34.5 20.8" opacity=".16"/><path d="M24.3 22.2 L34.5 20.8" opacity=".16"/><path d="M24.3 22.2 L22.9 32.9" opacity=".16"/><path d="M24.3 22.2 L34.4 33.1" opacity=".16"/><path d="M24.3 22.2 L34.1 9.5" opacity=".16"/><path d="M22.9 32.9 L34.4 33.1" opacity=".16"/><path d="M22.9 32.9 L20.7 42.5" opacity=".16"/><path d="M22.9 32.9 L34.2 43.6" opacity=".16"/><path d="M22.9 32.9 L34.5 20.8" opacity=".16"/><path d="M20.7 42.5 L34.2 43.6" opacity=".16"/><path d="M20.7 42.5 L22.3 54.9" opacity=".16"/><path d="M20.7 42.5 L36.6 59.0" opacity=".16"/><path d="M20.7 42.5 L34.4 33.1" opacity=".16"/><path d="M22.3 54.9 L36.6 59.0" opacity=".16"/><path d="M22.3 54.9 L20.8 67.9" opacity=".16"/><path d="M22.3 54.9 L35.9 69.9" opacity=".16"/><path d="M22.3 54.9 L34.2 43.6" opacity=".16"/><path d="M20.8 67.9 L35.9 69.9" opacity=".16"/><path d="M20.8 67.9 L20.1 81.0" opacity=".16"/><path d="M20.8 67.9 L33.6 80.0" opacity=".16"/><path d="M20.8 67.9 L36.6 59.0" opacity=".16"/><path d="M20.1 81.0 L33.6 80.0" opacity=".16"/><path d="M20.1 81.0 L35.9 69.9" opacity=".16"/><path d="M34.1 9.5 L45.7 6.1" opacity=".16"/><path d="M34.1 9.5 L34.5 20.8" opacity=".16"/><path d="M34.1 9.5 L47.8 19.8" opacity=".16"/><path d="M34.5 20.8 L47.8 19.8" opacity=".16"/><path d="M34.5 20.8 L34.4 33.1" opacity=".16"/><path d="M34.5 20.8 L48.1 31.9" opacity=".16"/><path d="M34.5 20.8 L45.7 6.1" opacity=".16"/><path d="M34.4 33.1 L48.1 31.9" opacity=".16"/><path d="M34.4 33.1 L34.2 43.6" opacity=".16"/><path d="M34.4 33.1 L48.6 46.1" opacity=".16"/><path d="M34.4 33.1 L47.8 19.8" opacity=".16"/><path d="M34.2 43.6 L48.6 46.1" opacity=".16"/><path d="M34.2 43.6 L36.6 59.0" opacity=".16"/><path d="M34.2 43.6 L44.4 55.5" opacity=".16"/><path d="M34.2 43.6 L48.1 31.9" opacity=".16"/><path d="M36.6 59.0 L44.4 55.5" opacity=".16"/><path d="M36.6 59.0 L35.9 69.9" opacity=".16"/><path d="M36.6 59.0 L48.4 68.9" opacity=".16"/><path d="M36.6 59.0 L48.6 46.1" opacity=".16"/><path d="M35.9 69.9 L48.4 68.9" opacity=".16"/><path d="M35.9 69.9 L33.6 80.0" opacity=".16"/><path d="M35.9 69.9 L48.7 80.7" opacity=".16"/><path d="M35.9 69.9 L44.4 55.5" opacity=".16"/><path d="M33.6 80.0 L48.7 80.7" opacity=".16"/><path d="M33.6 80.0 L48.4 68.9" opacity=".16"/><path d="M45.7 6.1 L47.8 19.8" opacity=".16"/><path d="M47.8 19.8 L48.1 31.9" opacity=".16"/><path d="M48.1 31.9 L48.6 46.1" opacity=".16"/><path d="M48.6 46.1 L44.4 55.5" opacity=".16"/><path d="M44.4 55.5 L48.4 68.9" opacity=".16"/><path d="M44.4 55.5 L56.9 69.6" opacity=".16"/><path d="M48.4 68.9 L56.9 69.6" opacity=".16"/><path d="M48.4 68.9 L48.7 80.7" opacity=".16"/><path d="M48.4 68.9 L60.0 80.2" opacity=".16"/><path d="M48.7 80.7 L60.0 80.2" opacity=".16"/><path d="M48.7 80.7 L56.9 69.6" opacity=".16"/><path d="M56.9 69.6 L71.3 68.8" opacity=".16"/><path d="M56.9 69.6 L60.0 80.2" opacity=".16"/><path d="M56.9 69.6 L69.6 82.2" opacity=".16"/><path d="M56.9 69.6 L72.3 55.4" opacity=".16"/><path d="M60.0 80.2 L69.6 82.2" opacity=".16"/><path d="M60.0 80.2 L71.3 68.8" opacity=".16"/><path d="M69.2 7.3 L81.6 8.6" opacity=".16"/><path d="M69.2 7.3 L73.0 21.3" opacity=".16"/><path d="M69.2 7.3 L81.5 19.9" opacity=".16"/><path d="M73.0 21.3 L81.5 19.9" opacity=".16"/><path d="M73.0 21.3 L69.3 31.3" opacity=".16"/><path d="M73.0 21.3 L81.9 31.4" opacity=".16"/><path d="M73.0 21.3 L81.6 8.6" opacity=".16"/><path d="M69.3 31.3 L81.9 31.4" opacity=".16"/><path d="M69.3 31.3 L69.2 42.7" opacity=".16"/><path d="M69.3 31.3 L85.3 45.9" opacity=".16"/><path d="M69.3 31.3 L81.5 19.9" opacity=".16"/><path d="M69.2 42.7 L85.3 45.9" opacity=".16"/><path d="M69.2 42.7 L72.3 55.4" opacity=".16"/><path d="M69.2 42.7 L82.3 58.5" opacity=".16"/><path d="M69.2 42.7 L81.9 31.4" opacity=".16"/><path d="M72.3 55.4 L82.3 58.5" opacity=".16"/><path d="M72.3 55.4 L71.3 68.8" opacity=".16"/><path d="M72.3 55.4 L81.9 68.5" opacity=".16"/><path d="M72.3 55.4 L85.3 45.9" opacity=".16"/><path d="M71.3 68.8 L81.9 68.5" opacity=".16"/><path d="M71.3 68.8 L69.6 82.2" opacity=".16"/><path d="M71.3 68.8 L84.8 81.8" opacity=".16"/><path d="M71.3 68.8 L82.3 58.5" opacity=".16"/><path d="M69.6 82.2 L84.8 81.8" opacity=".16"/><path d="M69.6 82.2 L81.9 68.5" opacity=".16"/><path d="M81.6 8.6 L93.6 10.2" opacity=".16"/><path d="M81.6 8.6 L81.5 19.9" opacity=".16"/><path d="M81.6 8.6 L94.1 19.1" opacity=".16"/><path d="M81.5 19.9 L94.1 19.1" opacity=".16"/><path d="M81.5 19.9 L81.9 31.4" opacity=".16"/><path d="M81.5 19.9 L96.6 31.6" opacity=".16"/><path d="M81.5 19.9 L93.6 10.2" opacity=".16"/><path d="M81.9 31.4 L96.6 31.6" opacity=".16"/><path d="M81.9 31.4 L85.3 45.9" opacity=".16"/><path d="M81.9 31.4 L94.5 42.7" opacity=".16"/><path d="M81.9 31.4 L94.1 19.1" opacity=".16"/><path d="M85.3 45.9 L94.5 42.7" opacity=".16"/><path d="M85.3 45.9 L82.3 58.5" opacity=".16"/><path d="M85.3 45.9 L93.6 57.2" opacity=".16"/><path d="M85.3 45.9 L96.6 31.6" opacity=".16"/><path d="M82.3 58.5 L93.6 57.2" opacity=".16"/><path d="M82.3 58.5 L81.9 68.5" opacity=".16"/><path d="M82.3 58.5 L94.3 69.4" opacity=".16"/><path d="M82.3 58.5 L94.5 42.7" opacity=".16"/><path d="M81.9 68.5 L94.3 69.4" opacity=".16"/><path d="M81.9 68.5 L84.8 81.8" opacity=".16"/><path d="M81.9 68.5 L94.8 81.0" opacity=".16"/><path d="M81.9 68.5 L93.6 57.2" opacity=".16"/><path d="M84.8 81.8 L94.8 81.0" opacity=".16"/><path d="M84.8 81.8 L94.3 69.4" opacity=".16"/><path d="M93.6 10.2 L94.1 19.1" opacity=".16"/><path d="M94.1 19.1 L96.6 31.6" opacity=".16"/><path d="M96.6 31.6 L94.5 42.7" opacity=".16"/><path d="M94.5 42.7 L93.6 57.2" opacity=".16"/><path d="M93.6 57.2 L94.3 69.4" opacity=".16"/><path d="M94.3 69.4 L94.8 81.0" opacity=".16"/><rect x="56.3" y="4" width="5" height="56.8" fill="currentColor" opacity=".55" stroke="none"/><circle cx="9.8" cy="8.3" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="11.9" cy="20.0" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="10.0" cy="32.8" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="8.6" cy="44.7" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="10.6" cy="58.1" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="8.2" cy="68.1" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="8.2" cy="82.6" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="23.1" cy="6.0" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="24.3" cy="22.2" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="22.9" cy="32.9" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="20.7" cy="42.5" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="22.3" cy="54.9" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="20.8" cy="67.9" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="20.1" cy="81.0" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="34.1" cy="9.5" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="34.5" cy="20.8" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="34.4" cy="33.1" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="34.2" cy="43.6" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="36.6" cy="59.0" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="35.9" cy="69.9" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="33.6" cy="80.0" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="45.7" cy="6.1" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="47.8" cy="19.8" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="48.1" cy="31.9" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="48.6" cy="46.1" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="44.4" cy="55.5" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="48.4" cy="68.9" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="48.7" cy="80.7" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="56.9" cy="69.6" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="60.0" cy="80.2" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="69.2" cy="7.3" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="73.0" cy="21.3" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="69.3" cy="31.3" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="69.2" cy="42.7" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="72.3" cy="55.4" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="71.3" cy="68.8" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="69.6" cy="82.2" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="81.6" cy="8.6" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="81.5" cy="19.9" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="81.9" cy="31.4" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="85.3" cy="45.9" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="82.3" cy="58.5" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="81.9" cy="68.5" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="84.8" cy="81.8" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="93.6" cy="10.2" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="94.1" cy="19.1" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="96.6" cy="31.6" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="94.5" cy="42.7" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="93.6" cy="57.2" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="94.3" cy="69.4" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="94.8" cy="81.0" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><polyline points="24.3,22.2 34.4,33.1 34.2,43.6 44.4,55.5 56.9,69.6 72.3,55.4 85.3,45.9 96.6,31.6 94.1,19.1" class="a" stroke-width="1.4"/><circle cx="24.3" cy="22.2" r="3" class="af" stroke="none"/><circle cx="94.1" cy="19.1" r="3.2" class="a" style="fill: var(--card)" stroke-width="1.4"/><text x="10.0" y="104.0" stroke="none">euclidean h</text><path d="M129.8 8.3 L143.1 6.0" opacity=".16"/><path d="M129.8 8.3 L131.9 20.0" opacity=".16"/><path d="M129.8 8.3 L144.3 22.2" opacity=".16"/><path d="M131.9 20.0 L144.3 22.2" opacity=".16"/><path d="M131.9 20.0 L130.0 32.8" opacity=".16"/><path d="M131.9 20.0 L142.9 32.9" opacity=".16"/><path d="M131.9 20.0 L143.1 6.0" opacity=".16"/><path d="M130.0 32.8 L142.9 32.9" opacity=".16"/><path d="M130.0 32.8 L128.6 44.7" opacity=".16"/><path d="M130.0 32.8 L140.7 42.5" opacity=".16"/><path d="M130.0 32.8 L144.3 22.2" opacity=".16"/><path d="M128.6 44.7 L140.7 42.5" opacity=".16"/><path d="M128.6 44.7 L130.6 58.1" opacity=".16"/><path d="M128.6 44.7 L142.3 54.9" opacity=".16"/><path d="M128.6 44.7 L142.9 32.9" opacity=".16"/><path d="M130.6 58.1 L142.3 54.9" opacity=".16"/><path d="M130.6 58.1 L128.2 68.1" opacity=".16"/><path d="M130.6 58.1 L140.8 67.9" opacity=".16"/><path d="M130.6 58.1 L140.7 42.5" opacity=".16"/><path d="M128.2 68.1 L140.8 67.9" opacity=".16"/><path d="M128.2 68.1 L128.2 82.6" opacity=".16"/><path d="M128.2 68.1 L140.1 81.0" opacity=".16"/><path d="M128.2 68.1 L142.3 54.9" opacity=".16"/><path d="M128.2 82.6 L140.1 81.0" opacity=".16"/><path d="M128.2 82.6 L140.8 67.9" opacity=".16"/><path d="M143.1 6.0 L154.1 9.5" opacity=".16"/><path d="M143.1 6.0 L144.3 22.2" opacity=".16"/><path d="M143.1 6.0 L154.5 20.8" opacity=".16"/><path d="M144.3 22.2 L154.5 20.8" opacity=".16"/><path d="M144.3 22.2 L142.9 32.9" opacity=".16"/><path d="M144.3 22.2 L154.4 33.1" opacity=".16"/><path d="M144.3 22.2 L154.1 9.5" opacity=".16"/><path d="M142.9 32.9 L154.4 33.1" opacity=".16"/><path d="M142.9 32.9 L140.7 42.5" opacity=".16"/><path d="M142.9 32.9 L154.2 43.6" opacity=".16"/><path d="M142.9 32.9 L154.5 20.8" opacity=".16"/><path d="M140.7 42.5 L154.2 43.6" opacity=".16"/><path d="M140.7 42.5 L142.3 54.9" opacity=".16"/><path d="M140.7 42.5 L156.6 59.0" opacity=".16"/><path d="M140.7 42.5 L154.4 33.1" opacity=".16"/><path d="M142.3 54.9 L156.6 59.0" opacity=".16"/><path d="M142.3 54.9 L140.8 67.9" opacity=".16"/><path d="M142.3 54.9 L155.9 69.9" opacity=".16"/><path d="M142.3 54.9 L154.2 43.6" opacity=".16"/><path d="M140.8 67.9 L155.9 69.9" opacity=".16"/><path d="M140.8 67.9 L140.1 81.0" opacity=".16"/><path d="M140.8 67.9 L153.6 80.0" opacity=".16"/><path d="M140.8 67.9 L156.6 59.0" opacity=".16"/><path d="M140.1 81.0 L153.6 80.0" opacity=".16"/><path d="M140.1 81.0 L155.9 69.9" opacity=".16"/><path d="M154.1 9.5 L165.7 6.1" opacity=".16"/><path d="M154.1 9.5 L154.5 20.8" opacity=".16"/><path d="M154.1 9.5 L167.8 19.8" opacity=".16"/><path d="M154.5 20.8 L167.8 19.8" opacity=".16"/><path d="M154.5 20.8 L154.4 33.1" opacity=".16"/><path d="M154.5 20.8 L168.1 31.9" opacity=".16"/><path d="M154.5 20.8 L165.7 6.1" opacity=".16"/><path d="M154.4 33.1 L168.1 31.9" opacity=".16"/><path d="M154.4 33.1 L154.2 43.6" opacity=".16"/><path d="M154.4 33.1 L168.6 46.1" opacity=".16"/><path d="M154.4 33.1 L167.8 19.8" opacity=".16"/><path d="M154.2 43.6 L168.6 46.1" opacity=".16"/><path d="M154.2 43.6 L156.6 59.0" opacity=".16"/><path d="M154.2 43.6 L164.4 55.5" opacity=".16"/><path d="M154.2 43.6 L168.1 31.9" opacity=".16"/><path d="M156.6 59.0 L164.4 55.5" opacity=".16"/><path d="M156.6 59.0 L155.9 69.9" opacity=".16"/><path d="M156.6 59.0 L168.4 68.9" opacity=".16"/><path d="M156.6 59.0 L168.6 46.1" opacity=".16"/><path d="M155.9 69.9 L168.4 68.9" opacity=".16"/><path d="M155.9 69.9 L153.6 80.0" opacity=".16"/><path d="M155.9 69.9 L168.7 80.7" opacity=".16"/><path d="M155.9 69.9 L164.4 55.5" opacity=".16"/><path d="M153.6 80.0 L168.7 80.7" opacity=".16"/><path d="M153.6 80.0 L168.4 68.9" opacity=".16"/><path d="M165.7 6.1 L167.8 19.8" opacity=".16"/><path d="M167.8 19.8 L168.1 31.9" opacity=".16"/><path d="M168.1 31.9 L168.6 46.1" opacity=".16"/><path d="M168.6 46.1 L164.4 55.5" opacity=".16"/><path d="M164.4 55.5 L168.4 68.9" opacity=".16"/><path d="M164.4 55.5 L176.9 69.6" opacity=".16"/><path d="M168.4 68.9 L176.9 69.6" opacity=".16"/><path d="M168.4 68.9 L168.7 80.7" opacity=".16"/><path d="M168.4 68.9 L180.0 80.2" opacity=".16"/><path d="M168.7 80.7 L180.0 80.2" opacity=".16"/><path d="M168.7 80.7 L176.9 69.6" opacity=".16"/><path d="M176.9 69.6 L191.3 68.8" opacity=".16"/><path d="M176.9 69.6 L180.0 80.2" opacity=".16"/><path d="M176.9 69.6 L189.6 82.2" opacity=".16"/><path d="M176.9 69.6 L192.3 55.4" opacity=".16"/><path d="M180.0 80.2 L189.6 82.2" opacity=".16"/><path d="M180.0 80.2 L191.3 68.8" opacity=".16"/><path d="M189.2 7.3 L201.6 8.6" opacity=".16"/><path d="M189.2 7.3 L193.0 21.3" opacity=".16"/><path d="M189.2 7.3 L201.5 19.9" opacity=".16"/><path d="M193.0 21.3 L201.5 19.9" opacity=".16"/><path d="M193.0 21.3 L189.3 31.3" opacity=".16"/><path d="M193.0 21.3 L201.9 31.4" opacity=".16"/><path d="M193.0 21.3 L201.6 8.6" opacity=".16"/><path d="M189.3 31.3 L201.9 31.4" opacity=".16"/><path d="M189.3 31.3 L189.2 42.7" opacity=".16"/><path d="M189.3 31.3 L205.3 45.9" opacity=".16"/><path d="M189.3 31.3 L201.5 19.9" opacity=".16"/><path d="M189.2 42.7 L205.3 45.9" opacity=".16"/><path d="M189.2 42.7 L192.3 55.4" opacity=".16"/><path d="M189.2 42.7 L202.3 58.5" opacity=".16"/><path d="M189.2 42.7 L201.9 31.4" opacity=".16"/><path d="M192.3 55.4 L202.3 58.5" opacity=".16"/><path d="M192.3 55.4 L191.3 68.8" opacity=".16"/><path d="M192.3 55.4 L201.9 68.5" opacity=".16"/><path d="M192.3 55.4 L205.3 45.9" opacity=".16"/><path d="M191.3 68.8 L201.9 68.5" opacity=".16"/><path d="M191.3 68.8 L189.6 82.2" opacity=".16"/><path d="M191.3 68.8 L204.8 81.8" opacity=".16"/><path d="M191.3 68.8 L202.3 58.5" opacity=".16"/><path d="M189.6 82.2 L204.8 81.8" opacity=".16"/><path d="M189.6 82.2 L201.9 68.5" opacity=".16"/><path d="M201.6 8.6 L213.6 10.2" opacity=".16"/><path d="M201.6 8.6 L201.5 19.9" opacity=".16"/><path d="M201.6 8.6 L214.1 19.1" opacity=".16"/><path d="M201.5 19.9 L214.1 19.1" opacity=".16"/><path d="M201.5 19.9 L201.9 31.4" opacity=".16"/><path d="M201.5 19.9 L216.6 31.6" opacity=".16"/><path d="M201.5 19.9 L213.6 10.2" opacity=".16"/><path d="M201.9 31.4 L216.6 31.6" opacity=".16"/><path d="M201.9 31.4 L205.3 45.9" opacity=".16"/><path d="M201.9 31.4 L214.5 42.7" opacity=".16"/><path d="M201.9 31.4 L214.1 19.1" opacity=".16"/><path d="M205.3 45.9 L214.5 42.7" opacity=".16"/><path d="M205.3 45.9 L202.3 58.5" opacity=".16"/><path d="M205.3 45.9 L213.6 57.2" opacity=".16"/><path d="M205.3 45.9 L216.6 31.6" opacity=".16"/><path d="M202.3 58.5 L213.6 57.2" opacity=".16"/><path d="M202.3 58.5 L201.9 68.5" opacity=".16"/><path d="M202.3 58.5 L214.3 69.4" opacity=".16"/><path d="M202.3 58.5 L214.5 42.7" opacity=".16"/><path d="M201.9 68.5 L214.3 69.4" opacity=".16"/><path d="M201.9 68.5 L204.8 81.8" opacity=".16"/><path d="M201.9 68.5 L214.8 81.0" opacity=".16"/><path d="M201.9 68.5 L213.6 57.2" opacity=".16"/><path d="M204.8 81.8 L214.8 81.0" opacity=".16"/><path d="M204.8 81.8 L214.3 69.4" opacity=".16"/><path d="M213.6 10.2 L214.1 19.1" opacity=".16"/><path d="M214.1 19.1 L216.6 31.6" opacity=".16"/><path d="M216.6 31.6 L214.5 42.7" opacity=".16"/><path d="M214.5 42.7 L213.6 57.2" opacity=".16"/><path d="M213.6 57.2 L214.3 69.4" opacity=".16"/><path d="M214.3 69.4 L214.8 81.0" opacity=".16"/><rect x="176.3" y="4" width="5" height="56.8" fill="currentColor" opacity=".55" stroke="none"/><circle cx="129.8" cy="8.3" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="131.9" cy="20.0" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="130.0" cy="32.8" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="128.6" cy="44.7" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="130.6" cy="58.1" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="128.2" cy="68.1" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="128.2" cy="82.6" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="143.1" cy="6.0" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="144.3" cy="22.2" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="142.9" cy="32.9" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="140.7" cy="42.5" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="142.3" cy="54.9" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="140.8" cy="67.9" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="140.1" cy="81.0" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="154.1" cy="9.5" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="154.5" cy="20.8" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="154.4" cy="33.1" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="154.2" cy="43.6" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="156.6" cy="59.0" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="155.9" cy="69.9" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="153.6" cy="80.0" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="165.7" cy="6.1" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="167.8" cy="19.8" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="168.1" cy="31.9" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="168.6" cy="46.1" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="164.4" cy="55.5" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="168.4" cy="68.9" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="168.7" cy="80.7" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="176.9" cy="69.6" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="180.0" cy="80.2" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="189.2" cy="7.3" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="193.0" cy="21.3" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="189.3" cy="31.3" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="189.2" cy="42.7" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="192.3" cy="55.4" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="191.3" cy="68.8" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="189.6" cy="82.2" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="201.6" cy="8.6" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="201.5" cy="19.9" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="201.9" cy="31.4" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="205.3" cy="45.9" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="202.3" cy="58.5" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="201.9" cy="68.5" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="204.8" cy="81.8" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="213.6" cy="10.2" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="214.1" cy="19.1" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="216.6" cy="31.6" r="2.6" class="af" opacity=".35" stroke="none"/><circle cx="214.5" cy="42.7" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="213.6" cy="57.2" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="214.3" cy="69.4" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><circle cx="214.8" cy="81.0" r="1.3" fill="currentColor" opacity=".45" stroke="none"/><polyline points="144.3,22.2 154.4,33.1 154.2,43.6 164.4,55.5 176.9,69.6 192.3,55.4 205.3,45.9 216.6,31.6 214.1,19.1" class="a" stroke-width="1.4"/><circle cx="144.3" cy="22.2" r="3" class="af" stroke="none"/><circle cx="214.1" cy="19.1" r="3.2" class="a" style="fill: var(--card)" stroke-width="1.4"/><text x="130.0" y="104.0" stroke="none">learned h</text><circle cx="190" cy="101.5" r="2.6" class="af" opacity=".35" stroke="none"/><text x="195.0" y="104.0" stroke="none">expanded</text></svg></div>
+        <div class="card-main">
+          <div class="card-cap"><span>Fig. 05 · Search + ML</span><span class="card-metric">−42%<small>A* node expansions</small></span></div>
+          <h3 class="card-title"><a href="projects/quake.html">Quake: Learned Heuristic A* on BSP Geometry</a></h3>
+          <p class="card-finding">42% fewer nodes expanded across 38 maps, with paths about 2% longer than optimal.</p>
+          <div class="card-tags"><span class="p-tag">PyTorch</span><span class="p-tag">XGBoost</span><span class="p-tag">A* Search</span><span class="p-tag">BSP v29</span></div>
+          <div class="card-links">
+            <span class="cta-link" aria-hidden="true">Writeup →</span>
+            <a href="https://github.com/Rahulrayy/quake" target="_blank" rel="noopener" class="cta-gh">↗ GitHub</a>
+          </div>
+        </div>
+      </li>
+      <li class="card reveal">
+        <div class="card-fig"><svg viewBox="0 0 240 110" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M26 10 V92 H226"/><text x="2.0" y="6.5" stroke="none">test loss</text><text x="226.0" y="104.0" text-anchor="end" stroke="none">epoch</text><path d="M26 62.7 H226" opacity=".15"/><text x="23.0" y="65.1" text-anchor="end" stroke="none">0.5</text><path d="M26 33.4 H226" opacity=".15"/><text x="23.0" y="35.8" text-anchor="end" stroke="none">1.0</text><polyline points="26.0,10.0 27.7,13.8 29.3,17.9 31.0,22.2 32.7,26.7 34.3,31.2 36.0,35.8 37.7,40.3 39.3,44.7 41.0,48.8 42.7,52.7 44.3,56.2 46.0,59.3 47.7,61.9 49.3,63.9 51.0,65.3 52.7,66.0 54.3,66.7 56.0,67.4 57.7,68.0 59.3,68.6 61.0,69.1 62.7,69.7 64.3,70.2 66.0,70.7 67.7,71.2 69.3,71.7 71.0,72.1 72.7,72.5 74.3,72.9 76.0,73.3 77.7,73.7 79.3,74.0 81.0,74.3 82.7,74.6 84.3,74.9 86.0,75.2 87.7,75.5 89.3,75.7 91.0,76.0 92.7,76.2 94.3,76.4 96.0,76.6 97.7,76.8 99.3,76.9 101.0,77.1 102.7,77.3 104.3,77.4 106.0,77.5 107.7,77.7 109.3,77.8 111.0,77.9 112.7,78.0 114.3,78.1 116.0,78.2 117.7,78.3 119.3,78.4 121.0,78.5 122.7,78.6 124.3,78.7 126.0,78.8 127.7,78.8 129.3,78.9 131.0,79.0 132.7,79.1 134.3,79.2 136.0,79.2 137.7,79.3 139.3,79.4 141.0,79.4 142.7,79.5 144.3,79.6 146.0,79.6 147.7,79.7 149.3,79.8 151.0,79.8 152.7,79.9 154.3,79.9 156.0,80.0 157.7,80.0 159.3,80.1 161.0,80.1 162.7,80.2 164.3,80.2 166.0,80.3 167.7,80.3 169.3,80.4 171.0,80.4 172.7,80.5 174.3,80.5 176.0,80.5 177.7,80.6 179.3,80.6 181.0,80.7 182.7,80.7 184.3,80.8 186.0,80.8 187.7,80.8 189.3,80.9 191.0,80.9 192.7,81.0 194.3,81.0 196.0,81.1 197.7,81.1 199.3,81.1 201.0,81.2 202.7,81.2 204.3,81.3 206.0,81.3 207.7,81.4 209.3,81.4 211.0,81.5 212.7,81.5 214.3,81.6 216.0,81.6 217.7,81.7 219.3,81.7 221.0,81.8 222.7,81.8 224.3,81.9 226.0,81.9" opacity=".45" stroke-width="1.3"/><polyline points="26.0,10.0 27.7,12.4 29.3,14.9 31.0,17.6 32.7,20.3 34.3,23.1 36.0,25.9 37.7,28.7 39.3,31.4 41.0,34.0 42.7,36.4 44.3,38.6 46.0,40.6 47.7,42.3 49.3,43.7 51.0,44.8 52.7,45.5 54.3,46.2 56.0,46.9 57.7,47.5 59.3,48.1 61.0,48.7 62.7,49.3 64.3,49.8 66.0,50.3 67.7,50.8 69.3,51.3 71.0,51.7 72.7,52.1 74.3,52.5 76.0,52.9 77.7,53.2 79.3,53.5 81.0,53.8 82.7,54.0 84.3,54.2 86.0,54.4 87.7,54.5 89.3,54.6 91.0,54.7 92.7,54.7 94.3,54.7 96.0,54.5 97.7,54.3 99.3,54.0 101.0,53.6 102.7,53.1 104.3,52.5 106.0,51.9 107.7,51.3 109.3,50.6 111.0,49.9 112.7,49.1 114.3,48.4 116.0,47.6 117.7,46.9 119.3,46.2 121.0,45.5 122.7,44.8 124.3,44.2 126.0,43.6 127.7,43.1 129.3,42.7 131.0,42.3 132.7,42.1 134.3,41.9 136.0,41.9 137.7,41.9 139.3,42.0 141.0,42.3 142.7,42.5 144.3,42.9 146.0,43.3 147.7,43.8 149.3,44.3 151.0,44.9 152.7,45.5 154.3,46.1 156.0,46.8 157.7,47.5 159.3,48.2 161.0,48.9 162.7,49.6 164.3,50.4 166.0,51.1 167.7,51.8 169.3,52.5 171.0,53.1 172.7,53.7 174.3,54.3 176.0,54.8 177.7,55.3 179.3,55.8 181.0,56.2 182.7,56.5 184.3,56.7 186.0,56.9 187.7,57.0 189.3,57.1 191.0,57.2 192.7,57.3 194.3,57.4 196.0,57.4 197.7,57.5 199.3,57.6 201.0,57.6 202.7,57.7 204.3,57.8 206.0,57.8 207.7,57.9 209.3,57.9 211.0,58.0 212.7,58.0 214.3,58.1 216.0,58.1 217.7,58.2 219.3,58.3 221.0,58.3 222.7,58.4 224.3,58.4 226.0,58.5" opacity=".8" stroke-width="1.3"/><polyline points="26.0,10.0 27.7,11.8 29.3,13.7 31.0,15.7 32.7,17.8 34.3,19.9 36.0,22.0 37.7,24.1 39.3,26.1 41.0,28.0 42.7,29.8 44.3,31.5 46.0,33.0 47.7,34.3 49.3,35.3 51.0,36.1 52.7,36.6 54.3,37.1 56.0,37.6 57.7,38.1 59.3,38.5 61.0,39.0 62.7,39.4 64.3,39.8 66.0,40.2 67.7,40.6 69.3,41.0 71.0,41.3 72.7,41.7 74.3,42.0 76.0,42.4 77.7,42.7 79.3,43.0 81.0,43.3 82.7,43.6 84.3,43.8 86.0,44.1 87.7,44.3 89.3,44.6 91.0,44.8 92.7,45.0 94.3,45.2 96.0,45.4 97.7,45.5 99.3,45.7 101.0,45.8 102.7,46.0 104.3,46.1 106.0,46.2 107.7,46.3 109.3,46.4 111.0,46.4 112.7,46.5 114.3,46.5 116.0,46.5 117.7,46.5 119.3,46.5 121.0,46.2 122.7,45.7 124.3,45.0 126.0,44.0 127.7,43.0 129.3,41.7 131.0,40.3 132.7,38.9 134.3,37.3 136.0,35.7 137.7,34.0 139.3,32.3 141.0,30.6 142.7,28.9 144.3,27.2 146.0,25.6 147.7,24.1 149.3,22.7 151.0,21.4 152.7,20.2 154.3,19.2 156.0,18.4 157.7,17.8 159.3,17.4 161.0,17.3 162.7,17.3 164.3,17.6 166.0,17.9 167.7,18.4 169.3,19.0 171.0,19.8 172.7,20.6 174.3,21.5 176.0,22.5 177.7,23.5 179.3,24.6 181.0,25.7 182.7,26.8 184.3,27.9 186.0,29.1 187.7,30.2 189.3,31.3 191.0,32.3 192.7,33.3 194.3,34.2 196.0,35.1 197.7,35.8 199.3,36.5 201.0,37.0 202.7,37.4 204.3,37.7 206.0,38.0 207.7,38.3 209.3,38.5 211.0,38.7 212.7,38.9 214.3,39.1 216.0,39.2 217.7,39.4 219.3,39.6 221.0,39.7 222.7,39.9 224.3,40.1 226.0,40.3" class="a" stroke-width="1.3"/><path d="M136.0 41.9 V92" stroke-dasharray="1.5 2" opacity=".5"/><text x="136.0" y="100.0" text-anchor="middle" stroke="none">385</text><text x="140.0" y="38.9" stroke="none">20%</text><path d="M161.1 17.3 V92" stroke-dasharray="1.5 2" opacity=".5"/><text x="161.1" y="100.0" text-anchor="middle" stroke="none">473</text><text x="165.1" y="14.3" stroke="none" class="af">30%</text><text x="226.0" y="78.9" text-anchor="end" stroke="none">0%</text></svg></div>
+        <div class="card-main">
+          <div class="card-cap"><span>Fig. 06 · Reproduction</span><span class="card-metric">0.22 → 0.50<small>peak height, 20% → 30% noise</small></span></div>
+          <h3 class="card-title"><a href="projects/double-descent.html">Epoch-wise Double Descent Under Label Noise</a></h3>
+          <p class="card-finding">Clear peaks at 20% and 30% label noise, and the peak nearly doubles in height as noise rises.</p>
+          <div class="card-tags"><span class="p-tag">PyTorch</span><span class="p-tag">ResNet-18</span><span class="p-tag">CIFAR-10</span><span class="p-tag">Label Noise</span></div>
+          <div class="card-links">
+            <span class="cta-link" aria-hidden="true">Writeup →</span>
+            <a href="https://github.com/Rahulrayy/cifar-Double-Descent" target="_blank" rel="noopener" class="cta-gh">↗ GitHub</a>
+          </div>
+        </div>
+      </li>
+      <li class="card reveal">
+        <div class="card-fig"><svg viewBox="0 0 240 110" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><ellipse cx="62" cy="42" rx="34" ry="22" stroke-dasharray="2 2" opacity=".8"/><circle cx="58.1" cy="47.1" r="1.6" fill="currentColor" stroke="none"/><circle cx="58.7" cy="39.0" r="1.6" fill="currentColor" stroke="none"/><circle cx="47.5" cy="39.9" r="1.6" fill="currentColor" stroke="none"/><circle cx="78.9" cy="46.2" r="1.6" fill="currentColor" stroke="none"/><circle cx="78.0" cy="44.5" r="1.6" fill="currentColor" stroke="none"/><circle cx="67.8" cy="43.8" r="1.6" fill="currentColor" stroke="none"/><circle cx="40.4" cy="49.2" r="1.6" fill="currentColor" stroke="none"/><circle cx="69.9" cy="47.0" r="1.6" fill="currentColor" stroke="none"/><circle cx="43.6" cy="29.8" r="1.6" fill="currentColor" stroke="none"/><circle cx="48.2" cy="37.3" r="1.6" fill="currentColor" stroke="none"/><circle cx="66.3" cy="41.6" r="1.6" fill="currentColor" stroke="none"/><circle cx="70.1" cy="35.5" r="1.6" fill="currentColor" stroke="none"/><circle cx="66.7" cy="45.8" r="1.6" fill="currentColor" stroke="none"/><circle cx="53.4" cy="56.5" r="1.6" fill="currentColor" stroke="none"/><ellipse cx="150" cy="30" rx="30" ry="18" class="a" stroke-dasharray="2 2" opacity=".8"/><circle cx="157.3" cy="39.4" r="1.6" class="af" stroke="none"/><circle cx="141.5" cy="23.9" r="1.6" class="af" stroke="none"/><circle cx="145.6" cy="29.2" r="1.6" class="af" stroke="none"/><circle cx="158.7" cy="32.0" r="1.6" class="af" stroke="none"/><circle cx="143.9" cy="22.2" r="1.6" class="af" stroke="none"/><circle cx="143.2" cy="39.6" r="1.6" class="af" stroke="none"/><circle cx="138.9" cy="32.0" r="1.6" class="af" stroke="none"/><circle cx="155.3" cy="18.8" r="1.6" class="af" stroke="none"/><circle cx="150.7" cy="40.3" r="1.6" class="af" stroke="none"/><circle cx="128.1" cy="27.9" r="1.6" class="af" stroke="none"/><circle cx="148.5" cy="23.2" r="1.6" class="af" stroke="none"/><circle cx="156.6" cy="29.5" r="1.6" class="af" stroke="none"/><circle cx="132.3" cy="36.0" r="1.6" class="af" stroke="none"/><circle cx="159.0" cy="37.6" r="1.6" class="af" stroke="none"/><ellipse cx="132" cy="80" rx="38" ry="20" stroke-dasharray="2 2" opacity=".8"/><circle cx="155.1" cy="83.1" r="1.6" fill="currentColor" stroke="none"/><circle cx="133.9" cy="68.6" r="1.6" fill="currentColor" stroke="none"/><circle cx="142.7" cy="74.4" r="1.6" fill="currentColor" stroke="none"/><circle cx="124.5" cy="69.0" r="1.6" fill="currentColor" stroke="none"/><circle cx="115.3" cy="75.2" r="1.6" fill="currentColor" stroke="none"/><circle cx="147.7" cy="66.9" r="1.6" fill="currentColor" stroke="none"/><circle cx="108.5" cy="82.0" r="1.6" fill="currentColor" stroke="none"/><circle cx="154.8" cy="84.8" r="1.6" fill="currentColor" stroke="none"/><circle cx="113.7" cy="67.3" r="1.6" fill="currentColor" stroke="none"/><circle cx="138.2" cy="73.2" r="1.6" fill="currentColor" stroke="none"/><circle cx="114.0" cy="88.3" r="1.6" fill="currentColor" stroke="none"/><circle cx="150.9" cy="81.4" r="1.6" fill="currentColor" stroke="none"/><circle cx="136.1" cy="83.8" r="1.6" fill="currentColor" stroke="none"/><circle cx="156.2" cy="84.9" r="1.6" fill="currentColor" stroke="none"/><ellipse cx="205" cy="70" rx="18" ry="16" stroke-dasharray="2 2" opacity=".8"/><circle cx="209.3" cy="74.0" r="1.6" fill="currentColor" stroke="none"/><circle cx="194.7" cy="77.5" r="1.6" fill="currentColor" stroke="none"/><circle cx="212.8" cy="73.8" r="1.6" fill="currentColor" stroke="none"/><circle cx="192.3" cy="66.4" r="1.6" fill="currentColor" stroke="none"/><circle cx="210.5" cy="59.4" r="1.6" fill="currentColor" stroke="none"/><circle cx="203.5" cy="77.4" r="1.6" fill="currentColor" stroke="none"/><circle cx="196.6" cy="79.2" r="1.6" fill="currentColor" stroke="none"/><circle cx="209.5" cy="68.9" r="1.6" fill="currentColor" stroke="none"/><circle cx="207.7" cy="74.8" r="1.6" fill="currentColor" stroke="none"/><circle cx="206.0" cy="78.2" r="1.6" fill="currentColor" stroke="none"/><circle cx="199.5" cy="67.0" r="1.6" fill="currentColor" stroke="none"/><circle cx="213.5" cy="70.2" r="1.6" fill="currentColor" stroke="none"/><circle cx="198.0" cy="76.7" r="1.6" fill="currentColor" stroke="none"/><circle cx="216.0" cy="67.0" r="1.6" fill="currentColor" stroke="none"/><circle cx="20" cy="88" r="1.4" fill="currentColor" opacity=".4" stroke="none"/><circle cx="104" cy="12" r="1.4" fill="currentColor" opacity=".4" stroke="none"/><circle cx="100" cy="58" r="1.4" fill="currentColor" opacity=".4" stroke="none"/><circle cx="190" cy="100" r="1.4" fill="currentColor" opacity=".4" stroke="none"/><circle cx="228" cy="30" r="1.4" fill="currentColor" opacity=".4" stroke="none"/><circle cx="30" cy="10" r="1.4" fill="currentColor" opacity=".4" stroke="none"/><text x="8.0" y="106.0" stroke="none">topic clusters · grey dots = noise</text></svg></div>
+        <div class="card-main">
+          <div class="card-cap"><span>Fig. 07 · ML system</span><span class="card-metric">6 h<small>refresh, zero backend</small></span></div>
+          <h3 class="card-title"><a href="projects/newsphere.html">Newsphere Live: Semantic News Map</a></h3>
+          <p class="card-finding">11 feeds re-embedded and re-clustered every 6 hours, with zero backend and zero recurring cost.</p>
+          <div class="card-tags"><span class="p-tag">sentence-transformers</span><span class="p-tag">UMAP</span><span class="p-tag">HDBSCAN</span><span class="p-tag">Three.js</span></div>
+          <div class="card-links">
+            <span class="cta-link" aria-hidden="true">Writeup →</span>
+            <a href="https://rahulrayy.github.io/newsphere-live" target="_blank" rel="noopener" class="cta-gh">↗ Live</a>
+            <a href="https://github.com/Rahulrayy/newsphere-live" target="_blank" rel="noopener" class="cta-gh">↗ GitHub</a>
+          </div>
+        </div>
+      </li>
+      <li class="card reveal">
+        <div class="card-fig"><svg viewBox="0 0 240 110" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M70 6 V86"/><rect x="70" y="12" width="146.5" height="13" fill="currentColor" opacity=".4" stroke="none"/><text x="64.0" y="21.2" text-anchor="end" stroke="none">CLIP</text><text x="219.5" y="21.2" stroke="none">0.49</text><rect x="70" y="37" width="111.2" height="13" fill="currentColor" opacity=".4" stroke="none"/><text x="64.0" y="46.2" text-anchor="end" stroke="none">ResNet-50</text><text x="184.2" y="46.2" stroke="none">0.37</text><rect x="70" y="62" width="54.7" height="13" class="af" stroke="none"/><text x="64.0" y="71.2" text-anchor="end" stroke="none">I-JEPA</text><text x="127.7" y="71.2" stroke="none" class="af">0.18</text><path d="M70.0 86 V89"/><text x="70.0" y="97.0" text-anchor="middle" stroke="none">0</text><path d="M145.0 86 V89"/><text x="145.0" y="97.0" text-anchor="middle" stroke="none">0.25</text><path d="M220.0 86 V89"/><text x="220.0" y="97.0" text-anchor="middle" stroke="none">0.5</text><text x="220.0" y="107.0" text-anchor="end" stroke="none">mAP · Oxford5k</text></svg></div>
+        <div class="card-main">
+          <div class="card-cap"><span>Fig. 08 · Benchmark</span><span class="card-metric">−19 mAP<small>I-JEPA vs ResNet-50</small></span></div>
+          <h3 class="card-title"><a href="projects/jepa.html">JEPA-IR: Benchmarking I-JEPA for Image Retrieval</a></h3>
+          <p class="card-finding">I-JEPA trails ResNet-50 by ~19 mAP on Oxford5k, and CLIP leads it by ~31 with a 512-d embedding against I-JEPA's 1,280-d.</p>
+          <div class="card-tags"><span class="p-tag">I-JEPA</span><span class="p-tag">CLIP</span><span class="p-tag">FAISS</span><span class="p-tag">mAP</span></div>
+          <div class="card-links">
+            <span class="cta-link" aria-hidden="true">Writeup →</span>
+            <a href="https://github.com/Rahulrayy/JEPA-IR" target="_blank" rel="noopener" class="cta-gh">↗ GitHub</a>
+          </div>
+        </div>
+      </li>
+      <li class="card reveal">
+        <div class="card-fig"><svg viewBox="0 0 240 110" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M60 76 L79.8 27.9" opacity=".85"/><path d="M60 76 L75.0 26.2" opacity=".85"/><path d="M60 76 L70.1 25.0" opacity=".85"/><path d="M60 76 L65.1 24.2" opacity=".85"/><path d="M60 76 L60.0 24.0" opacity=".85"/><path d="M60 76 L54.9 24.2" opacity=".85"/><path d="M60 76 L49.9 25.0" opacity=".85"/><path d="M60 76 L45.0 26.2" opacity=".85"/><path d="M60 76 L40.2 27.9" opacity=".85"/><text x="60.0" y="90.0" text-anchor="middle" stroke="none">DistilBERT</text><text x="60.0" y="100.0" text-anchor="middle" stroke="none">cos 0.93 · SST-2 ~81%</text><path d="M178 76 L221.9 48.1" class="a" opacity=".85"/><path d="M178 76 L213.5 38.0" class="a" opacity=".85"/><path d="M178 76 L203.0 30.4" class="a" opacity=".85"/><path d="M178 76 L190.9 25.6" class="a" opacity=".85"/><path d="M178 76 L178.0 24.0" class="a" opacity=".85"/><path d="M178 76 L165.1 25.6" class="a" opacity=".85"/><path d="M178 76 L153.0 30.4" class="a" opacity=".85"/><path d="M178 76 L142.5 38.0" class="a" opacity=".85"/><path d="M178 76 L134.1 48.1" class="a" opacity=".85"/><text x="178.0" y="90.0" text-anchor="middle" stroke="none" class="af">Text-JEPA, 5k steps</text><text x="178.0" y="100.0" text-anchor="middle" stroke="none">cos 0.60 · SST-2 75%</text></svg></div>
+        <div class="card-main">
+          <div class="card-cap"><span>Fig. 09 · SSL research</span><span class="card-metric">0.93 → 0.60<small>mean pairwise cosine</small></span></div>
+          <h3 class="card-title"><a href="projects/jepa-text.html">Text-JEPA: Representation Prediction for Language</a></h3>
+          <p class="card-finding">Isotropy improved while downstream utility fell: the two metrics decoupled mid-training.</p>
+          <div class="card-tags"><span class="p-tag">Self-Supervised</span><span class="p-tag">DistilBERT</span><span class="p-tag">EMA</span><span class="p-tag">WikiText-103</span></div>
+          <div class="card-links">
+            <span class="cta-link" aria-hidden="true">Writeup →</span>
+            <a href="https://github.com/Rahulrayy/JEPA-TEXT" target="_blank" rel="noopener" class="cta-gh">↗ GitHub</a>
+          </div>
+        </div>
+      </li>
+    </ol>
   </section>
 
   <!-- About -->
@@ -333,241 +483,6 @@
               <span class="skill-tag">Hugging Face · Streamlit</span>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- projects -->
-  <section id="projects">
-    <p class="section-label reveal">Projects</p>
-    <h2 class="projects-heading reveal">Selected work</h2>
-    <div class="carousel-wrapper reveal">
-      <div class="carousel-track" id="carouselTrack">
-
-        <div class="proj-slide">
-          <div class="project-row">
-            <span class="project-num">01</span>
-            <div class="project-row-body">
-              <div class="project-row-title"><a href="projects/rag-permutation.html">Is it the Pruning, or the Ordering?</a></div>
-              <div class="project-row-desc">
-                Context pruning in RAG repositions the passages it keeps, so reported gains confound selection with positional promotion. A placebo pruner that discards by position without reading, plus five orderings per question across 45,510 generations, separates the two. Pre-registered before any data existed; the main hypothesis did not hold.
-              </div>
-              <div class="project-row-tags">
-                <span class="p-tag">RAG</span>
-                <span class="p-tag">Context Pruning</span>
-                <span class="p-tag">HotpotQA</span>
-                <span class="p-tag">Qwen2.5-3B</span>
-                <span class="p-tag">Pre-registration</span>
-                <span class="p-tag">LLMLingua-2</span>
-              </div>
-            </div>
-            <div class="project-row-cta">
-              <a href="projects/rag-permutation.html" class="cta-link">Read writeup →</a>
-              <a href="https://github.com/Rahulrayy/rag-permutation-study" target="_blank" class="cta-gh">↗ GitHub</a>
-            </div>
-          </div>
-        </div>
-        <div class="proj-slide">
-          <div class="project-row">
-            <span class="project-num">02</span>
-            <div class="project-row-body">
-              <div class="project-row-title"><a href="projects/attention-sinks-quant.html">Attention Sinks and Quantization: An Audit</a></div>
-              <div class="project-row-desc">
-                Does fixing attention sinks architecturally make a model easier to quantize? Five checkpoints differing by one boolean in config.json, 360 grid cells, everything with bootstrap confidence intervals. The fix works, it is also redundant under modern per-token scaling, and the variant with the lowest sink mass is the only one 8-bit quantization destroys.
-              </div>
-              <div class="project-row-tags">
-                <span class="p-tag">Activation Quantization</span>
-                <span class="p-tag">Gated Attention</span>
-                <span class="p-tag">FineWeb-Edu</span>
-                <span class="p-tag">LAMBADA</span>
-                <span class="p-tag">Bootstrap CIs</span>
-                <span class="p-tag">PyTorch</span>
-              </div>
-            </div>
-            <div class="project-row-cta">
-              <a href="projects/attention-sinks-quant.html" class="cta-link">Read writeup →</a>
-              <a href="https://github.com/Rahulrayy/attention-sinks-quant" target="_blank" class="cta-gh">↗ GitHub</a>
-            </div>
-          </div>
-        </div>
-        <div class="proj-slide">
-          <div class="project-row">
-            <span class="project-num">03</span>
-            <div class="project-row-body">
-              <div class="project-row-title"><a href="projects/llm-tabular.html">Can LLMs Make Tabular ML Better?</a></div>
-              <div class="project-row-desc">
-                A controlled experiment testing whether LLM-generated semantic features improve XGBoost on structured data, using nested CV, Wilcoxon tests, and Cohen's d to evaluate the hybrid approach properly.
-                The results went against the hypothesis, and that turned out to be the more interesting finding.
-              </div>
-              <div class="project-row-tags">
-                <span class="p-tag">XGBoost</span>
-                <span class="p-tag">LLaMA 3.1</span>
-                <span class="p-tag">sentence-transformers</span>
-                <span class="p-tag">Optuna</span>
-                <span class="p-tag">SHAP</span>
-              </div>
-            </div>
-            <div class="project-row-cta">
-              <a href="projects/llm-tabular.html" class="cta-link">Read writeup →</a>
-              <a href="https://github.com/Rahulrayy/Can-LLMs-Make-Tabular-ML-Better" target="_blank" class="cta-gh">↗ GitHub</a>
-            </div>
-          </div>
-        </div>
-        <div class="proj-slide">
-          <div class="project-row">
-            <span class="project-num">04</span>
-            <div class="project-row-body">
-              <div class="project-row-title"><a href="projects/autoinsight.html">AutoInsight: End-to-End AutoML App</a></div>
-              <div class="project-row-desc">
-                A browser-based AutoML tool that trains 7 models in parallel, generates SHAP explainability,
-                and produces LLM-written plain-language insights, with a privacy-preserving design where raw data never leaves the browser.
-              </div>
-              <div class="project-row-tags">
-                <span class="p-tag">Streamlit</span>
-                <span class="p-tag">XGBoost · LightGBM · CatBoost</span>
-                <span class="p-tag">SHAP</span>
-                <span class="p-tag">Optuna</span>
-                <span class="p-tag">Groq API</span>
-              </div>
-            </div>
-            <div class="project-row-cta">
-              <a href="projects/autoinsight.html" class="cta-link">Read writeup →</a>
-              <a href="https://huggingface.co/spaces/rayy5/AutoInsight" target="_blank" class="cta-gh">⚡ HF Space</a>
-              <a href="https://github.com/Rahulrayy/AutoInsight" target="_blank" class="cta-gh">↗ GitHub</a>
-            </div>
-          </div>
-        </div>
-        <div class="proj-slide">
-          <div class="project-row">
-            <span class="project-num">05</span>
-            <div class="project-row-body">
-              <div class="project-row-title"><a href="projects/quake.html">Quake: Learned Heuristic A* on BSP Geometry</a></div>
-              <div class="project-row-desc">
-                Parsed Quake 1's raw binary map format to build navigation graphs, generated 625k ground-truth
-                pathfinding pairs, then trained learned heuristics that cut A*'s node expansions by 42% while keeping paths near-optimal.
-              </div>
-              <div class="project-row-tags">
-                <span class="p-tag">PyTorch</span>
-                <span class="p-tag">XGBoost</span>
-                <span class="p-tag">BSP v29 parsing</span>
-                <span class="p-tag">A* search</span>
-                <span class="p-tag">NetworkX</span>
-              </div>
-            </div>
-            <div class="project-row-cta">
-              <a href="projects/quake.html" class="cta-link">Read writeup →</a>
-              <a href="https://github.com/Rahulrayy/quake" target="_blank" class="cta-gh">↗ GitHub</a>
-            </div>
-          </div>
-        </div>
-        <div class="proj-slide">
-          <div class="project-row">
-            <span class="project-num">06</span>
-            <div class="project-row-body">
-              <div class="project-row-title"><a href="projects/double-descent.html">Epoch-wise Double Descent Under Label Noise</a></div>
-              <div class="project-row-desc">
-                A reproduction of Nakkiran et al. (2019)'s epoch-wise double descent on CIFAR-10 with ResNet-18 under varying label noise, with a mechanistic investigation into what's actually happening at the peak.
-              </div>
-              <div class="project-row-tags">
-                <span class="p-tag">PyTorch</span>
-                <span class="p-tag">ResNet-18</span>
-                <span class="p-tag">CIFAR-10</span>
-                <span class="p-tag">Label Noise</span>
-                <span class="p-tag">Generalisation Theory</span>
-              </div>
-            </div>
-            <div class="project-row-cta">
-              <a href="projects/double-descent.html" class="cta-link">Read writeup →</a>
-              <a href="https://github.com/Rahulrayy/cifar-Double-Descent" target="_blank" class="cta-gh">↗ GitHub</a>
-            </div>
-          </div>
-        </div>
-        <div class="proj-slide">
-          <div class="project-row">
-            <span class="project-num">07</span>
-            <div class="project-row-body">
-              <div class="project-row-title"><a href="projects/newsphere.html">Newsphere Live: Semantic News Map</a></div>
-              <div class="project-row-desc">
-                A self-updating 3D map of current news where proximity means semantic similarity. Fetches 11 RSS feeds every 6 hours, embeds articles via MiniLM, reduces to 3D with UMAP, clusters with HDBSCAN, and publishes to GitHub Pages, zero backend, zero cost.
-              </div>
-              <div class="project-row-tags">
-                <span class="p-tag">sentence-transformers</span>
-                <span class="p-tag">UMAP</span>
-                <span class="p-tag">HDBSCAN</span>
-                <span class="p-tag">Three.js</span>
-                <span class="p-tag">GitHub Actions</span>
-              </div>
-            </div>
-            <div class="project-row-cta">
-              <a href="projects/newsphere.html" class="cta-link">Read writeup →</a>
-              <a href="https://rahulrayy.github.io/newsphere-live" target="_blank" class="cta-gh">⚡ Live</a>
-              <a href="https://github.com/Rahulrayy/newsphere-live" target="_blank" class="cta-gh">↗ GitHub</a>
-            </div>
-          </div>
-        </div>
-        <div class="proj-slide">
-          <div class="project-row">
-            <span class="project-num">08</span>
-            <div class="project-row-body">
-              <div class="project-row-title"><a href="projects/jepa.html">JEPA-IR: Benchmarking I-JEPA for Image Retrieval</a></div>
-              <div class="project-row-desc">
-                Can a model never trained contrastively still retrieve well? Benchmarks I-JEPA (ViT-H/14) as a frozen feature extractor against CLIP and ResNet-50 on Oxford5k and Paris6k. The gap, and the near-zero query expansion gain for I-JEPA, points to a fundamental embedding space issue, not a tuning problem.
-              </div>
-              <div class="project-row-tags">
-                <span class="p-tag">I-JEPA</span>
-                <span class="p-tag">CLIP</span>
-                <span class="p-tag">FAISS</span>
-                <span class="p-tag">Oxford5k · Paris6k</span>
-                <span class="p-tag">mAP</span>
-                <span class="p-tag">PyTorch</span>
-              </div>
-            </div>
-            <div class="project-row-cta">
-              <a href="projects/jepa.html" class="cta-link">Read writeup →</a>
-              <a href="https://github.com/Rahulrayy/JEPA-IR" target="_blank" class="cta-gh">↗ GitHub</a>
-            </div>
-          </div>
-        </div>
-        <div class="proj-slide">
-          <div class="project-row">
-            <span class="project-num">09</span>
-            <div class="project-row-body">
-              <div class="project-row-title"><a href="projects/jepa-text.html">Text-JEPA: Representation Prediction for Language</a></div>
-              <div class="project-row-desc">
-                Adapts I-JEPA's masked representation prediction objective from vision to language using a DistilBERT-based context encoder, EMA target encoder, and shallow predictor. Trained on WikiText-103. Embedding geometry improved markedly (cosine similarity 0.93 → 0.60), but downstream task utility fell; the two metrics decoupled mid-training.
-              </div>
-              <div class="project-row-tags">
-                <span class="p-tag">Text-JEPA</span>
-                <span class="p-tag">DistilBERT</span>
-                <span class="p-tag">Self-Supervised Learning</span>
-                <span class="p-tag">EMA</span>
-                <span class="p-tag">WikiText-103</span>
-                <span class="p-tag">PyTorch</span>
-              </div>
-            </div>
-            <div class="project-row-cta">
-              <a href="projects/jepa-text.html" class="cta-link">Read writeup →</a>
-              <a href="https://github.com/Rahulrayy/JEPA-TEXT" target="_blank" class="cta-gh">↗ GitHub</a>
-            </div>
-          </div>
-        </div>
-
-      </div>
-      <div class="carousel-nav">
-        <button class="carousel-btn" id="prevBtn" aria-label="Previous project">←</button>
-        <span class="carousel-counter" id="carouselCounter">01 / 09</span>
-        <button class="carousel-btn" id="nextBtn" aria-label="Next project">→</button>
-        <div class="carousel-dots" id="carouselDots">
-          <button class="carousel-dot active" aria-label="Project 1"></button>
-          <button class="carousel-dot" aria-label="Project 2"></button>
-          <button class="carousel-dot" aria-label="Project 3"></button>
-          <button class="carousel-dot" aria-label="Project 4"></button>
-          <button class="carousel-dot" aria-label="Project 5"></button>
-          <button class="carousel-dot" aria-label="Project 6"></button>
-          <button class="carousel-dot" aria-label="Project 7"></button>
-          <button class="carousel-dot" aria-label="Project 8"></button>
-          <button class="carousel-dot" aria-label="Project 9"></button>
         </div>
       </div>
     </div>
@@ -663,48 +578,6 @@
     )
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
 
-    // Carousel
-    const track = document.getElementById('carouselTrack')
-    const counter = document.getElementById('carouselCounter')
-    const dots = [...document.getElementById('carouselDots').querySelectorAll('.carousel-dot')]
-    const slides = [...track.querySelectorAll('.proj-slide')]
-    const total = slides.length
-    let cur = 0
-
-    // Reader-driven only: no autoplay. Slides advance on arrows, dots,
-    // keyboard or swipe, so a project stays put while it is being read.
-    function goTo(n) {
-      cur = (n + total) % total
-      track.style.transform = `translateX(-${cur * 100}%)`
-      counter.textContent = `${String(cur + 1).padStart(2, '0')} / ${String(total).padStart(2, '0')}`
-      dots.forEach((d, i) => d.classList.toggle('active', i === cur))
-      // Keep off-screen slides out of the tab order.
-      slides.forEach((s, i) => {
-        const hidden = i !== cur
-        s.setAttribute('aria-hidden', hidden ? 'true' : 'false')
-        s.querySelectorAll('a').forEach(a => a.tabIndex = hidden ? -1 : 0)
-      })
-    }
-
-    dots.forEach((d, i) => d.addEventListener('click', () => goTo(i)))
-    document.getElementById('prevBtn').addEventListener('click', () => goTo(cur - 1))
-    document.getElementById('nextBtn').addEventListener('click', () => goTo(cur + 1))
-
-    document.addEventListener('keydown', e => {
-      if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return
-      if (e.key === 'ArrowLeft') goTo(cur - 1)
-      if (e.key === 'ArrowRight') goTo(cur + 1)
-    })
-
-    // Touch swipe
-    let touchX = 0
-    track.addEventListener('touchstart', e => { touchX = e.touches[0].clientX }, { passive: true })
-    track.addEventListener('touchend', e => {
-      const dx = e.changedTouches[0].clientX - touchX
-      if (Math.abs(dx) > 50) goTo(cur + (dx < 0 ? 1 : -1))
-    })
-
-    goTo(0)
   </script>
 </body>
 </html>

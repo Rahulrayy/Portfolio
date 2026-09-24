@@ -5,21 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AutoInsight · Rahul Ray</title>
   <meta name="description" content="AutoInsight: a browser-based AutoML tool that trains 7 models in parallel, generates SHAP explainability, and produces LLM-written plain-language insights. Deployed on Hugging Face Spaces.">
+  <link rel="canonical" href="https://rahulrayy.github.io/Portfolio/projects/autoinsight.html">
   <meta property="og:title" content="AutoInsight: End-to-End AutoML App · Rahul Ray">
   <meta property="og:description" content="Browser-based AutoML: 7 models in parallel, SHAP explainability, LLM insights. Privacy-preserving, data never leaves the browser.">
   <meta property="og:type" content="article">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:url" content="https://rahulrayy.github.io/Portfolio/projects/autoinsight.html">
+  <meta property="og:site_name" content="Rahul Ray">
+  <meta property="og:image" content="https://rahulrayy.github.io/Portfolio/assets/og/autoinsight.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="AutoInsight: End-to-End AutoML App · Rahul Ray">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AutoInsight: End-to-End AutoML App · Rahul Ray">
+  <meta name="twitter:description" content="Browser-based AutoML: 7 models in parallel, SHAP explainability, LLM insights. Privacy-preserving, data never leaves the browser.">
+  <meta name="twitter:image" content="https://rahulrayy.github.io/Portfolio/assets/og/autoinsight.png">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='8' fill='%231443FF'/><text x='50' y='76' font-size='72' text-anchor='middle' fill='white' font-family='Georgia,serif' font-style='italic'>R</text></svg>">
   <link rel="stylesheet" href="../style.css" />
   <link rel="stylesheet" href="project.css" />
+  <script src="../theme.js"></script>
 </head>
 <body>
 
   <nav id="nav">
     <div class="nav-logo"><a href="../index.html">Rahul Ray</a></div>
     <ul class="nav-links">
-      <li><a href="../index.html#about">About</a></li>
       <li><a href="../index.html#projects">Projects</a></li>
+      <li><a href="../index.html#about">About</a></li>
       <li><a href="../index.html#experience">Experience</a></li>
       <li><a href="../index.html#contact">Contact</a></li>
     </ul>
@@ -31,37 +42,36 @@
 
   <div class="project-hero">
     <a href="../index.html#projects" class="back-link">← Back to projects</a>
-    <p class="project-hero-label">Project 04</p>
-    <h1 class="project-hero-title">AutoInsight: End-to-End <em>AutoML</em> App</h1>
-    <div class="project-meta">
-      <div class="meta-group">
-        <span class="meta-label">Type</span>
-        <span class="meta-value">Full-stack ML Application</span>
+    <div class="project-hero-grid">
+      <div class="project-hero-main">
+        <p class="project-hero-label">Project 04</p>
+        <h1 class="project-hero-title">AutoInsight: End-to-End <em>AutoML</em> App</h1>
+        <div class="hero-tags">
+          <span class="h-tag">Streamlit</span>
+          <span class="h-tag">XGBoost</span>
+          <span class="h-tag">LightGBM</span>
+          <span class="h-tag">CatBoost</span>
+          <span class="h-tag">SHAP</span>
+          <span class="h-tag">Optuna</span>
+          <span class="h-tag">Groq API</span>
+          <span class="h-tag">Plotly</span>
+          <span class="h-tag">pytest</span>
+          <span class="h-tag">pandas · NumPy</span>
+        </div>
+        <div class="hero-btns">
+          <a href="https://github.com/Rahulrayy/AutoInsight" target="_blank" class="github-btn">↗ View on GitHub</a>
+          <a href="https://huggingface.co/spaces/rayy5/AutoInsight" target="_blank" class="live-btn">↗ Try on Hugging Face</a>
+        </div>
       </div>
-      <div class="meta-group">
-        <span class="meta-label">Stack</span>
-        <span class="meta-value">Streamlit · XGBoost · LightGBM · SHAP · Optuna · Groq</span>
-      </div>
-      <div class="meta-group">
-        <span class="meta-label">License</span>
-        <span class="meta-value">GPL-3.0</span>
-      </div>
-    </div>
-    <div class="hero-tags">
-      <span class="h-tag">Streamlit</span>
-      <span class="h-tag">XGBoost</span>
-      <span class="h-tag">LightGBM</span>
-      <span class="h-tag">CatBoost</span>
-      <span class="h-tag">SHAP</span>
-      <span class="h-tag">Optuna</span>
-      <span class="h-tag">Groq API</span>
-      <span class="h-tag">Plotly</span>
-      <span class="h-tag">pytest</span>
-      <span class="h-tag">pandas · NumPy</span>
-    </div>
-    <div class="hero-btns">
-      <a href="https://github.com/Rahulrayy/AutoInsight" target="_blank" class="github-btn">↗ View on GitHub</a>
-      <a href="https://huggingface.co/spaces/rayy5/AutoInsight" target="_blank" class="live-btn">⚡ Try on Hugging Face</a>
+      <aside class="exhibit" aria-label="Project summary">
+        <div class="exhibit-fig"><svg viewBox="0 0 240 110" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><rect x="14" y="40" width="40" height="30"/><text x="34.0" y="58.0" text-anchor="middle" stroke="none">data</text><rect x="170" y="40" width="62" height="30" class="a"/><text x="201.0" y="58.0" text-anchor="middle" stroke="none">leaderboard</text><path d="M54 55 L116 10" opacity=".6"/><path d="M122 10 L174 55" opacity=".6"/><circle cx="119" cy="10" r="3" class="af" stroke="none"/><path d="M54 55 L116 25" opacity=".6"/><path d="M122 25 L174 55" opacity=".6"/><circle cx="119" cy="25" r="3" class="af" stroke="none"/><path d="M54 55 L116 40" opacity=".6"/><path d="M122 40 L174 55" opacity=".6"/><circle cx="119" cy="40" r="3" class="af" stroke="none"/><path d="M54 55 L116 55" opacity=".6"/><path d="M122 55 L174 55" opacity=".6"/><circle cx="119" cy="55" r="3" class="af" stroke="none"/><path d="M54 55 L116 70" opacity=".6"/><path d="M122 70 L174 55" opacity=".6"/><circle cx="119" cy="70" r="3" class="af" stroke="none"/><path d="M54 55 L116 85" opacity=".6"/><path d="M122 85 L174 55" opacity=".6"/><circle cx="119" cy="85" r="3" class="af" stroke="none"/><path d="M54 55 L116 100" opacity=".6"/><path d="M122 100 L174 55" opacity=".6"/><circle cx="119" cy="100" r="3" class="af" stroke="none"/><text x="119.0" y="108.0" text-anchor="middle" stroke="none">7 models, in parallel</text></svg></div>
+        <div class="exhibit-cap"><span>Fig. 04 · Application</span><span class="exhibit-metric">7 models<small>in parallel, per task</small></span></div>
+        <dl class="exhibit-spec">
+          <dt>type</dt><dd>Full-stack ML Application</dd>
+          <dt>stack</dt><dd>Streamlit · XGBoost · LightGBM · SHAP · Optuna · Groq</dd>
+          <dt>license</dt><dd>GPL-3.0</dd>
+        </dl>
+      </aside>
     </div>
   </div>
 
@@ -175,13 +185,14 @@
 
   </div>
 
+  <div class="more-work" role="navigation" aria-label="More projects">
+    <a class="mw" href="llm-tabular.html"><span class="mw-cap">← Previous · Fig. 03</span><span class="mw-title">Can LLMs Make Tabular ML Better?</span></a>
+    <a class="mw mw-next" href="quake.html"><span class="mw-cap">Next · Fig. 05 →</span><span class="mw-title">Quake: Learned Heuristic A* on BSP Geometry</span></a>
+  </div>
+
   <footer>
     <span class="footer-name"><a href="../index.html">Rahul Ray</a></span>
-    <span class="footer-note">
-      <a href="llm-tabular.html" style="color:var(--muted)">&larr; LLMs and Tabular ML</a>
-      &nbsp;&middot;&nbsp;
-      <a href="../index.html#projects" style="color:var(--accent)">All projects &rarr;</a>
-    </span>
+    <span class="footer-note"><a href="../index.html#projects" style="color:var(--accent)">All projects &rarr;</a></span>
   </footer>
 
   <script>

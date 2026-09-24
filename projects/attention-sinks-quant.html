@@ -5,21 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Attention Sinks and Quantization: An Audit · Rahul Ray</title>
   <meta name="description" content="Does fixing attention sinks architecturally make a model easier to quantize? Five checkpoints, three bit widths, 360 grid cells, bootstrap confidence intervals. Mostly no, and the best-known fix makes one model far worse.">
+  <link rel="canonical" href="https://rahulrayy.github.io/Portfolio/projects/attention-sinks-quant.html">
   <meta property="og:title" content="Attention Sinks and Quantization: An Audit · Rahul Ray">
   <meta property="og:description" content="An audit of whether architectural attention-sink mitigation buys measurable robustness to low-bit activation quantization, on checkpoints that differ by a single boolean in config.json.">
   <meta property="og:type" content="article">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:url" content="https://rahulrayy.github.io/Portfolio/projects/attention-sinks-quant.html">
+  <meta property="og:site_name" content="Rahul Ray">
+  <meta property="og:image" content="https://rahulrayy.github.io/Portfolio/assets/og/attention-sinks-quant.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Attention Sinks and Quantization: An Audit · Rahul Ray">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Attention Sinks and Quantization: An Audit · Rahul Ray">
+  <meta name="twitter:description" content="An audit of whether architectural attention-sink mitigation buys measurable robustness to low-bit activation quantization, on checkpoints that differ by a single boolean in config.json.">
+  <meta name="twitter:image" content="https://rahulrayy.github.io/Portfolio/assets/og/attention-sinks-quant.png">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='8' fill='%231443FF'/><text x='50' y='76' font-size='72' text-anchor='middle' fill='white' font-family='Georgia,serif' font-style='italic'>R</text></svg>">
   <link rel="stylesheet" href="../style.css" />
   <link rel="stylesheet" href="project.css" />
+  <script src="../theme.js"></script>
 </head>
 <body>
 
   <nav id="nav">
     <div class="nav-logo"><a href="../index.html">Rahul Ray</a></div>
     <ul class="nav-links">
-      <li><a href="../index.html#about">About</a></li>
       <li><a href="../index.html#projects">Projects</a></li>
+      <li><a href="../index.html#about">About</a></li>
       <li><a href="../index.html#experience">Experience</a></li>
       <li><a href="../index.html#contact">Contact</a></li>
     </ul>
@@ -31,34 +42,33 @@
 
   <div class="project-hero">
     <a href="../index.html#projects" class="back-link">← Back to projects</a>
-    <p class="project-hero-label">Project 02</p>
-    <h1 class="project-hero-title">Attention Sinks and Quantization: <em>Does the Architectural Fix Still Pay?</em></h1>
-    <div class="project-meta">
-      <div class="meta-group">
-        <span class="meta-label">Type</span>
-        <span class="meta-value">Audit of a Published Claim</span>
+    <div class="project-hero-grid">
+      <div class="project-hero-main">
+        <p class="project-hero-label">Project 02</p>
+        <h1 class="project-hero-title">Attention Sinks and Quantization: <em>Does the Architectural Fix Still Pay?</em></h1>
+        <div class="hero-tags">
+          <span class="h-tag">Attention Sinks</span>
+          <span class="h-tag">Activation Quantization</span>
+          <span class="h-tag">Gated Attention</span>
+          <span class="h-tag">Perplexity</span>
+          <span class="h-tag">LAMBADA</span>
+          <span class="h-tag">Bootstrap CIs</span>
+          <span class="h-tag">FineWeb-Edu</span>
+          <span class="h-tag">PyTorch</span>
+        </div>
+        <div class="hero-btns">
+          <a href="https://github.com/Rahulrayy/attention-sinks-quant" target="_blank" class="github-btn">↗ View on GitHub</a>
+        </div>
       </div>
-      <div class="meta-group">
-        <span class="meta-label">Scale</span>
-        <span class="meta-value">5 checkpoints · 360 grid cells</span>
-      </div>
-      <div class="meta-group">
-        <span class="meta-label">Stack</span>
-        <span class="meta-value">PyTorch · transformers · lm-eval-harness</span>
-      </div>
-    </div>
-    <div class="hero-tags">
-      <span class="h-tag">Attention Sinks</span>
-      <span class="h-tag">Activation Quantization</span>
-      <span class="h-tag">Gated Attention</span>
-      <span class="h-tag">Perplexity</span>
-      <span class="h-tag">LAMBADA</span>
-      <span class="h-tag">Bootstrap CIs</span>
-      <span class="h-tag">FineWeb-Edu</span>
-      <span class="h-tag">PyTorch</span>
-    </div>
-    <div class="hero-btns">
-      <a href="https://github.com/Rahulrayy/attention-sinks-quant" target="_blank" class="github-btn">↗ View on GitHub</a>
+      <aside class="exhibit" aria-label="Project summary">
+        <div class="exhibit-fig"><svg viewBox="0 0 240 110" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><rect x="84" y="4" width="9.5" height="9.5" class="af" stroke="none" opacity=".9"/><rect x="84" y="15" width="9.5" height="9.5" class="af" stroke="none" opacity=".9"/><rect x="95" y="15" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.29"/><rect x="84" y="26" width="9.5" height="9.5" class="af" stroke="none" opacity=".9"/><rect x="95" y="26" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.29"/><rect x="106" y="26" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.09"/><rect x="84" y="37" width="9.5" height="9.5" class="af" stroke="none" opacity=".9"/><rect x="95" y="37" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.10"/><rect x="106" y="37" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.26"/><rect x="117" y="37" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.24"/><rect x="84" y="48" width="9.5" height="9.5" class="af" stroke="none" opacity=".9"/><rect x="95" y="48" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.23"/><rect x="106" y="48" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.15"/><rect x="117" y="48" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.21"/><rect x="128" y="48" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.21"/><rect x="84" y="59" width="9.5" height="9.5" class="af" stroke="none" opacity=".9"/><rect x="95" y="59" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.21"/><rect x="106" y="59" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.11"/><rect x="117" y="59" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.17"/><rect x="128" y="59" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.17"/><rect x="139" y="59" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.24"/><rect x="84" y="70" width="9.5" height="9.5" class="af" stroke="none" opacity=".9"/><rect x="95" y="70" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.30"/><rect x="106" y="70" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.29"/><rect x="117" y="70" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.20"/><rect x="128" y="70" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.18"/><rect x="139" y="70" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.14"/><rect x="150" y="70" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.09"/><rect x="84" y="81" width="9.5" height="9.5" class="af" stroke="none" opacity=".9"/><rect x="95" y="81" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.09"/><rect x="106" y="81" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.18"/><rect x="117" y="81" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.15"/><rect x="128" y="81" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.16"/><rect x="139" y="81" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.28"/><rect x="150" y="81" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.20"/><rect x="161" y="81" width="9.5" height="9.5" fill="currentColor" stroke="none" opacity="0.20"/><text x="88.5" y="101.0" text-anchor="middle" stroke="none" class="af">sink</text><text x="134.0" y="101.0" text-anchor="middle" stroke="none">keys →</text><text transform="translate(78 48) rotate(-90)" text-anchor="middle" stroke="none">queries →</text></svg></div>
+        <div class="exhibit-cap"><span>Fig. 02 · Audit</span><span class="exhibit-metric">1 of 5<small>checkpoints broken by per-tensor 8-bit</small></span></div>
+        <dl class="exhibit-spec">
+          <dt>type</dt><dd>Audit of a Published Claim</dd>
+          <dt>scale</dt><dd>5 checkpoints · 360 grid cells</dd>
+          <dt>stack</dt><dd>PyTorch · transformers · lm-eval-harness</dd>
+        </dl>
+      </aside>
     </div>
   </div>
 
@@ -297,13 +307,14 @@
 
   </div>
 
+  <div class="more-work" role="navigation" aria-label="More projects">
+    <a class="mw" href="rag-permutation.html"><span class="mw-cap">← Previous · Fig. 01</span><span class="mw-title">Is it the Pruning, or the Ordering?</span></a>
+    <a class="mw mw-next" href="llm-tabular.html"><span class="mw-cap">Next · Fig. 03 →</span><span class="mw-title">Can LLMs Make Tabular ML Better?</span></a>
+  </div>
+
   <footer>
     <span class="footer-name"><a href="../index.html">Rahul Ray</a></span>
-    <span class="footer-note">
-      <a href="rag-permutation.html" style="color:var(--muted)">&larr; Is it the Pruning?</a>
-      &nbsp;&middot;&nbsp;
-      <a href="../index.html#projects" style="color:var(--accent)">All projects &rarr;</a>
-    </span>
+    <span class="footer-note"><a href="../index.html#projects" style="color:var(--accent)">All projects &rarr;</a></span>
   </footer>
 
   <script>

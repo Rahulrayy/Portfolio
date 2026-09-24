@@ -7,9 +7,57 @@
   --muted:   #6B6864;
   --accent:  #1443FF;
   --rule:    #D8D5CF;
+  --nav-bg:  rgba(247,246,242,0.9);
+  --code-bg: #111010;
+  --code-ink: #c9c4bd;
+  --glow:    rgba(20,67,255,0.05);
+  --card:    #FBFAF7;
+  --grid-line: rgba(17,16,16,0.05);
+  --fig-ink: #8F8B84;
   --mono:    'IBM Plex Mono', monospace;
   --serif:   'Cormorant Garamond', Georgia, serif;
   --sans:    'Outfit', sans-serif;
+  color-scheme: light;
+}
+
+/* ── Dark theme ──────────────────────────────────────────────
+   Follows the OS setting unless the visitor picks a theme with the
+   nav toggle (theme.js stamps data-theme on <html>). The palette is
+   kept warm to match the light one; every text/background pair is
+   at least 4.5:1. The accent is lifted because #1443FF on a dark
+   ground falls to about 3:1.
+   ────────────────────────────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:      #141311;
+    --surface: #1E1D1A;
+    --ink:     #ECE9E2;
+    --muted:   #A19D95;
+    --accent:  #7B93FF;
+    --rule:    #302E2A;
+    --nav-bg:  rgba(20,19,17,0.88);
+    --code-bg: #0B0A09;
+    --glow:    rgba(123,147,255,0.07);
+    --card:    #191816;
+    --grid-line: rgba(236,233,226,0.05);
+    --fig-ink: #8A867F;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:      #141311;
+  --surface: #1E1D1A;
+  --ink:     #ECE9E2;
+  --muted:   #A19D95;
+  --accent:  #7B93FF;
+  --rule:    #302E2A;
+  --nav-bg:  rgba(20,19,17,0.88);
+  --code-bg: #0B0A09;
+  --glow:    rgba(123,147,255,0.07);
+  --card:    #191816;
+  --grid-line: rgba(236,233,226,0.05);
+  --fig-ink: #8A867F;
+  color-scheme: dark;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -26,7 +74,7 @@ nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 100;
   display: flex; align-items: center; justify-content: space-between;
   padding: 1.2rem 5vw;
-  background: rgba(247,246,242,0.9);
+  background: var(--nav-bg);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid transparent;
   transition: border-color 0.3s;
@@ -44,6 +92,16 @@ nav.scrolled { border-color: var(--rule); }
 }
 .nav-links a:hover { color: var(--ink); }
 .nav-links a:hover::after { width: 100%; }
+
+/* Theme toggle (injected into .nav-links by theme.js) */
+.theme-toggle {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  background: none; border: none; padding: 0; cursor: pointer;
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--muted); transition: color 0.2s;
+}
+.theme-toggle:hover { color: var(--ink); }
+.theme-toggle svg { width: 12px; height: 12px; flex-shrink: 0; }
 
 /* ── Section basics ── */
 section { padding: 7rem 5vw; }
@@ -127,7 +185,7 @@ footer {
     transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
     z-index: 100; align-items: flex-start;
   }
-  .nav-links a { font-size: 0.82rem; }
+  .nav-links a, .theme-toggle { font-size: 0.82rem; }
   nav.nav-open .nav-links { transform: translateX(0); }
   nav.nav-open .nav-toggle span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
   nav.nav-open .nav-toggle span:nth-child(2) { opacity: 0; }
@@ -142,9 +200,8 @@ footer {
    1. The blanket rule collapses DURATIONS only. It must not touch
       `transform`, because several transforms here are positional
       rather than decorative: the mobile nav sits off-canvas at
-      translateX(110%), the hamburger bars rotate into an X, and the
-      carousel track is positioned by an inline translateX. Resetting
-      those would pin the menu open and stack every slide on slide 1.
+      translateX(110%) and the hamburger bars rotate into an X.
+      Resetting those would pin the menu open.
 
    2. Elements that animate IN start at opacity:0 and are only made
       visible by the animation finishing. Cancelling their animation
@@ -162,7 +219,7 @@ footer {
 
   html { scroll-behavior: auto !important; }
 
-  .hero-eyebrow, .hero-name, .hero-desc, .hero-cta, .scroll-hint {
+  .hero-eyebrow, .hero-name, .hero-desc, .hero-cta, .hero-panel {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;

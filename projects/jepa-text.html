@@ -5,21 +5,32 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Text-JEPA: Representation Prediction for Language · Rahul Ray</title>
   <meta name="description" content="Adapting I-JEPA's masked representation prediction objective from vision to language using DistilBERT on WikiText-103. Finding: geometric isotropy and downstream task utility decouple.">
+  <link rel="canonical" href="https://rahulrayy.github.io/Portfolio/projects/jepa-text.html">
   <meta property="og:title" content="Text-JEPA: Representation Prediction for Language · Rahul Ray">
   <meta property="og:description" content="Can predicting masked token representations rather than tokens themselves improve embedding geometry? A DistilBERT-based JEPA implementation with findings on the geometry–task utility tradeoff.">
   <meta property="og:type" content="article">
-  <meta name="twitter:card" content="summary">
+  <meta property="og:url" content="https://rahulrayy.github.io/Portfolio/projects/jepa-text.html">
+  <meta property="og:site_name" content="Rahul Ray">
+  <meta property="og:image" content="https://rahulrayy.github.io/Portfolio/assets/og/jepa-text.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Text-JEPA: Representation Prediction for Language · Rahul Ray">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Text-JEPA: Representation Prediction for Language · Rahul Ray">
+  <meta name="twitter:description" content="Can predicting masked token representations rather than tokens themselves improve embedding geometry? A DistilBERT-based JEPA implementation with findings on the geometry–task utility tradeoff.">
+  <meta name="twitter:image" content="https://rahulrayy.github.io/Portfolio/assets/og/jepa-text.png">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='8' fill='%231443FF'/><text x='50' y='76' font-size='72' text-anchor='middle' fill='white' font-family='Georgia,serif' font-style='italic'>R</text></svg>">
   <link rel="stylesheet" href="../style.css" />
   <link rel="stylesheet" href="project.css" />
+  <script src="../theme.js"></script>
 </head>
 <body>
 
   <nav id="nav">
     <div class="nav-logo"><a href="../index.html">Rahul Ray</a></div>
     <ul class="nav-links">
-      <li><a href="../index.html#about">About</a></li>
       <li><a href="../index.html#projects">Projects</a></li>
+      <li><a href="../index.html#about">About</a></li>
       <li><a href="../index.html#experience">Experience</a></li>
       <li><a href="../index.html#contact">Contact</a></li>
     </ul>
@@ -31,35 +42,34 @@
 
   <div class="project-hero">
     <a href="../index.html#projects" class="back-link">← Back to projects</a>
-    <p class="project-hero-label">Project 09</p>
-    <h1 class="project-hero-title">Text-JEPA: <em>Does Predicting Representations Fix Embedding Geometry?</em></h1>
-    <div class="project-meta">
-      <div class="meta-group">
-        <span class="meta-label">Type</span>
-        <span class="meta-value">Self-Supervised NLP Research</span>
+    <div class="project-hero-grid">
+      <div class="project-hero-main">
+        <p class="project-hero-label">Project 09</p>
+        <h1 class="project-hero-title">Text-JEPA: <em>Does Predicting Representations Fix Embedding Geometry?</em></h1>
+        <div class="hero-tags">
+          <span class="h-tag">Text-JEPA</span>
+          <span class="h-tag">DistilBERT</span>
+          <span class="h-tag">Self-Supervised Learning</span>
+          <span class="h-tag">EMA</span>
+          <span class="h-tag">WikiText-103</span>
+          <span class="h-tag">SST-2</span>
+          <span class="h-tag">STS-B</span>
+          <span class="h-tag">Linear Probing</span>
+          <span class="h-tag">PyTorch</span>
+        </div>
+        <div class="hero-btns">
+          <a href="https://github.com/Rahulrayy/JEPA-TEXT" target="_blank" class="github-btn">↗ View on GitHub</a>
+        </div>
       </div>
-      <div class="meta-group">
-        <span class="meta-label">Corpus</span>
-        <span class="meta-value">WikiText-103 · 103M tokens</span>
-      </div>
-      <div class="meta-group">
-        <span class="meta-label">Stack</span>
-        <span class="meta-value">PyTorch · HuggingFace · DistilBERT</span>
-      </div>
-    </div>
-    <div class="hero-tags">
-      <span class="h-tag">Text-JEPA</span>
-      <span class="h-tag">DistilBERT</span>
-      <span class="h-tag">Self-Supervised Learning</span>
-      <span class="h-tag">EMA</span>
-      <span class="h-tag">WikiText-103</span>
-      <span class="h-tag">SST-2</span>
-      <span class="h-tag">STS-B</span>
-      <span class="h-tag">Linear Probing</span>
-      <span class="h-tag">PyTorch</span>
-    </div>
-    <div class="hero-btns">
-      <a href="https://github.com/Rahulrayy/JEPA-TEXT" target="_blank" class="github-btn">↗ View on GitHub</a>
+      <aside class="exhibit" aria-label="Project summary">
+        <div class="exhibit-fig"><svg viewBox="0 0 240 110" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><path d="M60 76 L79.8 27.9" opacity=".85"/><path d="M60 76 L75.0 26.2" opacity=".85"/><path d="M60 76 L70.1 25.0" opacity=".85"/><path d="M60 76 L65.1 24.2" opacity=".85"/><path d="M60 76 L60.0 24.0" opacity=".85"/><path d="M60 76 L54.9 24.2" opacity=".85"/><path d="M60 76 L49.9 25.0" opacity=".85"/><path d="M60 76 L45.0 26.2" opacity=".85"/><path d="M60 76 L40.2 27.9" opacity=".85"/><text x="60.0" y="90.0" text-anchor="middle" stroke="none">DistilBERT</text><text x="60.0" y="100.0" text-anchor="middle" stroke="none">cos 0.93 · SST-2 ~81%</text><path d="M178 76 L221.9 48.1" class="a" opacity=".85"/><path d="M178 76 L213.5 38.0" class="a" opacity=".85"/><path d="M178 76 L203.0 30.4" class="a" opacity=".85"/><path d="M178 76 L190.9 25.6" class="a" opacity=".85"/><path d="M178 76 L178.0 24.0" class="a" opacity=".85"/><path d="M178 76 L165.1 25.6" class="a" opacity=".85"/><path d="M178 76 L153.0 30.4" class="a" opacity=".85"/><path d="M178 76 L142.5 38.0" class="a" opacity=".85"/><path d="M178 76 L134.1 48.1" class="a" opacity=".85"/><text x="178.0" y="90.0" text-anchor="middle" stroke="none" class="af">Text-JEPA, 5k steps</text><text x="178.0" y="100.0" text-anchor="middle" stroke="none">cos 0.60 · SST-2 75%</text></svg></div>
+        <div class="exhibit-cap"><span>Fig. 09 · SSL research</span><span class="exhibit-metric">0.93 → 0.60<small>mean pairwise cosine</small></span></div>
+        <dl class="exhibit-spec">
+          <dt>type</dt><dd>Self-Supervised NLP Research</dd>
+          <dt>corpus</dt><dd>WikiText-103 · 103M tokens</dd>
+          <dt>stack</dt><dd>PyTorch · HuggingFace · DistilBERT</dd>
+        </dl>
+      </aside>
     </div>
   </div>
 
@@ -200,13 +210,14 @@
 
   </div>
 
+  <div class="more-work" role="navigation" aria-label="More projects">
+    <a class="mw" href="jepa.html"><span class="mw-cap">← Previous · Fig. 08</span><span class="mw-title">JEPA-IR: Benchmarking I-JEPA for Image Retrieval</span></a>
+    <a class="mw mw-next" href="rag-permutation.html"><span class="mw-cap">Next · Fig. 01 →</span><span class="mw-title">Is it the Pruning, or the Ordering?</span></a>
+  </div>
+
   <footer>
     <span class="footer-name"><a href="../index.html">Rahul Ray</a></span>
-    <span class="footer-note">
-      <a href="jepa.html" style="color:var(--muted)">&larr; JEPA-IR</a>
-      &nbsp;&middot;&nbsp;
-      <a href="../index.html#projects" style="color:var(--accent)">All projects &rarr;</a>
-    </span>
+    <span class="footer-note"><a href="../index.html#projects" style="color:var(--accent)">All projects &rarr;</a></span>
   </footer>
 
   <script>

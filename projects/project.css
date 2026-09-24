@@ -5,7 +5,17 @@
   padding-left: 5vw;
   padding-right: 5vw;
   border-bottom: 1px solid var(--rule);
-  position: relative;
+  position: relative; isolation: isolate;
+}
+/* Same graph paper as the homepage hero, fading out downwards. */
+.project-hero::before {
+  content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 28px 28px;
+  -webkit-mask-image: linear-gradient(to bottom, #000 30%, transparent);
+          mask-image: linear-gradient(to bottom, #000 30%, transparent);
 }
 .back-link {
   display: inline-flex; align-items: center; gap: 0.5rem;
@@ -23,18 +33,44 @@
   content: ''; flex: 1; max-width: 48px; height: 1px; background: var(--accent); opacity: 0.5;
 }
 .project-hero-title {
-  font-family: var(--serif); font-size: clamp(2.4rem, 5.5vw, 5rem);
+  font-family: var(--serif); font-size: clamp(2.4rem, 4.4vw, 4.2rem);
   font-weight: 300; line-height: 1.05; margin-bottom: 1.8rem;
   max-width: 800px;
 }
 .project-hero-title em { font-style: italic; color: var(--accent); }
-.project-meta {
-  display: flex; flex-wrap: wrap; gap: 2.5rem;
-  margin-bottom: 2rem;
+.project-hero-grid {
+  display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 4rem; align-items: center;
 }
-.meta-group { display: flex; flex-direction: column; gap: 0.3rem; }
-.meta-label { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
-.meta-value { font-size: 0.92rem; color: var(--ink); }
+
+/* ── Exhibit: the project's figure + spec, same language as the homepage cards and status panel ── */
+.exhibit { background: var(--bg); border: 1px solid var(--ink); font-family: var(--mono); }
+.exhibit-fig {
+  height: 200px; display: flex; align-items: center; justify-content: center;
+  border-bottom: 1px solid var(--ink); color: var(--fig-ink);
+  background-color: var(--surface);
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 14px 14px;
+}
+.exhibit-fig svg { width: 100%; max-width: 380px; height: 176px; }
+.exhibit-fig .a { stroke: var(--accent); }
+.exhibit-fig .af { fill: var(--accent); }
+.exhibit-fig text { font-family: var(--mono); font-size: 7px; fill: currentColor; letter-spacing: 0.04em; }
+.exhibit-cap {
+  display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.2rem 1rem;
+  padding: 0.65rem 1.1rem; border-bottom: 1px solid var(--rule);
+  font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+}
+.exhibit-metric { color: var(--accent); font-size: 0.82rem; letter-spacing: 0; text-transform: none; white-space: nowrap; }
+.exhibit-metric small { font-size: 0.66rem; color: var(--muted); margin-left: 0.35rem; }
+.exhibit-spec {
+  display: grid; grid-template-columns: 76px 1fr; gap: 0.5rem 1rem;
+  padding: 0.95rem 1.1rem 1.05rem; font-size: 0.72rem; line-height: 1.55;
+}
+.exhibit-spec dt { color: var(--muted); }
+.exhibit-spec dd { color: var(--ink); }
 .hero-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
 .h-tag { font-family: var(--mono); font-size: 0.63rem; letter-spacing: 0.04em; padding: 0.25rem 0.7rem; background: var(--surface); color: var(--muted); }
 .hero-btns { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2rem; align-items: center; }
@@ -58,11 +94,19 @@
   max-width: 760px;
   margin: 0 auto;
   padding: 5rem 5vw;
+  counter-reset: section;
 }
 .project-body h2 {
   font-family: var(--serif); font-size: 2rem; font-weight: 300;
   margin: 3.5rem 0 1rem; line-height: 1.2;
   padding-bottom: 0.6rem; border-bottom: 1px solid var(--rule);
+}
+/* Numbered sections, like the figure numbers on the homepage. */
+.project-body h2::before {
+  counter-increment: section; content: counter(section, decimal-leading-zero);
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em;
+  color: var(--accent); margin-right: 0.9rem;
+  position: relative; top: -0.45em;
 }
 .project-body h2:first-child { margin-top: 0; }
 .project-body h3 {
@@ -79,18 +123,23 @@
 .project-body a { color: var(--accent); border-bottom: 1px solid transparent; transition: border-color 0.2s; }
 .project-body a:hover { border-color: var(--accent); }
 
-/* ── Result callout ── */
+/* ── Result callout: a bordered panel like the homepage status panel ── */
 .result-block {
-  border-left: 3px solid var(--accent);
-  padding: 1.2rem 1.4rem;
-  background: var(--surface);
-  margin: 2rem 0;
+  border: 1px solid var(--ink);
+  background: var(--card);
+  margin: 2.2rem 0;
+}
+.result-block::before {
+  content: 'At a glance'; display: block;
+  padding: 0.6rem 1.1rem; border-bottom: 1px solid var(--ink);
+  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--muted);
 }
 .result-block p {
   font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.03em;
-  color: var(--ink); line-height: 1.7; margin: 0;
+  color: var(--ink); line-height: 1.7; margin: 0; padding: 0.75rem 1.1rem;
 }
-.result-block p + p { margin-top: 0.5rem; }
+.result-block p + p { border-top: 1px solid var(--rule); }
 
 /* ── Data table ── */
 .data-table {
@@ -111,7 +160,8 @@
 
 /* ── Code block ── */
 .code-block {
-  background: var(--ink); color: #c9c4bd;
+  background: var(--code-bg); color: var(--code-ink);
+  border: 1px solid var(--rule);
   font-family: var(--mono); font-size: 0.78rem; line-height: 1.65;
   padding: 1.4rem 1.6rem; margin: 1.5rem 0; overflow-x: auto;
 }
@@ -119,9 +169,29 @@
 /* ── Section divider ── */
 .divider { height: 1px; background: var(--rule); margin: 3rem 0; }
 
+/* ── Previous / next project ── */
+.more-work {
+  max-width: 760px; margin: 0 auto; padding: 0 5vw 4.5rem;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;
+}
+.mw {
+  display: flex; flex-direction: column; gap: 0.35rem;
+  padding: 1rem 1.2rem 1.1rem; background: var(--card); border: 1px solid var(--rule);
+  transition: border-color 0.2s;
+}
+.mw:hover, .mw:focus-visible { border-color: var(--accent); }
+.mw:hover .mw-title { color: var(--accent); }
+.mw-next { text-align: right; }
+.mw-cap { font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+.mw-title { font-family: var(--serif); font-size: 1.15rem; line-height: 1.25; transition: color 0.2s; }
+
 /* ── Responsive ── */
+@media (max-width: 900px) {
+  .project-hero-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+  .exhibit { max-width: 520px; }
+}
+
 @media (max-width: 768px) {
-  .project-meta { gap: 1.5rem; }
   .project-hero-title { font-size: 2.2rem; }
 }
 
@@ -131,7 +201,12 @@
   .project-body { padding: 3rem 6vw; }
   .project-body h2 { font-size: 1.55rem; margin-top: 2.5rem; }
   .data-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .result-block { padding: 1rem 1.1rem; }
+  .result-block p { padding: 0.7rem 0.95rem; }
+  .exhibit-fig { height: 160px; }
+  .exhibit-fig svg { height: 140px; }
+  .exhibit-spec { grid-template-columns: 60px 1fr; }
+  .more-work { grid-template-columns: 1fr; padding-bottom: 3rem; }
+  .mw-next { text-align: left; }
   .hero-btns { flex-direction: column; align-items: flex-start; }
   .github-btn, .live-btn { width: 100%; justify-content: center; text-align: center; }
   .back-link { margin-bottom: 2rem; }
