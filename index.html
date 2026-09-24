@@ -94,7 +94,8 @@
     .tk-row + .tk-row { border-top: 1px solid var(--rule); }
     .tk-row dt { font-size: 0.64rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); padding-top: 0.15rem; }
     .tk-row dd { font-size: 0.76rem; line-height: 1.7; color: var(--ink); }
-    .tk-row dd span { white-space: nowrap; }  /* break between terms, never inside one */
+    /* Each term stays whole when it fits, but may wrap in a narrow column rather than overflow. */
+    .tk-row dd span { display: inline-block; max-width: 100%; }
 
     /* ── projects ── */
     #projects { border-top: 1px solid var(--rule); }
@@ -228,6 +229,11 @@
     }
     .ct-copy:hover { color: var(--ink); border-color: var(--ink); }
     .ct-copy.done { color: var(--accent); border-color: var(--accent); }
+
+    /* Mid widths: the toolkit column is narrow, so put each label above its terms. */
+    @media (max-width: 1100px) {
+      .tk-row { grid-template-columns: 1fr; gap: 0.3rem; }
+    }
 
     @media (max-width: 768px) {
       .about-grid, .exp-layout, .contact-grid { grid-template-columns: 1fr; }
@@ -458,12 +464,12 @@
       <div class="toolkit reveal">
         <div class="panel-head"><span>Toolkit</span><b>6 areas</b></div>
         <dl>
-          <div class="tk-row"><dt>Core</dt><dd><span>Python</span>&nbsp;· <span>PyTorch</span>&nbsp;· <span>pandas</span>&nbsp;· <span>NumPy</span>&nbsp;· <span>scikit-learn</span>&nbsp;· <span>Experiment Design</span>&nbsp;· <span>Statistical Testing</span>&nbsp;· <span>Nested CV</span></dd></div>
-          <div class="tk-row"><dt>Classical &amp; Tabular ML</dt><dd><span>XGBoost</span>&nbsp;· <span>LightGBM</span>&nbsp;· <span>CatBoost</span>&nbsp;· <span>SHAP</span>&nbsp;· <span>Optuna</span>&nbsp;· <span>Feature Engineering</span>&nbsp;· <span>Selection</span>&nbsp;· <span>Wilcoxon</span>&nbsp;· <span>Cohen's d</span></dd></div>
-          <div class="tk-row"><dt>Deep Learning &amp; RL</dt><dd><span>Vision Transformers</span>&nbsp;· <span>ResNet / CNNs</span>&nbsp;· <span>Self-Supervised Learning</span>&nbsp;· <span>Masked Representation Prediction</span>&nbsp;· <span>EMA / Momentum Encoders</span>&nbsp;· <span>Q-Learning</span>&nbsp;· <span>DQN</span>&nbsp;· <span>Policy Gradients</span>&nbsp;· <span>PPO</span>&nbsp;· <span>Actor-Critic</span>&nbsp;· <span>Mixup</span>&nbsp;· <span>Label Smoothing</span>&nbsp;· <span>Generalisation Theory</span></dd></div>
-          <div class="tk-row"><dt>Text Mining &amp; NLP</dt><dd><span>sentence-transformers</span>&nbsp;· <span>TF-IDF</span>&nbsp;· <span>BM25</span>&nbsp;· <span>c-TF-IDF</span>&nbsp;· <span>Topic Modelling</span>&nbsp;· <span>NER</span>&nbsp;· <span>UMAP</span>&nbsp;· <span>HDBSCAN</span></dd></div>
-          <div class="tk-row"><dt>Information Retrieval</dt><dd><span>FAISS</span>&nbsp;· <span>Dense Retrieval</span>&nbsp;· <span>CLIP</span>&nbsp;· <span>Multimodal Retrieval</span>&nbsp;· <span>mAP</span>&nbsp;· <span>NDCG</span>&nbsp;· <span>Recall@k</span>&nbsp;· <span>Query Expansion</span>&nbsp;· <span>Re-ranking</span></dd></div>
-          <div class="tk-row"><dt>MLOps &amp; Deployment</dt><dd><span>Automated ML pipelines</span>&nbsp;· <span>Edge deployment</span>&nbsp;· <span>Model quantization</span>&nbsp;· <span>Heuristic &amp; graph search</span>&nbsp;· <span>Hugging Face</span>&nbsp;· <span>Streamlit</span></dd></div>
+          <div class="tk-row"><dt>Core</dt><dd><span>Python&nbsp;·</span> <span>PyTorch&nbsp;·</span> <span>pandas&nbsp;·</span> <span>NumPy&nbsp;·</span> <span>scikit-learn&nbsp;·</span> <span>Experiment Design&nbsp;·</span> <span>Statistical Testing&nbsp;·</span> <span>Nested CV</span></dd></div>
+          <div class="tk-row"><dt>Classical &amp; Tabular ML</dt><dd><span>XGBoost&nbsp;·</span> <span>LightGBM&nbsp;·</span> <span>CatBoost&nbsp;·</span> <span>SHAP&nbsp;·</span> <span>Optuna&nbsp;·</span> <span>Feature Engineering&nbsp;·</span> <span>Selection&nbsp;·</span> <span>Wilcoxon&nbsp;·</span> <span>Cohen's d</span></dd></div>
+          <div class="tk-row"><dt>Deep Learning &amp; RL</dt><dd><span>Vision Transformers&nbsp;·</span> <span>ResNet / CNNs&nbsp;·</span> <span>Self-Supervised Learning&nbsp;·</span> <span>Masked Representation Prediction&nbsp;·</span> <span>EMA / Momentum Encoders&nbsp;·</span> <span>Q-Learning&nbsp;·</span> <span>DQN&nbsp;·</span> <span>Policy Gradients&nbsp;·</span> <span>PPO&nbsp;·</span> <span>Actor-Critic&nbsp;·</span> <span>Mixup&nbsp;·</span> <span>Label Smoothing&nbsp;·</span> <span>Generalisation Theory</span></dd></div>
+          <div class="tk-row"><dt>Text Mining &amp; NLP</dt><dd><span>sentence-transformers&nbsp;·</span> <span>TF-IDF&nbsp;·</span> <span>BM25&nbsp;·</span> <span>c-TF-IDF&nbsp;·</span> <span>Topic Modelling&nbsp;·</span> <span>NER&nbsp;·</span> <span>UMAP&nbsp;·</span> <span>HDBSCAN</span></dd></div>
+          <div class="tk-row"><dt>Information Retrieval</dt><dd><span>FAISS&nbsp;·</span> <span>Dense Retrieval&nbsp;·</span> <span>CLIP&nbsp;·</span> <span>Multimodal Retrieval&nbsp;·</span> <span>mAP&nbsp;·</span> <span>NDCG&nbsp;·</span> <span>Recall@k&nbsp;·</span> <span>Query Expansion&nbsp;·</span> <span>Re-ranking</span></dd></div>
+          <div class="tk-row"><dt>MLOps &amp; Deployment</dt><dd><span>Automated ML pipelines&nbsp;·</span> <span>Edge deployment&nbsp;·</span> <span>Model quantization&nbsp;·</span> <span>Heuristic &amp; graph search&nbsp;·</span> <span>Hugging Face&nbsp;·</span> <span>Streamlit</span></dd></div>
         </dl>
       </div>
     </div>
@@ -551,8 +557,7 @@
       </div>
     </div>
     <div class="ft-base">
-      <span>© Rahul Ray</span>
-      <span>Set in Cormorant Garamond, IBM Plex Mono and Outfit&nbsp;· Hosted on GitHub Pages</span>
+      <span>© Rahul Ray&nbsp;· Hosted on GitHub Pages</span>
       <a href="#" class="ft-top">↑ Top</a>
     </div>
   </footer>
