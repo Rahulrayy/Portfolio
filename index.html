@@ -200,15 +200,37 @@
 
     /* ── Contact ── */
     #contact { border-top: 1px solid var(--rule); }
-    .contact-inner { max-width: 640px; }
+    .contact-grid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 5vw; align-items: center; }
     .contact-heading { font-family: var(--serif); font-size: clamp(2.6rem, 5.5vw, 4.2rem); font-weight: 300; line-height: 1.1; margin-bottom: 1.5rem; }
     .contact-heading em { font-style: italic; color: var(--accent); }
-    .contact-sub { font-size: 1rem; color: var(--muted); margin-bottom: 3rem; line-height: 1.75; }
-    .contact-sub a { color: var(--accent); border-bottom: 1px solid transparent; transition: border-color 0.2s; }
-    .contact-sub a:hover { border-color: var(--accent); }
+    .contact-sub { font-size: 1rem; color: var(--muted); line-height: 1.75; max-width: 540px; }
+
+    /* Contact panel: same language as the status and toolkit panels. */
+    .contact-panel { background: var(--bg); border: 1px solid var(--ink); font-family: var(--mono); }
+    .ct-list { list-style: none; }
+    .ct-row {
+      position: relative; display: grid; grid-template-columns: 76px minmax(0, 1fr) auto;
+      gap: 1rem; align-items: center; padding: 0.85rem 1.1rem; transition: background 0.2s;
+    }
+    .ct-row + .ct-row { border-top: 1px solid var(--rule); }
+    .ct-key { font-size: 0.64rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); }
+    .ct-val { font-size: 0.8rem; color: var(--ink); overflow-wrap: anywhere; transition: color 0.2s; }
+    /* Each linked row is clickable end to end; the copy button sits above that. */
+    .ct-row a.ct-val::after { content: ''; position: absolute; inset: 0; }
+    .ct-row:has(a.ct-val):hover { background: var(--surface); }
+    .ct-row:hover a.ct-val { color: var(--accent); }
+    .ct-go { color: var(--muted); font-size: 0.8rem; }
+    .ct-copy {
+      position: relative; z-index: 1; cursor: pointer;
+      font-family: var(--mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase;
+      background: var(--bg); color: var(--muted); border: 1px solid var(--rule); padding: 0.25rem 0.6rem;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .ct-copy:hover { color: var(--ink); border-color: var(--ink); }
+    .ct-copy.done { color: var(--accent); border-color: var(--accent); }
 
     @media (max-width: 768px) {
-      .about-grid, .exp-layout { grid-template-columns: 1fr; }
+      .about-grid, .exp-layout, .contact-grid { grid-template-columns: 1fr; }
       .exp-heading { position: static; }
       #hero { grid-template-columns: 1fr; gap: 2.5rem; }
       .cards { grid-template-columns: 1fr; }
@@ -242,7 +264,11 @@
       .log-role { font-size: 1.15rem; }
 
       .contact-heading { font-size: clamp(1.9rem, 8vw, 3rem); }
-      .contact-sub { font-size: 0.95rem; margin-bottom: 2rem; }
+      .contact-sub { font-size: 0.95rem; }
+      .contact-grid { gap: 2.2rem; }
+      /* Narrow: label above value so addresses get the full width and don't split. */
+      .ct-row { grid-template-columns: minmax(0, 1fr) auto; gap: 0.25rem 0.8rem; padding: 0.75rem 0.95rem; }
+      .ct-key { grid-column: 1 / -1; }
     }
   </style>
 </head>
@@ -482,15 +508,23 @@
   <!-- Contact -->
   <section id="contact">
     <p class="section-label reveal">Contact</p>
-    <div class="contact-inner">
-      <h2 class="contact-heading reveal">Let's work on something <em>worth working on.</em></h2>
-      <p class="contact-sub reveal">
-        Actively looking for ML and data science internships and thesis placements for 2027. Also open to research
-        collaborations and conversations about generalisation, tabular learning, or edge AI.
-        Reach me at <a href="mailto:rahulraypm2002@gmail.com">rahulraypm2002@gmail.com</a>,
-        find my work on <a href="https://github.com/Rahulrayy" target="_blank">GitHub</a>,
-        or connect on <a href="https://linkedin.com/in/rahul-ray-b67741222" target="_blank">LinkedIn</a>.
-      </p>
+    <div class="contact-grid">
+      <div class="reveal">
+        <h2 class="contact-heading">Let's work on something <em>worth working on.</em></h2>
+        <p class="contact-sub">
+          Actively looking for ML and data science internships and thesis placements for 2027. Also open to research collaborations and conversations about generalisation, tabular learning, or edge AI.
+        </p>
+      </div>
+      <div class="contact-panel reveal">
+        <div class="panel-head"><span>Contact</span><b>● Open to 2027 roles</b></div>
+        <ul class="ct-list">
+          <li class="ct-row"><span class="ct-key">email</span><a class="ct-val" href="mailto:rahulraypm2002@gmail.com">rahulraypm2002@gmail.com</a><button type="button" class="ct-copy" data-copy="rahulraypm2002@gmail.com" aria-live="polite">Copy</button></li>
+          <li class="ct-row"><span class="ct-key">github</span><a class="ct-val" href="https://github.com/Rahulrayy" target="_blank" rel="noopener">github.com/Rahulrayy</a><span class="ct-go" aria-hidden="true">↗</span></li>
+          <li class="ct-row"><span class="ct-key">linkedin</span><a class="ct-val" href="https://linkedin.com/in/rahul-ray-b67741222" target="_blank" rel="noopener">linkedin.com/in/rahul-ray-b67741222</a><span class="ct-go" aria-hidden="true">↗</span></li>
+          <li class="ct-row"><span class="ct-key">cv</span><a class="ct-val" href="CV.pdf" download>CV.pdf</a><span class="ct-go" aria-hidden="true">↓</span></li>
+          <li class="ct-row"><span class="ct-key">based</span><span class="ct-val">Den Haag, Netherlands</span><span></span></li>
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -522,6 +556,22 @@
       { threshold: 0.08, rootMargin: '0px 0px -60px 0px' }
     )
     document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
+
+    // Copy email: mailto does nothing without a mail app, so offer the address itself.
+    document.querySelectorAll('.ct-copy').forEach(b => b.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(b.dataset.copy)
+        b.textContent = 'Copied'
+      } catch (e) {
+        // Clipboard blocked: select the address so it can be copied by hand.
+        const r = document.createRange()
+        r.selectNodeContents(b.previousElementSibling)
+        getSelection().removeAllRanges(); getSelection().addRange(r)
+        b.textContent = 'Selected'
+      }
+      b.classList.add('done')
+      setTimeout(() => { b.textContent = 'Copy'; b.classList.remove('done') }, 1800)
+    }))
 
   </script>
 </body>
