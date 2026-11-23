@@ -2,7 +2,7 @@
   --bg:      #F7F6F2;
   --surface: #EEECEA;
   --ink:     #111010;
-  --muted:   #6B6864;
+  --muted:   #5F5C58;
   --accent:  #1443FF;
   --rule:    #D8D5CF;
   --nav-bg:  rgba(247,246,242,0.9);
@@ -30,7 +30,7 @@
     --bg:      #141311;
     --surface: #1E1D1A;
     --ink:     #ECE9E2;
-    --muted:   #A19D95;
+    --muted:   #B2AEA6;
     --accent:  #7B93FF;
     --rule:    #302E2A;
     --nav-bg:  rgba(20,19,17,0.88);
@@ -46,7 +46,7 @@
   --bg:      #141311;
   --surface: #1E1D1A;
   --ink:     #ECE9E2;
-  --muted:   #A19D95;
+  --muted:   #B2AEA6;
   --accent:  #7B93FF;
   --rule:    #302E2A;
   --nav-bg:  rgba(20,19,17,0.88);
@@ -81,7 +81,7 @@ nav.scrolled { border-color: var(--rule); }
 .nav-logo { font-family: var(--serif); font-size: 1.1rem; font-weight: 600; }
 .nav-links { display: flex; gap: 2.4rem; list-style: none; }
 .nav-links a {
-  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em;
+  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em;
   text-transform: uppercase; color: var(--muted); transition: color 0.2s; position: relative;
 }
 .nav-links a::after {
@@ -95,7 +95,7 @@ nav.scrolled { border-color: var(--rule); }
 .theme-toggle {
   display: inline-flex; align-items: center; gap: 0.45rem;
   background: none; border: none; padding: 0; cursor: pointer;
-  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em;
+  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em;
   text-transform: uppercase; color: var(--muted); transition: color 0.2s;
 }
 .theme-toggle:hover { color: var(--ink); }
@@ -104,7 +104,7 @@ nav.scrolled { border-color: var(--rule); }
 /* ── Section basics ── */
 section { padding: 7rem 5vw; }
 .section-label {
-  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.14em;
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.14em;
   text-transform: uppercase; color: var(--accent); margin-bottom: 1.8rem;
   display: flex; align-items: center; gap: 0.8rem;
 }
@@ -116,7 +116,7 @@ section { padding: 7rem 5vw; }
 /* ── Buttons ── */
 .btn {
   display: inline-flex; align-items: center; gap: 0.5rem;
-  padding: 0.75rem 1.8rem; font-family: var(--mono); font-size: 0.73rem;
+  padding: 0.75rem 1.8rem; font-family: var(--mono); font-size: 0.78rem;
   letter-spacing: 0.08em; text-transform: uppercase;
   border: 1px solid var(--ink); background: transparent; cursor: pointer;
   transition: background 0.22s, color 0.22s, border-color 0.22s;
@@ -146,17 +146,17 @@ section { padding: 7rem 5vw; }
 .ft-col { min-width: 8.5rem; }
 .ft-name { font-family: var(--serif); font-size: 1.7rem; font-weight: 300; line-height: 1.1; }
 .ft-name em { font-style: italic; color: var(--accent); }
-.ft-sub { font-family: var(--mono); font-size: 0.64rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 0.6rem 0 0.9rem; }
-.ft-mail { font-family: var(--mono); font-size: 0.76rem; color: var(--accent); border-bottom: 1px solid transparent; transition: border-color 0.2s; }
+.ft-sub { font-family: var(--mono); font-size: 0.73rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 0.6rem 0 0.9rem; }
+.ft-mail { font-family: var(--mono); font-size: 0.8rem; color: var(--accent); border-bottom: 1px solid transparent; transition: border-color 0.2s; }
 .ft-mail:hover { border-color: var(--accent); }
-.ft-col { display: flex; flex-direction: column; gap: 0.5rem; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.06em; color: var(--muted); }
+.ft-col { display: flex; flex-direction: column; gap: 0.5rem; font-family: var(--mono); font-size: 0.76rem; letter-spacing: 0.06em; color: var(--muted); }
 .ft-col a { color: var(--muted); width: fit-content; transition: color 0.2s; }
 .ft-col a:hover { color: var(--ink); }
-.ft-label { font-size: 0.6rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.35rem; }
+.ft-label { font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.35rem; }
 .ft-base {
   display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 0.6rem 2rem;
   margin-top: 3rem; padding-top: 1.1rem; border-top: 1px solid var(--rule);
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.06em; color: var(--muted);
+  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.06em; color: var(--muted);
 }
 .ft-top { color: var(--muted); transition: color 0.2s; }
 .ft-top:hover { color: var(--accent); }
@@ -183,7 +183,7 @@ section { padding: 7rem 5vw; }
 .skip-link {
   position: absolute; left: 1rem; top: -100px; z-index: 1000;
   padding: 0.6rem 1rem; background: var(--ink); color: var(--bg);
-  font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase;
+  font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase;
 }
 .skip-link:focus { top: 1rem; }
 
@@ -227,7 +227,7 @@ section { padding: 7rem 5vw; }
   nav.nav-open .nav-toggle span:nth-child(2) { opacity: 0; }
   nav.nav-open .nav-toggle span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
 
-  .btn { padding: 0.65rem 1.4rem; font-size: 0.7rem; }
+  .btn { padding: 0.65rem 1.4rem; font-size: 0.76rem; }
 
   .site-footer { padding: 2.8rem 6vw 1.6rem; }
   .ft-base { margin-top: 2.2rem; }
@@ -258,7 +258,7 @@ section { padding: 7rem 5vw; }
 
   html { scroll-behavior: auto !important; }
 
-  .hero-eyebrow, .hero-name, .hero-desc, .hero-cta, .hero-panel {
+  .hero-eyebrow, .hero-name, .hero-desc, .hero-cta, .hero-panel, .hero-latest {
     animation: none !important;
     opacity: 1 !important;
     transform: none !important;

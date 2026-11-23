@@ -23,8 +23,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&amp;family=IBM+Plex+Mono:wght@300;400&amp;family=Outfit:wght@300;400;500&amp;display=swap" />
-  <link rel="stylesheet" href="../style.css" />
-  <link rel="stylesheet" href="project.css" />
+  <link rel="stylesheet" href="../style.css?v=2" />
+  <link rel="stylesheet" href="project.css?v=2" />
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -172,6 +172,11 @@
         <tr><td>e-means, τ = 0.01, k-means++ start</td><td>+7%</td></tr>
       </tbody>
     </table>
+    <figure class="result-fig">
+      <img src="../assets/fig/e-means.png" width="1600" height="390" alt="Five scatter plots of 1024 centroids on 2-d Gaussian data, one per setup" loading="lazy">
+      <figcaption><b>From the repo</b>Where 1024 centroids end up on 2-d Gaussian data (grey = data, blue = centroids). From a random start, Lloyd leaves them too close to the centre (+40% above the bound); k-means++ spreads them out (+8%); the paper's e-means pulls them back in (+19%); with τ = 0.01 they stay out (+7%).</figcaption>
+    </figure>
+
     <p>
       k-means++ fixes the start for Lloyd. e-means does not keep it: in a separate comparison
       from the same k-means++ start, it ends 11% worse than Lloyd.

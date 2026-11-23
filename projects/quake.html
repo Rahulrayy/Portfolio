@@ -23,8 +23,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&amp;family=IBM+Plex+Mono:wght@300;400&amp;family=Outfit:wght@300;400;500&amp;display=swap" />
-  <link rel="stylesheet" href="../style.css" />
-  <link rel="stylesheet" href="project.css" />
+  <link rel="stylesheet" href="../style.css?v=2" />
+  <link rel="stylesheet" href="project.css?v=2" />
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -186,6 +186,11 @@
       <p>Paths ~2% longer than optimal on average · Performance holds on unseen episode 4 and deathmatch maps</p>
       <p>MLP and XGBoost produce near-identical results, the representation bottleneck dominates over model capacity</p>
     </div>
+
+    <figure class="result-fig">
+      <img src="../assets/fig/quake.png" width="1600" height="800" alt="Two A* searches on the e1m1 navigation graph, Euclidean on the left and learned on the right" loading="lazy">
+      <figcaption><b>From the repo</b>One query on e1m1: Euclidean A* (left) expands 195 nodes, the learned heuristic (right) expands 50, 74.4% fewer. Its path costs 3825 against the Euclidean path's 3788.</figcaption>
+    </figure>
 
     <h2>The most interesting finding</h2>
     <p>

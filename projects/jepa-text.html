@@ -23,8 +23,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&amp;family=IBM+Plex+Mono:wght@300;400&amp;family=Outfit:wght@300;400;500&amp;display=swap" />
-  <link rel="stylesheet" href="../style.css" />
-  <link rel="stylesheet" href="project.css" />
+  <link rel="stylesheet" href="../style.css?v=2" />
+  <link rel="stylesheet" href="project.css?v=2" />
   <script src="../theme.js"></script>
 </head>
 <body>
@@ -170,6 +170,11 @@
       <p>Downstream task performance declined across both classification (SST-2) and semantic similarity (STS-B)</p>
       <p>Between steps 2000-4000, geometry kept improving while SST-2 accuracy partially recovered; the two metrics decouple</p>
     </div>
+
+    <figure class="result-fig">
+      <div class="fig-pair"><img src="../assets/fig/jepa-text-500.png" width="1200" height="600" alt="Histogram of pairwise cosine similarity at step 500, peaked near 0.95" loading="lazy"><img src="../assets/fig/jepa-text-4000.png" width="1200" height="600" alt="Histogram of pairwise cosine similarity at step 4000, peaked near 0.6" loading="lazy"></div>
+      <figcaption><b>From the repo</b>Pairwise cosine similarity at step 500 (left; effectively the untrained baseline) and step 4000 (right). The distribution spreads out and its peak moves left. Note that the two x-axes differ.</figcaption>
+    </figure>
 
     <h2>The geometry–task utility split</h2>
     <p>
