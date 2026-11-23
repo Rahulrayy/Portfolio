@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>e-means at Low Intrinsic Dimension · Rahul Ray</title>
+  <meta name="description" content="Does e-means' step-size law need the intrinsic dimension of the data? Mostly not: at low dimension the random start and the revival step are what go wrong.">
+  <link rel="canonical" href="https://rahulrayy.github.io/Portfolio/projects/e-means.html">
+  <meta property="og:title" content="e-means at Low Intrinsic Dimension · Rahul Ray">
+  <meta property="og:description" content="The step-size law holds up. At low intrinsic dimension the random start and the revival step fail, and a two-part fix passed a held-out test.">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://rahulrayy.github.io/Portfolio/projects/e-means.html">
+  <meta property="og:site_name" content="Rahul Ray">
+  <meta property="og:image" content="https://rahulrayy.github.io/Portfolio/assets/og/e-means.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="e-means at Low Intrinsic Dimension · Rahul Ray">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="e-means at Low Intrinsic Dimension · Rahul Ray">
+  <meta name="twitter:description" content="The step-size law holds up. At low intrinsic dimension the random start and the revival step fail, and a two-part fix passed a held-out test.">
+  <meta name="twitter:image" content="https://rahulrayy.github.io/Portfolio/assets/og/e-means.png">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='8' fill='%231443FF'/><text x='50' y='76' font-size='72' text-anchor='middle' fill='white' font-family='Georgia,serif' font-style='italic'>R</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&amp;family=IBM+Plex+Mono:wght@300;400&amp;family=Outfit:wght@300;400;500&amp;display=swap" />
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="project.css" />
+  <script src="../theme.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <nav id="nav">
+    <div class="nav-logo"><a href="../index.html">Rahul Ray</a></div>
+    <ul class="nav-links">
+      <li><a href="../index.html#projects">Projects</a></li>
+      <li><a href="../index.html#about">About</a></li>
+      <li><a href="../index.html#experience">Experience</a></li>
+      <li><a href="../index.html#contact">Contact</a></li>
+    </ul>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+  <div class="nav-overlay" id="navOverlay"></div>
+
+  <div class="project-hero" id="main">
+    <a href="../index.html#projects" class="back-link">← Back to projects</a>
+    <div class="project-hero-grid">
+      <div class="project-hero-main">
+        <p class="project-hero-label">Project 01</p>
+        <h1 class="project-hero-title">e-means at Low Intrinsic Dimension: <em>Is the Step&#8209;Size Law to Blame?</em></h1>
+        <div class="hero-tags">
+          <span class="h-tag">k-means</span>
+          <span class="h-tag">e-means</span>
+          <span class="h-tag">Intrinsic Dimension</span>
+          <span class="h-tag">k-means++</span>
+          <span class="h-tag">Quantization Theory</span>
+          <span class="h-tag">PyTorch</span>
+          <span class="h-tag">Held-out Tests</span>
+        </div>
+        <div class="hero-btns">
+          <a href="https://github.com/Rahulrayy/exploring-e-means" target="_blank" class="github-btn" rel="noopener">↗ View on GitHub</a>
+        </div>
+      </div>
+      <aside class="exhibit" aria-label="Project summary">
+        <div class="exhibit-fig"><svg viewBox="0 0 240 110" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><circle cx="30" cy="44" r="21.0" stroke-dasharray="2 2" opacity=".45"/><g fill="currentColor" stroke="none"><circle cx="31.3" cy="44.0" r="1.1"/><circle cx="28.3" cy="45.5" r="1.1"/><circle cx="30.3" cy="41.0" r="1.1"/><circle cx="32.1" cy="46.8" r="1.1"/><circle cx="26.1" cy="43.3" r="1.1"/><circle cx="33.8" cy="41.6" r="1.1"/><circle cx="28.7" cy="48.7" r="1.1"/><circle cx="27.6" cy="39.3" r="1.1"/><circle cx="35.3" cy="45.9" r="1.1"/><circle cx="24.5" cy="46.3" r="1.1"/><circle cx="32.7" cy="38.3" r="1.1"/><circle cx="32.0" cy="50.3" r="1.1"/><circle cx="24.0" cy="40.5" r="1.1"/><circle cx="37.1" cy="42.4" r="1.1"/><circle cx="25.7" cy="50.2" r="1.1"/><circle cx="29.0" cy="36.2" r="1.1"/><circle cx="36.2" cy="49.2" r="1.1"/><circle cx="21.6" cy="44.3" r="1.1"/><circle cx="36.1" cy="37.9" r="1.1"/><circle cx="29.6" cy="52.9" r="1.1"/><circle cx="24.1" cy="36.9" r="1.1"/><circle cx="39.4" cy="45.3" r="1.1"/><circle cx="22.0" cy="49.6" r="1.1"/><circle cx="32.2" cy="34.2" r="1.1"/><circle cx="35.1" cy="53.0" r="1.1"/><circle cx="19.9" cy="40.8" r="1.1"/><circle cx="39.9" cy="39.4" r="1.1"/><circle cx="25.7" cy="54.3" r="1.1"/><circle cx="26.1" cy="33.3" r="1.1"/><circle cx="40.3" cy="49.4" r="1.1"/><circle cx="18.4" cy="47.0" r="1.1"/><circle cx="36.6" cy="33.7" r="1.1"/><circle cx="32.1" cy="56.3" r="1.1"/><circle cx="19.9" cy="36.2" r="1.1"/><circle cx="43.0" cy="42.9" r="1.1"/><circle cx="20.9" cy="53.8" r="1.1"/><circle cx="30.1" cy="30.4" r="1.1"/><circle cx="39.4" cy="54.3" r="1.1"/><circle cx="15.8" cy="42.7" r="1.1"/><circle cx="41.6" cy="35.2" r="1.1"/><circle cx="27.3" cy="58.6" r="1.1"/><circle cx="21.9" cy="31.2" r="1.1"/><circle cx="45.0" cy="48.1" r="1.1"/><circle cx="15.9" cy="51.2" r="1.1"/><circle cx="35.6" cy="28.8" r="1.1"/><circle cx="36.2" cy="59.3" r="1.1"/><circle cx="14.7" cy="36.8" r="1.1"/><circle cx="46.5" cy="38.9" r="1.1"/><circle cx="21.1" cy="59.3" r="1.1"/><circle cx="26.2" cy="26.3" r="1.1"/><circle cx="45.1" cy="54.7" r="1.1"/><circle cx="11.2" cy="46.3" r="1.1"/><circle cx="42.6" cy="29.2" r="1.1"/><circle cx="30.7" cy="64.0" r="1.1"/><circle cx="15.6" cy="29.4" r="1.1"/><circle cx="51.1" cy="45.1" r="1.1"/><circle cx="13.2" cy="57.8" r="1.1"/><circle cx="33.1" cy="21.8" r="1.1"/><circle cx="43.2" cy="63.2" r="1.1"/><circle cx="6.4" cy="38.6" r="1.1"/></g><text x="30" y="84" text-anchor="middle" stroke="none">random start</text><text x="30" y="93" text-anchor="middle" stroke="none" opacity=".7">density ∝ p</text><circle cx="98" cy="44" r="21.0" stroke-dasharray="2 2" opacity=".45"/><g fill="currentColor" stroke="none" class="af"><circle cx="99.9" cy="44.0" r="1.1"/><circle cx="95.6" cy="46.2" r="1.1"/><circle cx="98.4" cy="39.8" r="1.1"/><circle cx="101.0" cy="48.0" r="1.1"/><circle cx="92.4" cy="43.0" r="1.1"/><circle cx="103.3" cy="40.6" r="1.1"/><circle cx="96.2" cy="50.6" r="1.1"/><circle cx="94.6" cy="37.4" r="1.1"/><circle cx="105.4" cy="46.7" r="1.1"/><circle cx="90.2" cy="47.2" r="1.1"/><circle cx="101.8" cy="35.9" r="1.1"/><circle cx="100.8" cy="52.9" r="1.1"/><circle cx="89.5" cy="39.1" r="1.1"/><circle cx="108.0" cy="41.8" r="1.1"/><circle cx="91.9" cy="52.7" r="1.1"/><circle cx="96.6" cy="33.0" r="1.1"/><circle cx="106.8" cy="51.4" r="1.1"/><circle cx="86.1" cy="44.5" r="1.1"/><circle cx="106.7" cy="35.3" r="1.1"/><circle cx="97.4" cy="56.6" r="1.1"/><circle cx="89.6" cy="34.0" r="1.1"/><circle cx="111.3" cy="45.8" r="1.1"/><circle cx="86.7" cy="51.9" r="1.1"/><circle cx="101.1" cy="30.1" r="1.1"/><circle cx="105.3" cy="56.7" r="1.1"/><circle cx="83.7" cy="39.4" r="1.1"/><circle cx="111.9" cy="37.6" r="1.1"/><circle cx="91.9" cy="58.5" r="1.1"/><circle cx="92.5" cy="28.8" r="1.1"/><circle cx="112.6" cy="51.7" r="1.1"/><circle cx="81.7" cy="48.3" r="1.1"/><circle cx="107.3" cy="29.5" r="1.1"/><circle cx="101.0" cy="61.4" r="1.1"/><circle cx="83.7" cy="32.9" r="1.1"/><circle cx="116.4" cy="42.5" r="1.1"/><circle cx="85.2" cy="57.9" r="1.1"/><circle cx="98.1" cy="24.7" r="1.1"/><circle cx="111.2" cy="58.6" r="1.1"/><circle cx="77.9" cy="42.1" r="1.1"/><circle cx="114.4" cy="31.6" r="1.1"/><circle cx="94.2" cy="64.7" r="1.1"/><circle cx="86.6" cy="25.8" r="1.1"/><circle cx="119.2" cy="49.8" r="1.1"/><circle cx="78.1" cy="54.2" r="1.1"/><circle cx="106.0" cy="22.5" r="1.1"/><circle cx="106.8" cy="65.7" r="1.1"/><circle cx="76.4" cy="33.8" r="1.1"/><circle cx="121.4" cy="36.8" r="1.1"/><circle cx="85.4" cy="65.6" r="1.1"/></g><text x="98" y="84" text-anchor="middle" stroke="none">Zador optimum</text><text x="98" y="93" text-anchor="middle" stroke="none" opacity=".7">density ∝ √p</text><text x="64" y="104" text-anchor="middle" stroke="none" opacity=".7">ring: 2 sd of the data</text><text x="136" y="9" stroke="none" opacity=".7">gap above bound</text><text x="136" y="24" stroke="none">Lloyd, random</text><path d="M136 30 H206.0" stroke-width="3"/><text x="210.0" y="32" stroke="none">+40%</text><text x="136" y="44" stroke="none">Lloyd, k-means++</text><path d="M136 50 H150.0" stroke-width="3"/><text x="154.0" y="52" stroke="none">+8%</text><text x="136" y="64" stroke="none">e-means, k-means++</text><path d="M136 70 H169.2" stroke-width="3"/><text x="173.2" y="72" stroke="none">+19%</text><text x="136" y="84" stroke="none">e-means, τ = 0.01</text><path d="M136 90 H148.2" class="a" stroke-width="3"/><text x="152.2" y="92" stroke="none" class="af">+7%</text></svg></div>
+        <div class="exhibit-cap"><span>Fig. 01 · Research study</span><span class="exhibit-metric">−20%<small>test MSE vs paper defaults, held-out low-ID data</small></span></div>
+        <dl class="exhibit-spec">
+          <dt>type</dt><dd>Follow-up study of a new paper</dd>
+          <dt>scale</dt><dd>~10,000 short clustering runs</dd>
+          <dt>stack</dt><dd>PyTorch · RTX 3060 (6 GB) · ann-benchmarks</dd>
+        </dl>
+      </aside>
+    </div>
+  </div>
+
+  <div class="project-body">
+
+    <h2>The question</h2>
+    <p>
+      e-means (Bessa et al., November 2026) is essentially mini-batch k-means in which the
+      centroids are updated with an exponential moving average. Each cluster keeps a
+      moving-average count and sum, and its centroid is the sum divided by the count. The
+      step size follows a cosine schedule that starts at α<sub>0</sub>, and every few batches
+      any cluster whose count drops below τ = 0.1 × the mean count is "revived" by splitting
+      a large cluster. The batch size and α<sub>0</sub> come from two power laws the authors
+      fitted on a single dataset, DEEP.
+    </p>
+    <p>
+      The paper says these laws are "not optimal on very low-dimensional and tiny datasets",
+      and suggests the intrinsic dimension of the data is probably what is missing from them.
+      I wanted to check whether that is true: should the step size depend on intrinsic
+      dimension?
+    </p>
+    <p>
+      Short answer: mostly not. The step-size law holds up. What goes wrong at low intrinsic
+      dimension is the random starting centroids and the revival step, and fixing those two
+      recovers most of the gap.
+    </p>
+
+    <h2>Setup</h2>
+    <table class="data-table">
+      <thead>
+        <tr><th>Component</th><th>Setting</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Implementation</td><td>e-means and Lloyd's k-means written from scratch in PyTorch, sharing one GPU assignment function so speed comparisons are fair</td></tr>
+        <tr><td>Synthetic data</td><td>Gaussian, uniform, Student-t and Laplace data with a controlled intrinsic dimension m, plus noisy variants</td></tr>
+        <tr><td>Real data</td><td>SIFT, DEEP, GloVe and Fashion-MNIST from ann-benchmarks; RGB pixels from the scikit-image example photos</td></tr>
+        <tr><td>Step-size sweep</td><td>15 step sizes around the law's prediction, in half-octave steps, same seeds for each</td></tr>
+        <tr><td>Intrinsic dimension</td><td>PCA, TwoNN and Levina-Bickel, including a variant with K = n/k neighbours (roughly one cluster's worth)</td></tr>
+        <tr><td>Scale</td><td>About 10,000 short clustering runs on a laptop RTX 3060 (6 GB)</td></tr>
+      </tbody>
+    </table>
+    <p>
+      Before each of the main tests I wrote down what would count as a pass or a fail, and
+      each test script prints its criteria as PASS/FAIL. A few of them failed, and those are
+      reported below along with the ones that passed.
+    </p>
+
+    <h2>What came out</h2>
+
+    <div class="result-block">
+      <p>The step-size law is fine from intrinsic dimension of about 4 upward: regret mostly under 0.25%, with no trend in dimension (slope −0.02, 95% CI [−0.46, 0.35])</p>
+      <p>At intrinsic dimension 2, Lloyd and e-means from a random start both end about 40% above the achievable error, because of where the centroids start</p>
+      <p>e-means loses a good k-means++ start: its revival step pulls correct small clusters in the tails back to the middle</p>
+      <p>A two-part rule (k-means++ and τ = 0.01 when estimated intrinsic dimension is below 3.5) failed its first held-out test and passed the second, at −20% test MSE on average</p>
+    </div>
+
+    <h3>First, a reproduction</h3>
+    <p>
+      To check that my implementation behaves like the paper's: on SIFT1M, e-means with the
+      paper's settings beats Lloyd's k-means at 25 iterations after 2 to 3 epochs. Because
+      both use the same assignment code, the 8 to 9× speedup I measure comes from the
+      algorithm alone. It is the part of the paper's reported 10 to 45× that the algorithm
+      itself accounts for.
+    </p>
+
+    <h3>The step-size law holds up</h3>
+    <p>
+      This was the original question. For every setting I found the best step size and
+      measured how much worse the paper's law is, the regret. Once intrinsic dimension is
+      around 4 or higher, regret is mostly under 0.25% on synthetic data (worst case 0.55%)
+      and under 0.18% on SIFT, DEEP, GloVe and Fashion-MNIST. It only really costs anything
+      at m = 2. There is no trend with dimension: slope <strong>−0.02</strong>, 95% CI
+      [−0.46, 0.35]. My starting idea, that the step should depend on dimension, did not
+      survive.
+    </p>
+
+    <h3>The real problem at m = 2: where the centroids start</h3>
+    <p>
+      At intrinsic dimension 2, both Lloyd and e-means from a random start end about 40%
+      above the error that is achievable. The cause is the starting point. Picking data
+      points as initial centroids gives a centroid density proportional to the data density
+      p, but quantization theory (Zador) says the best density in two dimensions is
+      proportional to p<sup>1/2</sup>, which is more spread out. The centroids start too close
+      to the centre and stay there.
+    </p>
+    <p>
+      For 1024 centroids on 2-d Gaussian data, measured as the gap above the theoretical
+      bound:
+    </p>
+    <table class="data-table">
+      <thead>
+        <tr><th>Setup</th><th>Gap above bound</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Lloyd (25 iterations), random start</td><td>+40%</td></tr>
+        <tr><td>Lloyd (25 iterations), k-means++ start</td><td>+8%</td></tr>
+        <tr><td>e-means, paper settings (τ = 0.1), k-means++ start</td><td>+19%</td></tr>
+        <tr><td>e-means, τ = 0.01, k-means++ start</td><td>+7%</td></tr>
+      </tbody>
+    </table>
+    <p>
+      k-means++ fixes the start for Lloyd. e-means does not keep it: from the same k-means++
+      start it ends 11% worse than Lloyd.
+    </p>
+
+    <h3>Revival is the culprit</h3>
+    <p>
+      With a good start, the tails of the distribution hold small clusters that are correct.
+      e-means' revival step sees them as nearly dead and keeps moving them back to the middle.
+      Starting e-means from the same k-means++ centroids and turning revival off makes it
+      <strong>4 to 10% better</strong> at m = 2, in 5 of 5 paired seeds. At m = 3 and 4 it
+      barely matters. That is how it became clear the problem was revival and not the step
+      size.
+    </p>
+
+    <h3>Lowering the threshold everywhere does not work</h3>
+    <p>
+      The obvious next step was to lower the revival threshold to τ = 0.01 for all data. It
+      helps at low dimension (about −4% on average) and does nothing on SIFT, DEEP and GloVe.
+      But on Fashion-MNIST with k = 4096, where there are only a few points per cluster, it is
+      up to 4% worse. So it cannot be the default everywhere, and the fix needs to know the
+      dimension first.
+    </p>
+
+    <h2>A rule, tested twice</h2>
+    <p>
+      The rule: if the estimated intrinsic dimension is below 3.5, use k-means++ and
+      τ = 0.01; otherwise use the paper's defaults. The estimate is Levina-Bickel with
+      K = n/k neighbours.
+    </p>
+    <p>
+      <strong>First held-out test: failed.</strong> The rule improved test MSE by 16% on
+      average and was never worse, but it failed one of my pre-stated criteria because the
+      dimension estimate misclassified one dataset. On the retina photo with k = 2048 the
+      estimate came out at 3.54, just above the threshold. The image only has about 17.8k
+      distinct colours, so the estimator used only 9 neighbours. I fixed this with a floor of
+      at least 20 neighbours, and decided on that fix using only data I had already used.
+    </p>
+    <p>
+      <strong>Second held-out test: passed.</strong> This used data I had not touched before:
+      a colour-wheel image, a swiss roll, Laplace data at m = 2 and Student-t data at m = 3,
+      with Gaussian m = 4, Laplace m = 6 and GloVe as high-dimensional controls. Each was run
+      at k = 768 and 3072 for 2 and 5 epochs over 5 paired seeds, compared against the paper's
+      defaults. The three criteria were set in advance: every low- and high-dimensional
+      dataset classified correctly, a mean change of −2% or better on the low-dimensional
+      ones, and no low-dimensional setting significantly worse.
+    </p>
+    <ul>
+      <li>All 14 classifications (7 datasets × 2 values of k) came out correct</li>
+      <li>Test MSE was <strong>−20%</strong> on average, and every setting improved</li>
+      <li>Up to −56% on heavy-tailed data</li>
+    </ul>
+    <p>
+      Most of the effect of τ shows up where the density changes a lot, on heavy tails. On
+      the colour wheel and the swiss roll, which are closer to uniform, k-means++ alone does
+      all the work.
+    </p>
+
+    <h2>Limitations</h2>
+    <p>
+      Most runs use n ≤ 10<sup>6</sup> points and k ≤ 4096; the paper goes up to
+      10<sup>10</sup> points and 16M clusters. Assignment runs in FP32 rather than the paper's
+      BF16/FP8 kernels. The link to the authors' library in the PDF is cut off, so I could not
+      compare against their code, and my version may differ in small details. The
+      low-dimension effects are clearest on synthetic data: image pixels are the only real
+      low-dimensional data here, and they are noisy. The dimension rule first broke on an
+      image with many duplicate colours, and the neighbour-floor fix passed a fresh test, but
+      on a handful of datasets and with a single threshold of 3.5. Most real-data numbers come
+      from 3 to 5 seeds.
+    </p>
+
+    <div class="divider"></div>
+    <p>Code, figures, the pre-stated criteria in each test script, and instructions for running it on GitHub: <a href="https://github.com/Rahulrayy/exploring-e-means" target="_blank" rel="noopener">GitHub →</a></p>
+
+  </div>
+
+  <div class="more-work" role="navigation" aria-label="More projects">
+    <a class="mw" href="jepa-text.html"><span class="mw-cap">← Previous · Fig. 10</span><span class="mw-title">Text-JEPA: Representation Prediction for Language</span></a>
+    <a class="mw mw-next" href="rag-permutation.html"><span class="mw-cap">Next · Fig. 02 →</span><span class="mw-title">Is it the Pruning, or the Ordering?</span></a>
+  </div>
+
+  <footer class="site-footer">
+    <div class="ft-grid">
+      <div class="ft-id">
+        <a class="ft-name" href="../index.html">Rahul <em>Ray</em></a>
+        <p class="ft-sub">MSc Data Science · Leiden University</p>
+        <a class="ft-mail" href="mailto:rahulraypm2002@gmail.com">rahulraypm2002@gmail.com</a>
+      </div>
+      <div class="ft-col" role="navigation" aria-label="Site">
+        <p class="ft-label">Index</p>
+        <a href="../index.html#projects">Projects</a>
+        <a href="../index.html#about">About</a>
+        <a href="../index.html#experience">Experience</a>
+        <a href="../index.html#contact">Contact</a>
+        <a href="../CV.pdf" download>CV ↓</a>
+      </div>
+      <div class="ft-col">
+        <p class="ft-label">Elsewhere</p>
+        <a href="https://github.com/Rahulrayy" target="_blank" rel="noopener">GitHub ↗</a>
+        <a href="https://linkedin.com/in/rahul-ray-b67741222" target="_blank" rel="noopener">LinkedIn ↗</a>
+        <span>Den Haag, Netherlands</span>
+      </div>
+    </div>
+    <div class="ft-base">
+      <span>© Rahul Ray&nbsp;· Hosted on GitHub Pages</span>
+      <a href="#" class="ft-top">↑ Top</a>
+    </div>
+  </footer>
+
+  <script>
+    const nav = document.getElementById('nav')
+    window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 30))
+    const navToggle = document.getElementById('navToggle')
+    const navOverlay = document.getElementById('navOverlay')
+    if (navToggle) {
+      navToggle.addEventListener('click', () => { nav.classList.toggle('nav-open'); navOverlay.classList.toggle('visible') })
+      navOverlay.addEventListener('click', () => { nav.classList.remove('nav-open'); navOverlay.classList.remove('visible') })
+      document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => { nav.classList.remove('nav-open'); navOverlay.classList.remove('visible') }))
+    }
+  </script>
+</body>
+</html>
