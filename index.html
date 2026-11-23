@@ -20,6 +20,9 @@
   <meta name="twitter:description" content="MSc Data Science student at Leiden University. ML research on RAG evaluation, quantization, self-supervised learning and tabular ML, built on controlled baselines and honest reporting.">
   <meta name="twitter:image" content="https://rahulrayy.github.io/Portfolio/assets/og-card.png">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='8' fill='%231443FF'/><text x='50' y='76' font-size='72' text-anchor='middle' fill='white' font-family='Georgia,serif' font-style='italic'>R</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&amp;family=IBM+Plex+Mono:wght@300;400&amp;family=Outfit:wght@300;400;500&amp;display=swap" />
   <link rel="stylesheet" href="style.css" />
   <script src="theme.js"></script>
   <style>
@@ -116,6 +119,9 @@
     /* The whole card opens the writeup; external links sit above that. */
     .card-title a::after { content: ''; position: absolute; inset: 0; }
     .card-links a { position: relative; z-index: 1; }
+    /* The title link stretches over the whole card, so ring the card, not the text. */
+    .card-title a:focus-visible { outline: none; }
+    .card-title a:focus-visible::after { outline: 2px solid var(--accent); outline-offset: 3px; }
 
     /* Figures are line drawings of each project's idea, not data plots. */
     .card-fig {
@@ -218,6 +224,8 @@
     .ct-val { font-size: 0.8rem; color: var(--ink); overflow-wrap: anywhere; transition: color 0.2s; }
     /* Each linked row is clickable end to end; the copy button sits above that. */
     .ct-row a.ct-val::after { content: ''; position: absolute; inset: 0; }
+    .ct-row a.ct-val:focus-visible { outline: none; }
+    .ct-row a.ct-val:focus-visible::after { outline: 2px solid var(--accent); outline-offset: 2px; }
     .ct-row:has(a.ct-val):hover { background: var(--surface); }
     .ct-row:hover a.ct-val { color: var(--accent); }
     .ct-go { color: var(--muted); font-size: 0.8rem; }
@@ -279,6 +287,7 @@
   </style>
 </head>
 <body>
+  <a class="skip-link" href="#hero">Skip to content</a>
 
   <nav id="nav">
     <div class="nav-logo"><a href="index.html">Rahul Ray</a></div>
@@ -574,17 +583,20 @@
       navOverlay.addEventListener('click', () => { nav.classList.remove('nav-open'); navOverlay.classList.remove('visible') })
       document.querySelectorAll('.nav-links a').forEach(a => a.addEventListener('click', () => { nav.classList.remove('nav-open'); navOverlay.classList.remove('visible') }))
     }
-    const observer = new IntersectionObserver(
-      entries => entries.forEach(e => {
-        if (e.isIntersecting) {
-          const siblings = [...e.target.parentElement.querySelectorAll('.reveal')]
-          const idx = siblings.indexOf(e.target)
-          setTimeout(() => { e.target.classList.add('visible'); observer.unobserve(e.target) }, idx * 90)
-        }
-      }),
-      { threshold: 0.08, rootMargin: '0px 0px -60px 0px' }
-    )
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
+    if (!('IntersectionObserver' in window)) document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'))
+    else {
+      const observer = new IntersectionObserver(
+        entries => entries.forEach(e => {
+          if (e.isIntersecting) {
+            const siblings = [...e.target.parentElement.querySelectorAll('.reveal')]
+            const idx = siblings.indexOf(e.target)
+            setTimeout(() => { e.target.classList.add('visible'); observer.unobserve(e.target) }, idx * 90)
+          }
+        }),
+        { threshold: 0.08, rootMargin: '0px 0px -60px 0px' }
+      )
+      document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
+    }
 
     // Copy email: mailto does nothing without a mail app, so offer the address itself.
     document.querySelectorAll('.ct-copy').forEach(b => b.addEventListener('click', async () => {

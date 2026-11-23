@@ -5,6 +5,7 @@
 (function () {
   var KEY = 'theme'
   var root = document.documentElement
+  root.classList.add('js')
   var mq = window.matchMedia('(prefers-color-scheme: dark)')
 
   // Storage can throw (private mode, blocked site data); the theme
