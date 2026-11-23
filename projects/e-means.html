@@ -115,8 +115,8 @@
     </table>
     <p>
       Before each of the main tests I wrote down what would count as a pass or a fail, and
-      each test script prints its criteria as PASS/FAIL. A few of them failed, and those are
-      reported below along with the ones that passed.
+      each test script prints its criteria as PASS/FAIL. Results are reported either way,
+      including the tests that failed.
     </p>
 
     <h2>What came out</h2>
@@ -159,7 +159,7 @@
     </p>
     <p>
       For 1024 centroids on 2-d Gaussian data, measured as the gap above the theoretical
-      bound:
+      bound (these numbers are from one figure in the repository):
     </p>
     <table class="data-table">
       <thead>
@@ -173,8 +173,8 @@
       </tbody>
     </table>
     <p>
-      k-means++ fixes the start for Lloyd. e-means does not keep it: from the same k-means++
-      start it ends 11% worse than Lloyd.
+      k-means++ fixes the start for Lloyd. e-means does not keep it: in a separate comparison
+      from the same k-means++ start, it ends 11% worse than Lloyd.
     </p>
 
     <h3>Revival is the culprit</h3>
@@ -213,10 +213,11 @@
     <p>
       <strong>Second held-out test: passed.</strong> This used data I had not touched before:
       a colour-wheel image, a swiss roll, Laplace data at m = 2 and Student-t data at m = 3,
-      with Gaussian m = 4, Laplace m = 6 and GloVe as high-dimensional controls. Each was run
+      with Gaussian m = 4, Laplace m = 6 and GloVe as controls that should land above the
+      threshold. Each was run
       at k = 768 and 3072 for 2 and 5 epochs over 5 paired seeds, compared against the paper's
-      defaults. The three criteria were set in advance: every low- and high-dimensional
-      dataset classified correctly, a mean change of −2% or better on the low-dimensional
+      defaults. The three criteria were set in advance: every low-dimensional
+      dataset and every control classified correctly, a mean change of −2% or better on the low-dimensional
       ones, and no low-dimensional setting significantly worse.
     </p>
     <ul>
