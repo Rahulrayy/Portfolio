@@ -167,6 +167,11 @@
       <p>Across all valid prompt framings and both datasets, no hybrid outperformed its baseline.</p>
     </div>
 
+    <figure class="result-fig">
+      <img src="../assets/fig/llm-tabular.png" width="1600" height="686" alt="Bar charts of nested-CV AUC for baseline, LLM-only and hybrid models on Adult and HMEQ" loading="lazy">
+      <figcaption><b>From the repo</b>Mean AUC over the 15 nested-CV folds, with error bars of one standard deviation. On Adult the hybrid is indistinguishable from the baseline (p = 0.1205); on HMEQ it is significantly worse (p = 0.0043, Wilcoxon).</figcaption>
+    </figure>
+
     <h2>Why did it fail?</h2>
     <p>
       There are a few plausible mechanisms, and they're not mutually exclusive. The first is dimensionality: 
